@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Image, View, TextInput, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
+import {StyleSheet, Image, View, TextInput, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, SafeAreaView} from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import Header from '../components/header'
 import { CmlText } from '../components/text'
@@ -57,7 +57,7 @@ class RegisterScreen extends Component {
     
     render() {
         return (
-            <>
+            <SafeAreaView style={{flex: 1}}>
                 <Header back={true} onBack={this.onLogin}/>
                 <KeyboardAvoidingView
                     style={{
@@ -143,7 +143,7 @@ class RegisterScreen extends Component {
                     source={require("../assets/images/back_bottom.png")}
                     style={styles.backBottom}
                 /> */}
-            </>
+            </SafeAreaView>
         );
     }
   }

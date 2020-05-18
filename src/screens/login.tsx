@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Image, View, TextInput, Text, TouchableOpacity, ScrollView} from 'react-native';
+import {StyleSheet, Image, View, SafeAreaView, Text, TouchableOpacity, ScrollView} from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import Header from '../components/header'
 import { CmlText } from '../components/text'
@@ -80,7 +80,7 @@ class LoginScreen extends React.Component {
     
     render() {
         return (
-            <>
+            <SafeAreaView style={{flex: 1}}>
                 <Header/>
                 <ScrollView style={{
                     zIndex: 999
@@ -145,7 +145,7 @@ class LoginScreen extends React.Component {
                     source={require("../assets/images/back_bottom.png")}
                     style={styles.backBottom}
                 />
-            </>
+            </SafeAreaView>
         );
     }
   }

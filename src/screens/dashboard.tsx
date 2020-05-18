@@ -1,14 +1,16 @@
 import React, {Component} from 'react';
-import {StyleSheet, Image, View, Text} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome5Pro';
-import FeatherIcon from 'react-native-vector-icons/Feather';
+import {StyleSheet, FlatList, View, SafeAreaView} from 'react-native';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Header from '../components/header';
 import SemiCircleProgress from '../components/progress';
 import { CmlText } from '../components/text'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
     container: {
-        padding: 8
+        padding: 8,
+        flex: 1
     }, 
     campaignLabel: {
         fontSize: 20,
@@ -20,10 +22,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor: '#fdd2bd',
         borderWidth: 1,
-        padding: 20,
         marginTop: 20,
         marginBottom: 20,
-        flexDirection: 'row'
     },
     percentLabel: { 
         fontSize: 32, 
@@ -35,17 +35,47 @@ class Dashboard extends Component {
     onMenu = () => {
         this.props.navigation.openDrawer()
     }
+
+    state = {
+        campaigns: [
+            {
+                name: 'Rudi Doe',
+                status: 0
+            },
+            {
+                name: 'Rian Massive',
+                status: 1
+            },
+            {
+                name: 'Anjas Tora',
+                status: 0
+            },
+            {
+                name: 'Lauren Kiev',
+                status: 1
+            },
+            {
+                name: 'Coco Yarn',
+                status: 0
+            },
+        ]
+    }
+
     render() {
         return (
-            <>
+            <SafeAreaView style={{flex: 1}}>
                 <Header onMenu={this.onMenu} menu={true}/>
                 <View style={styles.container}>
                     <CmlText style={styles.campaignLabel}>
                         Recent campaigns
                     </CmlText>
-                    <View style={styles.graphContainer}>
+                    <View style={[styles.graphContainer, {
+                        padding: 16,
+                        flexDirection: 'row'
+                    }]}>
                         <View style={{
-                            width: 170
+                            width: 170,
+                            paddingTop: 12
                         }}>
                             <SemiCircleProgress
                                 percentage={35}
@@ -82,8 +112,64 @@ class Dashboard extends Component {
                         </View>
 
                     </View>
+
+
+                    <CmlText style={styles.campaignLabel}>
+                        My Call Campaigns
+                    </CmlText>
+
+                    <View style={[styles.graphContainer, {flex: 1}]}>
+                        <View style={{
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#fdd2bd',
+                            height: 40,
+                            flexDirection: 'row'
+                        }}>
+                            <CmlText style={{
+                                flex: 1,
+                                fontSize: 16,
+                                color: '#ff9f6f',
+                                padding: 8,
+                                paddingLeft: 16
+                            }}>Status</CmlText>
+                            <CmlText style={{
+                                flex: 1,
+                                fontSize: 16,
+                                color: '#ff9f6f',
+                                padding: 8
+                            }}>Name</CmlText>
+                        </View>
+                        <FlatList 
+                            data={this.state.campaigns}
+                            renderItem={(item: any) => {
+                            return <TouchableOpacity onPress={() => this.props.navigation.push('CampaignDetailScreen')}>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        marginTop: 8
+                                    }}>
+                                        <View style={{
+                                            flex: 1,
+                                            paddingLeft: 24
+                                        }}>
+                                            {item.item.status == 0 && <Fontisto name="curve" size={20} color={'#ff3d00'}/>}
+                                            {item.item.status == 1 && <FontAwesome5 name="recycle" size={20} color={'#0dac01'} />}
+                                        </View>
+                                        
+                                        <CmlText style={{
+                                            color: '#8c95aa',
+                                            flex: 1
+                                        }}>{item.item.name}</CmlText>
+                                    </View>
+                                </TouchableOpacity>;
+                            }}
+                        >
+
+                        </FlatList>
+
+                    </View>
                 </View>
-            </>
+            </SafeAreaView>
         );
     }
   }

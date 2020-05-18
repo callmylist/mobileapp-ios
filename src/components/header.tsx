@@ -6,7 +6,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 const styles = StyleSheet.create({
     container: {
         flexDirection: "row", 
-        height: 100, 
+        height: 56, 
         justifyContent:'space-between', 
         alignItems:'flex-end', 
         padding: 8,

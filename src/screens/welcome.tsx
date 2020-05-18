@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 class WelcomeScreen extends Component {
 
     componentDidMount() {
-        setTimeout(() => this.props.navigation.navigate('AuthNavigator'), 2000)
+        setTimeout(() => this.props.navigation.navigate('AuthNavigator'), 3000)
     }
 
     render() {

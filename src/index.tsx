@@ -3,6 +3,8 @@ import {
     createSwitchNavigator,
     SafeAreaView
 } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+
 import {
   createDrawerNavigator
 } from 'react-navigation-drawer';
@@ -12,8 +14,28 @@ import LoginScreen from './screens/login'
 import RegisterScreen from './screens/register'
 import DashboardScreen from './screens/dashboard'
 import MessageCenterScreen from './screens/messagecenter'
+import CampaignScreen from './screens/campaign'
+import SoundScreen from './screens/sound'
+import AccountScreen from './screens/account'
+import SupportScreen from './screens/support'
 import Menu from './components/menu'
 import { View, StatusBar, Platform } from 'react-native';
+
+import CampaignCreateScreen from './screens/campaign_create'
+import ScheduleScreen from './screens/popup/schedule'
+import CampaignDetailScreen from './screens/campaign_detail'
+
+const CreatCampaignNavigator = createStackNavigator(
+  {
+    CampaignCreateScreen,
+    ScheduleScreen
+  },
+  {
+    initialRouteName: 'CampaignCreateScreen',
+    headerMode: 'none',
+    navigationOptions: { header: null },
+  },
+);
 
 const Dashboard = createDrawerNavigator({
   Dashboard: {
@@ -21,9 +43,21 @@ const Dashboard = createDrawerNavigator({
   },
   MessageCenter: {
     screen: MessageCenterScreen
+  },
+  Sound: {
+    screen: SoundScreen
+  },
+  Campaign: {
+    screen: CampaignScreen
+  },
+  Account: {
+    screen: AccountScreen
+  },
+  Support: {
+    screen: SupportScreen
   }
 }, {
-  initialRouteName: 'Dashboard',
+  initialRouteName: 'Account',
   contentComponent: Menu,
   drawerPosition: 'left',
   drawerWidth: 300,
@@ -33,6 +67,18 @@ const Dashboard = createDrawerNavigator({
   backBehavior: 'none',
   drawerBackgroundColor: '#0000FF00',
 });
+
+const App = createStackNavigator({
+  Dashboard,
+  CreatCampaignNavigator,
+  CampaignDetailScreen
+},
+{
+  initialRouteName: 'Dashboard',
+  headerMode: 'none',
+  navigationOptions: {header: null},
+  gestureEnabled: false,
+})
 
 const AuthNavigator = createSwitchNavigator(
   {
@@ -50,15 +96,19 @@ const MainNavigator = createSwitchNavigator(
     {
       WelcomeScreen,
       AuthNavigator,
-      Dashboard
+      App,
     },
     {
-      initialRouteName: 'WelcomeScreen',
+      initialRouteName: 'App',
       headerMode: 'none',
       navigationOptions: { header: null },
     },
   );
+
 const AppNav = createAppContainer(MainNavigator);
+
+console.disableYellowBox = true;
+
 
 export default class MainApp extends Component {
     constructor(props: any) {
