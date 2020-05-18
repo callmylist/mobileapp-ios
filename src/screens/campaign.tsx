@@ -162,7 +162,7 @@ class Campaign extends Component {
                                 flex: 1
                             }]}>Total Dialed</CmlText>
                         </View>
-                        <FlatList 
+                        <FlatList
                             data={this.state.campaigns}
                             renderItem={(item: any) => {
                             return <TouchableOpacity onPress={() => this.props.navigation.push('CampaignDetailScreen')}>

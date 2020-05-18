@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import {StyleSheet, FlatList, View, SafeAreaView} from 'react-native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../components/header';
 import SemiCircleProgress from '../components/progress';
 import { CmlText } from '../components/text'
 import { ScrollView } from 'react-native-gesture-handler';
+import { Menu, MenuTrigger, MenuOptions, MenuOption} from 'react-native-popup-menu';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const styles = StyleSheet.create({
     container: {
@@ -88,10 +90,32 @@ class CampaignDetail extends Component {
                         justifyContent: 'center',
                         padding: 16
                     }}>
-                        <Fontisto name="curve" size={20} color={'#ff3d00'}/>    
+                        <View  style={{flex: 1}} />
+                        <AntDesign name="checkcircle" size={20} color={'#0dac01'} />
                         <CmlText style={styles.campaignLabel}>
                             Campaign 1
                         </CmlText>
+                        <View  style={{flex: 1}} />
+                        <View style={{
+                            width: 20
+                        }}>
+                            <Menu>
+                                <MenuTrigger>
+                                    <Entypo name="dots-three-vertical" size={20} color={'#7b7b7b'} style={{marginTop: 8}}/>
+                                </MenuTrigger>
+                                <MenuOptions customStyles={{
+                                    optionText: {
+                                        padding: 4
+                                    }
+                                }}>
+                                    <MenuOption text='Start Campaign' />
+                                    <MenuOption text='Rerun Campaign' />
+                                    <MenuOption text='Send Test Call' />
+                                    <MenuOption text='View Campaign' />
+                                    <MenuOption text='Delete' />
+                                </MenuOptions>
+                            </Menu>
+                        </View>
                     </View>
 
 

@@ -4,6 +4,7 @@ import {
     SafeAreaView
 } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+import { MenuProvider } from 'react-native-popup-menu';
 
 import {
   createDrawerNavigator
@@ -18,6 +19,7 @@ import CampaignScreen from './screens/campaign'
 import SoundScreen from './screens/sound'
 import AccountScreen from './screens/account'
 import SupportScreen from './screens/support'
+import ContactListScreen from './screens/contact_list'
 import Menu from './components/menu'
 import { View, StatusBar, Platform } from 'react-native';
 
@@ -55,7 +57,11 @@ const Dashboard = createDrawerNavigator({
   },
   Support: {
     screen: SupportScreen
-  }
+  },
+  ContactList: {
+    screen: ContactListScreen
+  },
+  
 }, {
   initialRouteName: 'Account',
   contentComponent: Menu,
@@ -99,7 +105,7 @@ const MainNavigator = createSwitchNavigator(
       App,
     },
     {
-      initialRouteName: 'App',
+      initialRouteName: 'WelcomeScreen',
       headerMode: 'none',
       navigationOptions: { header: null },
     },
@@ -117,7 +123,9 @@ export default class MainApp extends Component {
   
     render() {
       return (
-        <AppNav style={{ flex: 1 }} />
+        <MenuProvider>
+          <AppNav style={{ flex: 1 }} />
+        </MenuProvider>
       );
     }
   }

@@ -6,6 +6,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Header from '../components/header'
 import { CmlText } from '../components/text'
 import { CmlTextInput } from '../components/textinput'
+import { Menu, MenuTrigger, MenuOptions, MenuOption} from 'react-native-popup-menu';
 
 const styles = StyleSheet.create({
     container: {
@@ -238,7 +239,23 @@ class MessageCenter extends Component {
                                 }}>
                                     <CmlText style={styles.message}>{item.item.comment}</CmlText>
                                 </View>
-                                <Entypo name="dots-three-vertical" size={20} color={'#7b7b7b'} style={{marginTop: 8}}/>
+                                <Menu>
+                                    <MenuTrigger>
+                                        <Entypo name="dots-three-vertical" size={20} color={'#7b7b7b'} style={{marginTop: 8}}/>
+                                    </MenuTrigger>
+                                    <MenuOptions customStyles={{
+                                        optionText: {
+                                            padding: 4
+                                        }
+                                    }}>
+                                        <MenuOption text='View Contact' />
+                                        <MenuOption text='Mark As Favorite' />
+                                        <MenuOption text='Create Follow Up Task' />
+                                        <MenuOption text='Edit' />
+                                        <MenuOption text='Delete' />
+                                        <MenuOption text='Archive' />
+                                    </MenuOptions>
+                                </Menu>
                             </View>;
                         }}>
 

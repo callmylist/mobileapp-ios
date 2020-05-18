@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, FlatList, View, SafeAreaView} from 'react-native';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Header from '../components/header';
 import SemiCircleProgress from '../components/progress';
 import { CmlText } from '../components/text'
@@ -96,7 +96,7 @@ class Dashboard extends Component {
                                 alignItems: 'baseline'
                             }}>
                                 <CmlText style={{
-                                    fontSize: 40,
+                                    fontSize: 32,
                                     color: '#5a6378'
                                 }}>44%</CmlText>
                                 <CmlText style={{
@@ -152,8 +152,8 @@ class Dashboard extends Component {
                                             flex: 1,
                                             paddingLeft: 24
                                         }}>
-                                            {item.item.status == 0 && <Fontisto name="curve" size={20} color={'#ff3d00'}/>}
-                                            {item.item.status == 1 && <FontAwesome5 name="recycle" size={20} color={'#0dac01'} />}
+                                            {item.item.status == 0 && <AntDesign name="closecircle" size={20} color={'#ff3d00'}/>}
+                                            {item.item.status == 1 && <AntDesign name="checkcircle" size={20} color={'#0dac01'} />}
                                         </View>
                                         
                                         <CmlText style={{

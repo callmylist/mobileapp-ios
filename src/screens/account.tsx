@@ -6,6 +6,8 @@ import { CmlText } from '../components/text'
 import { CmlTextInput } from '../components/textinput'
 import { ScrollView } from 'react-native-gesture-handler';
 import { CmlButton } from '../components/button'
+import { Menu, MenuTrigger, MenuOptions, MenuOption} from 'react-native-popup-menu';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const styles = StyleSheet.create({
     container: {
@@ -432,6 +434,33 @@ class Account extends Component {
                                         <CmlText style={styles.itemContact}>{item.item.email}</CmlText>
                                         
                                         <CmlText style={styles.itemDial}>${item.item.funds}</CmlText>
+
+                                        <View style={{
+                                            width: 40
+                                        }}>
+                                            <Menu>
+                                                <MenuTrigger customStyles={
+                                                    {
+                                                        triggerTouchable: {
+                                                            underlayColor: '#00000000',
+                                                            activeOpacity: 70,
+                                                        }
+                                                    }
+                                                }>
+                                                    <Entypo name="dots-three-vertical" size={20} color={'#7b7b7b'} style={{marginTop: 8}}/>
+                                                </MenuTrigger>
+                                                <MenuOptions customStyles={{
+                                                    optionText: {
+                                                        padding: 4
+                                                    }
+                                                }}>
+                                                    <MenuOption text='Edit Account' />
+                                                    <MenuOption text='Lock' />
+                                                    <MenuOption text='Add Funds' />
+                                                    <MenuOption text='Delete' />
+                                                </MenuOptions>
+                                            </Menu>
+                                        </View>
                                     </View>
                                 </TouchableOpacity>;
                                 }}

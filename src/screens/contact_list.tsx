@@ -6,7 +6,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../components/header'
 import { CmlText } from '../components/text'
 import { CmlTextInput } from '../components/textinput'
-import Dialog, { DialogContent } from 'react-native-popup-dialog';
 
 const styles = StyleSheet.create({
     container: {
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
     },
     buttonTitle: {
         color: 'white',
-        fontSize: 16,
+        fontSize: 12,
         fontWeight: '600',
         textAlign: 'center',
         marginLeft: 4
@@ -52,44 +51,38 @@ const styles = StyleSheet.create({
     }
 });
 
-class Sound extends Component {
+class ContactList extends Component {
 
     state = {
         sounds: [
             {
-                name: 'My voice'
+                name: 'My list'
             },
             {
-                name: 'My voice'
+                name: 'My list'
             },
             {
-                name: 'My voice'
+                name: 'My list'
             },
             {
-                name: 'My voice'
+                name: 'My list'
             },
             {
-                name: 'My voice'
+                name: 'My list'
             },
             {
-                name: 'My voice'
+                name: 'My list'
             },
             {
-                name: 'My voice'
+                name: 'My list'
             },
             {
-                name: 'My voice'
+                name: 'My list'
             },
-        ],
-        textToSpeech: false
-    }
-
-    constructor(props: any) {
-        super(props)
+        ]
     }
 
     componentDidMount() {
-
     }
     
     onMenu = () => {
@@ -103,23 +96,11 @@ class Sound extends Component {
                 <View style={styles.container}>
 
                     <CmlText style={styles.campaignLabel}>
-                        My Sounds
+                        Contact List
                     </CmlText>
                     <View style={{
                         alignItems: 'center'
                     }}>
-                        <TouchableOpacity style={{
-                            marginTop: 16
-                        }} onPress={() => this.setState({textToSpeech: true})}>
-                            <View style={styles.buttonContainer}>
-                                <FontAwesome 
-                                    name="comment"
-                                    color="white"
-                                    size={20}
-                                />
-                                <CmlText style={styles.buttonTitle}>Text to Speech</CmlText>
-                            </View>
-                        </TouchableOpacity>
                         <TouchableOpacity style={{
                             marginTop: 16
                         }}>
@@ -127,23 +108,17 @@ class Sound extends Component {
                                 <Feather 
                                     name="upload"
                                     color="white"
-                                    size={20}
+                                    size={18}
                                 />
-                                <CmlText style={styles.buttonTitle}>Upload Audio</CmlText>
+                                <CmlText style={styles.buttonTitle}>Upload Contact List</CmlText>
                             </View>
                         </TouchableOpacity>
                     </View>
-                    <CmlText style={[styles.campaignLabel, {
-                        fontSize: 8,
-                        width: '80%',
-                        alignSelf: 'center',
-                        marginBottom: 24
-                    }]}>
-                    IT’s Simple. Add and review your audio files here. We have given you 3 easy ways to add sounds. You may record sound files using our recording interface. All sound files will be listed below. Please call 
-1-317-552-0035. When prompted enter Id: 92632# and Password: 9559# 
-                    </CmlText>
 
-                    <FlatList 
+                    <FlatList
+                        style={{
+                            marginTop: 24
+                        }}
                         data={this.state.sounds}
                         renderItem={(item: any) => {
                         return <View style={[styles.itemContainer, {
@@ -154,19 +129,28 @@ class Sound extends Component {
                                 }}>{item.index + 1}.</CmlText>
                                 
                                 <CmlText style={{
-                                    fontSize: 16
+                                    fontSize: 16,
+                                    width: '30%'
                                 }}>{item.item.name}</CmlText>
                                 <View style={{
-                                    flex: 1
-                                }} />
-                                <TouchableOpacity style={{
-                                    marginRight: 8
+                                    backgroundColor: '#ffa67a',
+                                    width: 24,
+                                    height: 24,
+                                    borderRadius: 12,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginRight: 50
                                 }}>
-                                    <AntDesign 
-                                        name="playcircleo"
-                                        size={24}
-                                    />
-                                </TouchableOpacity>
+                                    <CmlText style={{
+                                        color: 'white'
+                                    }}>
+                                        4
+                                    </CmlText>
+                                </View>   
+
+                                <View style={{
+                                    flex: 1
+                                }} /> 
                                 <TouchableOpacity style={{
                                     marginRight: 8
                                 }}>
@@ -198,40 +182,9 @@ class Sound extends Component {
                     </FlatList>
 
                 </View>
-
-                <Dialog
-                    visible={this.state.textToSpeech}
-                    onTouchOutside={() => {
-                    this.setState({ textToSpeech: false });
-                    }}
-                    dialogStyle={styles.dialogContainer}
-                    overlayOpacity={0}
-                >
-                    <DialogContent>
-                        <View style={{paddingVertical: 16}}>
-                            <View>
-                                <CmlText style={styles.dialogTitle}>Start Now</CmlText>
-                                <CmlText style={styles.dialogSmallTitle}>Campaign Time Restrictions</CmlText>
-                                <CmlText style={styles.dialogDescription}>Contacts will not be dialed outside these hours</CmlText>
-
-                                <View style={styles.dialogTimeContainer}>
-                                    <CmlText style={styles.dialogTimePlaceholder}>Start Time</CmlText>
-                                </View>
-
-                                <View style={styles.dialogTimeContainer}>
-                                    <CmlText style={styles.dialogTimePlaceholder}>End Time</CmlText>
-                                </View>
-
-                                <View style={styles.dialogTimeContainer}>
-                                    <CmlText style={styles.dialogTimePlaceholder}>Time Zone</CmlText>
-                                </View>
-                            </View>
-                        </View>
-                    </DialogContent>
-                </Dialog>
             </SafeAreaView>
         );
     }
 }
   
-export default Sound;
+export default ContactList;
