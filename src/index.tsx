@@ -26,11 +26,15 @@ import { View, StatusBar, Platform } from 'react-native';
 import CampaignCreateScreen from './screens/campaign_create'
 import ScheduleScreen from './screens/popup/schedule'
 import CampaignDetailScreen from './screens/campaign_detail'
+import MessageHistoryScreen from './screens/message_history'
+
+import {store} from './redux/store'
+import {Provider} from 'react-redux'
 
 const CreatCampaignNavigator = createStackNavigator(
   {
     CampaignCreateScreen,
-    ScheduleScreen
+    ScheduleScreen,
   },
   {
     initialRouteName: 'CampaignCreateScreen',
@@ -63,7 +67,7 @@ const Dashboard = createDrawerNavigator({
   },
   
 }, {
-  initialRouteName: 'Account',
+  initialRouteName: 'Dashboard',
   contentComponent: Menu,
   drawerPosition: 'left',
   drawerWidth: 300,
@@ -77,7 +81,8 @@ const Dashboard = createDrawerNavigator({
 const App = createStackNavigator({
   Dashboard,
   CreatCampaignNavigator,
-  CampaignDetailScreen
+  CampaignDetailScreen,
+  MessageHistoryScreen
 },
 {
   initialRouteName: 'Dashboard',
@@ -123,9 +128,11 @@ export default class MainApp extends Component {
   
     render() {
       return (
-        <MenuProvider>
-          <AppNav style={{ flex: 1 }} />
-        </MenuProvider>
+        <Provider store={store}>
+          <MenuProvider>
+            <AppNav style={{ flex: 1 }} />
+          </MenuProvider>
+        </Provider>
       );
     }
   }

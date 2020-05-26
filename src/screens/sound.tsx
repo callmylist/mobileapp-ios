@@ -7,6 +7,7 @@ import Header from '../components/header'
 import { CmlText } from '../components/text'
 import { CmlTextInput } from '../components/textinput'
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
+import { CmlButton } from '../components/button'
 
 const styles = StyleSheet.create({
     container: {
@@ -49,7 +50,49 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         justifyContent: 'center',
         alignItems: 'center'
-    }
+    },
+    dialogContainer: {
+        backgroundColor: '#000000bb',
+        width: '80%'
+    },
+    dialogTitle: {
+        color: 'white',
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        fontSize: 20
+    },
+    dialogSwitchContainer: {
+        marginTop: 8,
+        flexDirection: 'row', 
+        alignItems: 'center'
+    },
+    borderBottom: {
+        borderBottomColor: 'white', 
+        borderBottomWidth: 1
+    },
+    dialogTimeContainer: {
+        borderBottomWidth: 1,
+        borderBottomColor: 'white',
+        paddingVertical: 8,
+        flexDirection: 'row'
+    },
+    dialogTimePlaceholder: {
+        color: 'white',
+        fontSize: 10,
+        marginTop: 12
+    },
+    dialogDescription: {
+        color: 'white',
+        fontWeight: '500',
+        fontSize: 12,
+        marginTop: 16
+    },
+    dialogSmallTitle: {
+        color: 'white',
+        fontWeight: '500',
+        fontSize: 16,
+        marginTop: 24
+    },
 });
 
 class Sound extends Component {
@@ -208,22 +251,32 @@ class Sound extends Component {
                     overlayOpacity={0}
                 >
                     <DialogContent>
-                        <View style={{paddingVertical: 16}}>
+                        <View style={{paddingVertical: 0}}>
                             <View>
-                                <CmlText style={styles.dialogTitle}>Start Now</CmlText>
-                                <CmlText style={styles.dialogSmallTitle}>Campaign Time Restrictions</CmlText>
-                                <CmlText style={styles.dialogDescription}>Contacts will not be dialed outside these hours</CmlText>
-
+                                <CmlText style={styles.dialogSmallTitle}>Please enter the text and select void gender below.</CmlText>
                                 <View style={styles.dialogTimeContainer}>
-                                    <CmlText style={styles.dialogTimePlaceholder}>Start Time</CmlText>
+                                    <CmlTextInput style={[styles.dialogTimePlaceholder,
+                                            {
+                                            height: 100,
+                                            textAlignVertical: "top"
+                                        }]}
+                                        placeholderTextColor = "white"
+                                        placeholder="Enter Text To Speech"
+                                        multiline={true}/>
                                 </View>
 
+                                <CmlText style={styles.dialogDescription}>Voice Gender</CmlText>
                                 <View style={styles.dialogTimeContainer}>
-                                    <CmlText style={styles.dialogTimePlaceholder}>End Time</CmlText>
+                                    <CmlText style={styles.dialogTimePlaceholder}>Male Voice</CmlText>
                                 </View>
 
-                                <View style={styles.dialogTimeContainer}>
-                                    <CmlText style={styles.dialogTimePlaceholder}>Time Zone</CmlText>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    marginTop: 16
+                                }}>
+                                    <CmlButton title="Use Text" backgroundColor="#02b9db" style={{width: 100, marginTop: 16}}/>
+                                    <View style={{flex: 1}} />
+                                    <CmlButton title="Cancel" backgroundColor="#ffa67a" style={{width: 100, marginTop: 16, marginLeft: 16}}/>
                                 </View>
                             </View>
                         </View>

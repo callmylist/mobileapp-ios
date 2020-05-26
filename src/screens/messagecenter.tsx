@@ -7,6 +7,8 @@ import Header from '../components/header'
 import { CmlText } from '../components/text'
 import { CmlTextInput } from '../components/textinput'
 import { Menu, MenuTrigger, MenuOptions, MenuOption} from 'react-native-popup-menu';
+import { CmlButton } from '../components/button'
+import Dialog, { DialogContent } from 'react-native-popup-dialog';
 
 const styles = StyleSheet.create({
     container: {
@@ -63,7 +65,50 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
         borderBottomWidth: 0
-    }
+    },
+    dialogContainer: {
+        backgroundColor: '#000000bb',
+        width: '80%'
+    },
+    dialogTitle: {
+        color: 'white',
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        fontSize: 20
+    },
+    dialogSwitchContainer: {
+        marginTop: 8,
+        flexDirection: 'row', 
+        alignItems: 'center'
+    },
+    borderBottom: {
+        borderBottomColor: 'white', 
+        borderBottomWidth: 1
+    },
+    dialogTimeContainer: {
+        borderBottomWidth: 1,
+        borderBottomColor: 'white',
+        paddingVertical: 8,
+        flexDirection: 'row'
+    },
+    dialogTimePlaceholder: {
+        color: 'white',
+        fontSize: 10,
+        marginTop: 12,
+        flex: 1
+    },
+    dialogDescription: {
+        color: 'white',
+        fontWeight: '500',
+        fontSize: 12,
+        marginTop: 16
+    },
+    dialogSmallTitle: {
+        color: 'white',
+        fontWeight: '500',
+        fontSize: 16,
+        marginTop: 24
+    },
 });
 
 class MessageCenter extends Component {
@@ -126,7 +171,8 @@ class MessageCenter extends Component {
                 comment: 'Can I get 6 pack 16oz bud light can'
             },
         ],
-        index: 0
+        index: 0,
+        newMessage: false
     }
 
     componentDidMount() {
@@ -149,6 +195,12 @@ class MessageCenter extends Component {
                     flex: 1,
                     padding: 8
                 }}>
+                    <View style={{
+                        height: 60,
+                        alignItems: 'flex-end'
+                    }}>
+                        <CmlButton title="New Message" backgroundColor="#ffa67a" style={{marginTop: 16}} onPress={() => this.setState({newMessage: true})}/>
+                    </View>
                     <View style={styles.searchContainer}>
                         <CmlTextInput 
                             placeholder="search"
@@ -225,44 +277,92 @@ class MessageCenter extends Component {
                         <FlatList 
                             data={this.state.messages}
                             renderItem={(item: any) => {
-                                console.log(item.item)
-                            return <View style={[styles.messageContainer, {
-                                backgroundColor: item.index % 2 == 1? '#f7f7f7': 'white'
-                            }]}>
-                                <Feather name="star" size={20} color={'#fa8c56'} style={{marginTop: 8}}/>
-                                <View style={styles.messageInfoContainer}>
-                                    <CmlText style={styles.messagePhone}>{item.item.phone}</CmlText>
-                                    <CmlText style={styles.messageTime}>{item.item.time}</CmlText>
-                                </View>
-                                <View style={{
-                                    flex: 1
-                                }}>
-                                    <CmlText style={styles.message}>{item.item.comment}</CmlText>
-                                </View>
-                                <Menu>
-                                    <MenuTrigger>
-                                        <Entypo name="dots-three-vertical" size={20} color={'#7b7b7b'} style={{marginTop: 8}}/>
-                                    </MenuTrigger>
-                                    <MenuOptions customStyles={{
-                                        optionText: {
-                                            padding: 4
-                                        }
-                                    }}>
-                                        <MenuOption text='View Contact' />
-                                        <MenuOption text='Mark As Favorite' />
-                                        <MenuOption text='Create Follow Up Task' />
-                                        <MenuOption text='Edit' />
-                                        <MenuOption text='Delete' />
-                                        <MenuOption text='Archive' />
-                                    </MenuOptions>
-                                </Menu>
-                            </View>;
+                            return <>
+                                <TouchableOpacity onPress={() => this.props.navigation.push('MessageHistoryScreen')}>
+                                    <View style={[styles.messageContainer, {
+                                        backgroundColor: item.index % 2 == 1? '#f7f7f7': 'white'
+                                    }]}>
+                                        <Feather name="star" size={20} color={'#fa8c56'} style={{marginTop: 8}}/>
+                                        <View style={styles.messageInfoContainer}>
+                                            <CmlText style={styles.messagePhone}>{item.item.phone}</CmlText>
+                                            <CmlText style={styles.messageTime}>{item.item.time}</CmlText>
+                                        </View>
+                                        <View style={{
+                                            flex: 1
+                                        }}>
+                                            <CmlText style={styles.message}>{item.item.comment}</CmlText>
+                                        </View>
+                                        <Menu>
+                                            <MenuTrigger>
+                                                <Entypo name="dots-three-vertical" size={20} color={'#7b7b7b'} style={{marginTop: 8}}/>
+                                            </MenuTrigger>
+                                            <MenuOptions customStyles={{
+                                                optionText: {
+                                                    padding: 4
+                                                }
+                                            }}>
+                                                <MenuOption text='View Contact' />
+                                                <MenuOption text='Mark As Favorite' />
+                                                <MenuOption text='Create Follow Up Task' />
+                                                <MenuOption text='Edit' />
+                                                <MenuOption text='Delete' />
+                                                <MenuOption text='Archive' />
+                                            </MenuOptions>
+                                        </Menu>
+                                    </View>
+                                </TouchableOpacity>
+
+                            </>;
                         }}>
 
                         </FlatList>
 
                     </View>
                 </View>
+
+                <Dialog
+                    visible={this.state.newMessage}
+                    onTouchOutside={() => {
+                    this.setState({ newMessage: false });
+                    }}
+                    dialogStyle={styles.dialogContainer}
+                    overlayOpacity={0}
+                >
+                    <DialogContent>
+                        <View style={{paddingVertical: 0}}>
+                            <View>
+                                <CmlText style={styles.dialogSmallTitle}>New Message</CmlText>
+
+                                <View style={styles.dialogTimeContainer}>
+                                    <CmlText style={styles.dialogTimePlaceholder}>Contact Search</CmlText>
+                                    <Feather name="search" size={20} color={'white'} style={{marginTop: 8}}/>
+                                </View>
+                                
+                                <View style={styles.dialogTimeContainer}>
+                                    <CmlTextInput style={[styles.dialogTimePlaceholder,
+                                            {
+                                            height: 100,
+                                            textAlignVertical: "top"
+                                        }]}
+                                        placeholderTextColor = "white"
+                                        placeholder="Message"
+                                        multiline={true}/>
+                                </View>
+
+
+
+                                <View style={{
+                                    flexDirection: 'row',
+                                    marginTop: 16
+                                }}>
+                                    <CmlButton title="Send" backgroundColor="#02b9db" style={{width: 100, marginTop: 16}}/>
+                                    <View style={{flex: 1}} />
+                                    <CmlButton title="Cancel" backgroundColor="#ffa67a" style={{width: 100, marginTop: 16, marginLeft: 16}}/>
+                                </View>
+                            </View>
+                        </View>
+                    </DialogContent>
+                </Dialog>
             </SafeAreaView>
         );
     }

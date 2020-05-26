@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
-import {StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView} from 'react-native';
+import {StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView, Switch} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../components/header'
 import { CmlText } from '../components/text'
 import { CmlTextInput } from '../components/textinput'
+import Dialog, { DialogContent } from 'react-native-popup-dialog';
+import { CmlButton } from '../components/button'
 
 const styles = StyleSheet.create({
     container: {
@@ -48,7 +50,59 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         justifyContent: 'center',
         alignItems: 'center'
-    }
+    },
+    dialogContainer: {
+        backgroundColor: '#000000bb',
+        width: '80%'
+    },
+    dialogTitle: {
+        color: 'white',
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        fontSize: 20
+    },
+    dialogSwitchContainer: {
+        marginTop: 8,
+        flexDirection: 'row', 
+        alignItems: 'center'
+    },
+    borderBottom: {
+        borderBottomColor: 'white', 
+        borderBottomWidth: 1
+    },
+    dialogTimeContainer: {
+        borderBottomWidth: 1,
+        borderBottomColor: 'white',
+        paddingVertical: 8,
+        flexDirection: 'row'
+    },
+    dialogTimePlaceholder: {
+        color: 'white',
+        fontSize: 10,
+        marginTop: 12
+    },
+    dialogDescription: {
+        color: 'white',
+        fontWeight: '500',
+        fontSize: 12,
+        marginTop: 16
+    },
+    dialogSmallTitle: {
+        color: 'white',
+        fontWeight: '500',
+        fontSize: 16,
+        marginTop: 24
+    },    
+    panelSwitchContainer: {
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        width: '100%'
+    },    
+    panelOptionText: {
+        color: '#6a6a6a',
+        fontSize: 12,
+        marginLeft: 8
+    },
 });
 
 class ContactList extends Component {
@@ -83,6 +137,8 @@ class ContactList extends Component {
     }
 
     componentDidMount() {
+
+        this.setState({uploadList: false});
     }
     
     onMenu = () => {
@@ -103,7 +159,7 @@ class ContactList extends Component {
                     }}>
                         <TouchableOpacity style={{
                             marginTop: 16
-                        }}>
+                        }} onPress={() => this.setState({uploadList: true})}>
                             <View style={[styles.buttonContainer, {backgroundColor:'#565757'}]}>
                                 <Feather 
                                     name="upload"
@@ -182,6 +238,44 @@ class ContactList extends Component {
                     </FlatList>
 
                 </View>
+
+                <Dialog
+                    visible={this.state.uploadList}
+                    onTouchOutside={() => {
+                    this.setState({ uploadList: false });
+                    }}
+                    dialogStyle={styles.dialogContainer}
+                    overlayOpacity={0}
+                >
+                    <DialogContent>
+                        <View style={{paddingVertical: 0}}>
+                            <View>
+                                <CmlText style={styles.dialogSmallTitle}>Upload New List</CmlText>
+
+                                <View style={[styles.panelSwitchContainer, {marginTop: 16}]}>
+                                    <Switch
+                                        ios_backgroundColor='#9e9e9e'
+                                    />
+                                    <CmlText style={[styles.panelOptionText, {color: 'white'}]}>Does your file contain headers?</CmlText>
+                                </View>
+
+                                <CmlText style={styles.dialogDescription}>Select Phone Number Column</CmlText>
+                                <View style={styles.dialogTimeContainer}>
+                                    <CmlText style={styles.dialogTimePlaceholder}>A</CmlText>
+                                </View>
+
+                                <View style={{
+                                    flexDirection: 'row',
+                                    marginTop: 16
+                                }}>
+                                    <CmlButton title="Upload" backgroundColor="#02b9db" style={{width: 100, marginTop: 16}}/>
+                                    <View style={{flex: 1}} />
+                                    <CmlButton title="Cancel" backgroundColor="#ffa67a" style={{width: 100, marginTop: 16, marginLeft: 16}}/>
+                                </View>
+                            </View>
+                        </View>
+                    </DialogContent>
+                </Dialog>
             </SafeAreaView>
         );
     }
