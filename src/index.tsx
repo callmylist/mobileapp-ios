@@ -1,7 +1,7 @@
 import {
-    createAppContainer,
-    createSwitchNavigator,
-    SafeAreaView
+  createAppContainer,
+  createSwitchNavigator,
+  SafeAreaView
 } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -12,6 +12,7 @@ import {
 import React, { Component } from 'react';
 import WelcomeScreen from './screens/welcome'
 import LoginScreen from './screens/login'
+import ForgotPasswordScreen from './screens/forgot_password'
 import RegisterScreen from './screens/register'
 import DashboardScreen from './screens/dashboard'
 import MessageCenterScreen from './screens/messagecenter'
@@ -28,8 +29,8 @@ import ScheduleScreen from './screens/popup/schedule'
 import CampaignDetailScreen from './screens/campaign_detail'
 import MessageHistoryScreen from './screens/message_history'
 
-import {store} from './redux/store'
-import {Provider} from 'react-redux'
+import { store } from './redux/store'
+import { Provider } from 'react-redux'
 
 const CreatCampaignNavigator = createStackNavigator(
   {
@@ -65,7 +66,7 @@ const Dashboard = createDrawerNavigator({
   ContactList: {
     screen: ContactListScreen
   },
-  
+
 }, {
   initialRouteName: 'Dashboard',
   contentComponent: Menu,
@@ -84,17 +85,18 @@ const App = createStackNavigator({
   CampaignDetailScreen,
   MessageHistoryScreen
 },
-{
-  initialRouteName: 'Dashboard',
-  headerMode: 'none',
-  navigationOptions: {header: null},
-  gestureEnabled: false,
-})
+  {
+    initialRouteName: 'Dashboard',
+    headerMode: 'none',
+    navigationOptions: { header: null },
+    gestureEnabled: false,
+  })
 
 const AuthNavigator = createSwitchNavigator(
   {
     LoginScreen,
     RegisterScreen,
+    ForgotPasswordScreen
   },
   {
     initialRouteName: 'LoginScreen',
@@ -104,17 +106,17 @@ const AuthNavigator = createSwitchNavigator(
 );
 
 const MainNavigator = createSwitchNavigator(
-    {
-      WelcomeScreen,
-      AuthNavigator,
-      App,
-    },
-    {
-      initialRouteName: 'WelcomeScreen',
-      headerMode: 'none',
-      navigationOptions: { header: null },
-    },
-  );
+  {
+    WelcomeScreen,
+    AuthNavigator,
+    App,
+  },
+  {
+    initialRouteName: 'WelcomeScreen',
+    headerMode: 'none',
+    navigationOptions: { header: null },
+  },
+);
 
 const AppNav = createAppContainer(MainNavigator);
 
@@ -122,17 +124,17 @@ console.disableYellowBox = true;
 
 
 export default class MainApp extends Component {
-    constructor(props: any) {
-      super(props);
-    }
-  
-    render() {
-      return (
-        <Provider store={store}>
-          <MenuProvider>
-            <AppNav style={{ flex: 1 }} />
-          </MenuProvider>
-        </Provider>
-      );
-    }
+  constructor(props: any) {
+    super(props);
   }
+
+  render() {
+    return (
+      <Provider store={store}>
+        <MenuProvider>
+          <AppNav style={{ flex: 1 }} />
+        </MenuProvider>
+      </Provider>
+    );
+  }
+}

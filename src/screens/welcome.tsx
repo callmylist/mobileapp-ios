@@ -33,7 +33,6 @@ class WelcomeScreen extends Component<{
 }, {}> {
 
 	componentDidMount() {
-
 		this.props.loadAssets()
 	}
 

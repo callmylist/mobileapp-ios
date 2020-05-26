@@ -24,7 +24,6 @@ import { User } from '../shared/models/user.model';
 import Constants from '../utils/constants';
 import { UserService } from '../service/user.service'
 import { CmlSpinner } from '../components/loading';
-import Toast from 'react-native-root-toast';
 
 const styles = StyleSheet.create({
 	container: {
@@ -89,7 +88,7 @@ class RegisterScreen extends Component<{
 	companyName: string,
 	password: string,
 	showValidate: boolean,
-	loading: false
+	loading: boolean
 }> {
 	constructor(props: any) {
 		super(props);
@@ -107,6 +106,7 @@ class RegisterScreen extends Component<{
 	}
 
 	componentDidMount() {
+		console.log("domain user: ", this.props.assets.domainUser)
 	}
 
 	onLogin = () => {
@@ -132,25 +132,21 @@ class RegisterScreen extends Component<{
 		}
 
 		let newUser = new User();
-		newUser.account = JSON.parse(this.props.assets.domainUser).account;
+		newUser.account = this.props.assets.domainUser.account;
 		newUser.firstName = this.state.firstName;
 		newUser.lastName = this.state.lastName;
 		newUser.email = this.state.email;
 		newUser.password = this.state.password;
 		newUser.phone = this.state.phone;
 		newUser.companyName = this.state.companyName;
-		newUser.parentId = JSON.parse(this.props.assets.domainUser).id;
+		newUser.parentId = this.props.assets.domainUser.id;
 		newUser.role.id = Constants.roleId;
 
 		this.setState({ loading: true })
 		UserService.signUp(newUser).subscribe((response: any) => {
 			this.setState({ loading: false })
-			Toast.show(response.submessage, {
-				duration: Toast.durations.LONG,
-				position: Toast.positions.BOTTOM,
-				animation: true
-			})
 
+			Utils.presentToast(response.submessage)
 			if (response.success) {
 				this.onLogin()
 			}

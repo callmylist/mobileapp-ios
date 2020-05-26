@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
 });
 
 class Header extends Component<{
-    back: boolean,
-    onBack: any,
+    back?: boolean,
+    onBack?: any,
     menu?: boolean,
     onMenu?: any
 }> {

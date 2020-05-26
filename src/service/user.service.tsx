@@ -29,4 +29,33 @@ export class UserService {
             }),
         );
     }
+
+    static signIn(userId: string, username: string, password: string) {
+        return from(
+            axios.post(Constants.API_URL + constants.apiUrl.consumerLogin.replace('{userId}', userId), {
+                username: username,
+                password: password
+            })
+        ).pipe(
+            map((response: any) => {
+                return { ...response.data, token: response.headers.x_auth_token, success: true }
+            }),
+            catchError((error: any) => {
+                return [{ ...error.response.data, success: false }]
+            })
+        )
+    }
+
+    static forgotPassword(userId: string, email: string) {
+        return from(
+            axios.get(Constants.API_URL + constants.apiUrl.sendForgot.replace('{email}', email).replace('{parentId}', userId))
+        ).pipe(
+            map((response: any) => {
+                return { ...response.data, success: true }
+            }),
+            catchError((error: any) => {
+                return [{ ...error.response.data, success: false }]
+            })
+        )
+    }
 }

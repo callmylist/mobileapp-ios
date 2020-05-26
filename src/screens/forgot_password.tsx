@@ -9,8 +9,7 @@ import { UserService } from '../service/user.service'
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { CmlSpinner } from '../components/loading';
-import { signIn } from '../redux/actions/appActions'
-import { LoginUser } from '../shared/models/loginuser.model'
+import { signIn } from '../redux/actions/appActions';
 
 const styles = StyleSheet.create({
     container: {
@@ -50,9 +49,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#00b7d9',
         borderRadius: 20,
         height: 40,
-        width: '48%',
+        width: 200,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        alignSelf: 'flex-end',
     },
     forgotContainer: {
         width: '80%',
@@ -69,60 +69,44 @@ const styles = StyleSheet.create({
     buttonContainer: {
         width: '80%',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'flex-end',
+        marginTop: 20
     }
 });
 
-class LoginScreen extends React.Component<{
+class ForgotPasswordScreen extends React.Component<{
     assets: any,
     navigation: any,
-    signIn: any,
-    loading: boolean,
-    error: string,
-    loggedInContact: LoginUser
+    signIn: any
 }, {
-    username: string,
-    password: string,
+    loading: boolean,
+    email: string,
 }> {
     constructor(props: any) {
         super(props);
 
         this.state = {
-            username: '',
-            password: '',
+            loading: false,
+            email: '',
         }
     }
 
     onLogin = () => {
-        if (this.state.username.length != 0 && this.state.password.length != 0) {
-            this.props.signIn({
-                userId: this.props.assets.domainUser.id,
-                username: this.state.username,
-                password: this.state.password
-            })
-        }
-    }
-
-    gotoDashboard = () => {
-        this.props.navigation.navigate('Dashboard')
-    }
-
-    onRegister = () => {
-        this.props.navigation.navigate('RegisterScreen')
-    }
+        this.props.navigation.navigate('LoginScreen');
+    };
 
     onForgotPassword = () => {
-        this.props.navigation.navigate('ForgotPasswordScreen')
-    }
-
-    componentDidUpdate(prevProps: any, prevState: any, snapshot: any) {
-        if (this.props.error) {
-            Utils.presentToast(this.props.error)
-        }
-
-        if (this.props.loggedInContact) {
-            this.gotoDashboard()
-        }
+        this.setState({ loading: true })
+        UserService.forgotPassword(this.props.assets.domainUser.id, this.state.email).subscribe((response: any) => {
+            this.setState({ loading: false })
+            if (response.success) {
+                this.onLogin()
+                Utils.presentToast(response.submessage)
+            }
+            else {
+                Utils.presentToast('The email address does not exist.')
+            }
+        })
     }
 
 
@@ -130,29 +114,26 @@ class LoginScreen extends React.Component<{
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                <Header />
+                <Header back={true} onBack={this.onLogin} />
                 <CmlSpinner
-                    visible={this.props.loading}
+                    visible={this.state.loading}
                 />
                 <ScrollView style={{
                     zIndex: 999
                 }}>
                     <View style={{
                         alignItems: 'center',
-                        flex: 1
+                        flex: 1,
+                        paddingTop: 60
                     }}>
-                        <Image
-                            source={require("../assets/images/login_lock.png")}
-                            style={styles.logo}
-                        />
                         <View style={styles.inputContainer}>
                             <CmlTextInput
                                 style={styles.input}
-                                placeholder="Username"
-                                value={this.state.username}
+                                placeholder="Email Address"
+                                value={this.state.email}
                                 autoCapitalize='none'
                                 onChangeText={(value: string) =>
-                                    this.setState({ username: value })
+                                    this.setState({ email: value })
                                 }
                             />
                             <Image
@@ -160,44 +141,17 @@ class LoginScreen extends React.Component<{
                                 style={styles.icon}
                             />
                         </View>
-                        <View style={styles.inputContainer}>
-                            <CmlTextInput
-                                style={styles.input}
-                                placeholder="Password"
-                                value={this.state.password}
-                                secureTextEntry={true}
-                                onChangeText={(value: string) =>
-                                    this.setState({ password: value })
-                                }
-                            />
-                            <Image
-                                source={require("../assets/images/login_pwd.png")}
-                                style={styles.icon}
-                            />
-                        </View>
-                        <TouchableOpacity style={styles.forgotContainer} onPress={this.onForgotPassword}>
-                            <CmlText style={styles.forgot}>Forgot password?</CmlText>
-                        </TouchableOpacity>
                         <View
                             style={styles.buttonContainer}>
                             <TouchableOpacity style={[styles.button, {
                                 backgroundColor: '#00b7d9'
                             }]}
-                                onPress={this.onRegister}>
+                                onPress={this.onForgotPassword}>
                                 <CmlText style={{
                                     color: 'white',
                                     fontSize: 18,
-                                    fontWeight: '600'
-                                }}>Sign Up</CmlText>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.button, {
-                                backgroundColor: '#323232'
-                            }]} onPress={() => this.onLogin()}>
-                                <CmlText style={{
-                                    color: 'white',
-                                    fontSize: 18,
-                                    fontWeight: '600'
-                                }}>Sign In</CmlText>
+                                    fontWeight: '600',
+                                }}>Reset Password</CmlText>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -215,10 +169,7 @@ class LoginScreen extends React.Component<{
 const mapStateToProps = (state: any) => {
     return {
         assets: state.appReducer.assets,
-        loading: state.appReducer.loading,
-        error: state.appReducer.error,
-        loggedInContact: state.appReducer.loggedInContact
     };
 };
 
-export default compose(connect(mapStateToProps, { signIn }))(LoginScreen);
+export default compose(connect(mapStateToProps, { signIn }))(ForgotPasswordScreen);

@@ -1,47 +1,50 @@
-import {USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAILED, LOAD_ASSETS_SUCCESS, LOAD_ASSETS_REQUEST} from '../actionTypes/app'
+import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAILED, LOAD_ASSETS_SUCCESS, LOAD_ASSETS_REQUEST } from '../actionTypes/app'
 import { defaultIfEmpty } from 'rxjs/operators'
+import { LoginUser } from '../../shared/models/loginuser.model'
 
 const initialState = {
-    user: null,
     loading: false,
     error: null,
     assets: {
-
-    }
+        domainUser: null,
+        assetsPath: null
+    },
+    loggedInContact: null
 }
 
 const reducer = (state = initialState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case USER_LOGIN_REQUEST: {
             return {
                 ...state,
                 loading: true,
+                error: null
             }
         }
         case USER_LOGIN_SUCCESS: {
             return {
                 ...state,
                 loading: false,
-                user: action.payload
+                loggedInContact: action.payload.loggedInContact,
+                error: null
             }
         }
         case USER_LOGIN_FAILED: {
             return {
                 ...state,
                 loading: false,
-                user: null,
-                error: action.payload
+                error: action.payload.error
             }
         }
         case LOAD_ASSETS_SUCCESS: {
-            // console.log('payload: ', payload)
             return {
                 ...state,
                 assets: {
                     ...state.assets,
                     domainUser: action.payload.domainUser,
                     assetsPath: action.payload.assetsPath
-                }
+                },
+                error: null
             }
         }
         default: {
