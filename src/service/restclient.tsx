@@ -23,7 +23,7 @@ class RestClient {
             }),
         ).pipe(
             map((response: any) => {
-                if (loggedInContact != null) {
+                if (loggedInContact != null && response.headers.x_auth_token != undefined) {
                     loggedInContact.token = response.headers.x_auth_token
                     store.dispatch({
                         type: UPDATE_TOKEN,
@@ -39,6 +39,7 @@ class RestClient {
                 console.log(error.response.data)
 
                 if (error.response.status == 401) {
+                    console.log(headers)
                     store.dispatch({
                         type: RESET_TOKEN,
                         payload: null
@@ -66,7 +67,7 @@ class RestClient {
             }),
         ).pipe(
             map((response: any) => {
-                if (loggedInContact != null) {
+                if (loggedInContact != null && response.headers.x_auth_token != undefined) {
                     loggedInContact.token = response.headers.x_auth_token
                     store.dispatch({
                         type: UPDATE_TOKEN,
@@ -81,6 +82,7 @@ class RestClient {
                 console.log("error : url -> ", url)
                 console.log(error.response.data)
                 if (error.response.status == 401) {
+                    console.log(headers)
                     store.dispatch({
                         type: RESET_TOKEN,
                         payload: null

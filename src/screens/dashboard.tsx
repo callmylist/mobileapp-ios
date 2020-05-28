@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, FlatList, View, SafeAreaView } from 'react-native';
+import Foundation from 'react-native-vector-icons/Foundation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from '../components/header';
 import SemiCircleProgress from '../components/progress';
 import { CmlText } from '../components/text'
@@ -42,7 +43,19 @@ class Dashboard extends Component<{
     loadCampaignList: any,
     account: any,
     campaignList: any
+}, {
+    averageDurationTime: number,
+    averageDurationPercent: number
 }> {
+
+    constructor(props: any) {
+        super(props)
+        this.state = {
+            averageDurationPercent: 0,
+            averageDurationTime: 0,
+        }
+    }
+
     onMenu = () => {
         this.props.navigation.openDrawer()
     }
@@ -52,33 +65,25 @@ class Dashboard extends Component<{
         this.props.loadCampaignList()
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps: any, prevState: any, snapshot: any) {
+        if (prevProps.account !== this.props.account) {
+            if (this.props.account && this.props.account.userStats && this.props.account.userStats.live && this.props.account.userStats.live != 0) {
+                if (this.props.account.userStats.liveDuration && this.props.account.userStats.liveDuration != 0)
+                    this.setState({
+                        averageDurationTime: this.props.account.userStats.liveDuration / this.props.account.userStats.live
+                    })
+                if (this.props.account.userStats.avgld && this.props.account.userStats.avgld != 0) {
+                    this.setState({
+                        averageDurationPercent: parseFloat((100 * this.props.account.userStats.avgld / this.props.account.userStats.live).toFixed(0))
+                    })
+                }
+            }
+        }
+
         console.log(this.props.campaignList)
+
     }
-    state = {
-        campaigns: [
-            {
-                name: 'Rudi Doe',
-                status: 0
-            },
-            {
-                name: 'Rian Massive',
-                status: 1
-            },
-            {
-                name: 'Anjas Tora',
-                status: 0
-            },
-            {
-                name: 'Lauren Kiev',
-                status: 1
-            },
-            {
-                name: 'Coco Yarn',
-                status: 0
-            },
-        ]
-    }
+
 
     render() {
         return (
@@ -88,49 +93,51 @@ class Dashboard extends Component<{
                     <CmlText style={styles.campaignLabel}>
                         Recent campaigns
                     </CmlText>
-                    <View style={[styles.graphContainer, {
-                        padding: 16,
-                        flexDirection: 'row'
-                    }]}>
-                        <View style={{
-                            width: 170,
-                            paddingTop: 12
-                        }}>
-                            <SemiCircleProgress
-                                percentage={35}
-                                progressColor={"#cd5917"}
-                                progressWidth={20}
-                                progressShadowColor={'#f0f0f0'}
-                                circleRadius={80}
-                            >
-                                <CmlText style={styles.percentLabel}>35%</CmlText>
-                            </SemiCircleProgress>
-                        </View>
-
-                        <View style={{
-                            flex: 1
-                        }}>
+                    {
+                        this.props.account && <View style={[styles.graphContainer, {
+                            padding: 16,
+                            flexDirection: 'row'
+                        }]}>
                             <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'baseline'
+                                width: 170,
+                                paddingTop: 12
                             }}>
-                                <CmlText style={{
-                                    fontSize: 32,
-                                    color: '#5a6378'
-                                }}>44%</CmlText>
-                                <CmlText style={{
-                                    fontSize: 12,
-                                    color: '#5a6378'
-                                }}> OF TOTAL CALL</CmlText>
+                                <SemiCircleProgress
+                                    percentage={35}
+                                    progressColor={"#cd5917"}
+                                    progressWidth={20}
+                                    progressShadowColor={'#f0f0f0'}
+                                    circleRadius={80}
+                                >
+                                </SemiCircleProgress>
                             </View>
-                            <CmlText style={{
-                                color: '#a3aec8'
-                            }}>
-                                0m 0s Average Live Answer Listen Duration
-                            </CmlText>
-                        </View>
 
-                    </View>
+                            <View style={{
+                                flex: 1
+                            }}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'baseline'
+                                }}>
+                                    <CmlText style={{
+                                        fontSize: 32,
+                                        color: '#5a6378'
+                                    }}>{this.state.averageDurationPercent}%</CmlText>
+                                    <CmlText style={{
+                                        fontSize: 12,
+                                        color: '#5a6378'
+                                    }}> OF TOTAL CALL</CmlText>
+                                </View>
+                                <CmlText style={{
+                                    color: '#a3aec8'
+                                }}>
+                                    {parseInt(this.state.averageDurationPercent / 60 + "")}m {parseFloat((this.state.averageDurationTime % 60).toFixed(0))}s Average Live Answer Listen Duration
+                                </CmlText>
+                            </View>
+
+                        </View>
+                    }
+
 
 
                     <CmlText style={styles.campaignLabel}>
@@ -159,7 +166,7 @@ class Dashboard extends Component<{
                             }}>Name</CmlText>
                         </View>
                         <FlatList
-                            data={this.state.campaigns}
+                            data={this.props.campaignList}
                             renderItem={(item: any) => {
                                 return <TouchableOpacity onPress={() => this.props.navigation.push('CampaignDetailScreen')}>
                                     <View style={{
@@ -171,8 +178,10 @@ class Dashboard extends Component<{
                                             flex: 1,
                                             paddingLeft: 24
                                         }}>
-                                            {item.item.status == 0 && <AntDesign name="closecircle" size={20} color={'#ff3d00'} />}
-                                            {item.item.status == 1 && <AntDesign name="checkcircle" size={20} color={'#0dac01'} />}
+                                            {item.item.status == 1 && <Foundation name="burst-new" size={20} color={'#00b7d9'} />}
+                                            {item.item.status == 2 && <MaterialCommunityIcons name="run" size={20} color={'#0dac01'} />}
+                                            {item.item.status == 3 && <AntDesign name="closecircle" size={20} color={'#ff3d00'} />}
+                                            {item.item.status == 4 && <AntDesign name="checkcircle" size={20} color={'#0dac01'} />}
                                         </View>
 
                                         <CmlText style={{
