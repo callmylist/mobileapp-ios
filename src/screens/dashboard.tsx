@@ -1,17 +1,22 @@
-import React, {Component} from 'react';
-import {StyleSheet, FlatList, View, SafeAreaView} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, FlatList, View, SafeAreaView } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Header from '../components/header';
 import SemiCircleProgress from '../components/progress';
 import { CmlText } from '../components/text'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import Utils from '../utils';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { CmlSpinner } from '../components/loading';
+import { loadUserInfo, loadCampaignList } from '../redux/actions/dashboardActions'
 
 const styles = StyleSheet.create({
     container: {
         padding: 8,
         flex: 1
-    }, 
+    },
     campaignLabel: {
         fontSize: 20,
         textAlign: 'center',
@@ -25,17 +30,31 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20,
     },
-    percentLabel: { 
-        fontSize: 32, 
-        color: "#5a6378" 
+    percentLabel: {
+        fontSize: 32,
+        color: "#5a6378"
     }
 });
 
-class Dashboard extends Component {
+class Dashboard extends Component<{
+    navigation: any,
+    loadUserInfo: any,
+    loadCampaignList: any,
+    account: any,
+    campaignList: any
+}> {
     onMenu = () => {
         this.props.navigation.openDrawer()
     }
 
+    componentDidMount() {
+        this.props.loadUserInfo()
+        this.props.loadCampaignList()
+    }
+
+    componentDidUpdate() {
+        console.log(this.props.campaignList)
+    }
     state = {
         campaigns: [
             {
@@ -63,8 +82,8 @@ class Dashboard extends Component {
 
     render() {
         return (
-            <SafeAreaView style={{flex: 1}}>
-                <Header onMenu={this.onMenu} menu={true}/>
+            <SafeAreaView style={{ flex: 1 }}>
+                <Header onMenu={this.onMenu} menu={true} />
                 <View style={styles.container}>
                     <CmlText style={styles.campaignLabel}>
                         Recent campaigns
@@ -118,7 +137,7 @@ class Dashboard extends Component {
                         My Call Campaigns
                     </CmlText>
 
-                    <View style={[styles.graphContainer, {flex: 1}]}>
+                    <View style={[styles.graphContainer, { flex: 1 }]}>
                         <View style={{
                             borderBottomWidth: 1,
                             borderBottomColor: '#fdd2bd',
@@ -139,10 +158,10 @@ class Dashboard extends Component {
                                 padding: 8
                             }}>Name</CmlText>
                         </View>
-                        <FlatList 
+                        <FlatList
                             data={this.state.campaigns}
                             renderItem={(item: any) => {
-                            return <TouchableOpacity onPress={() => this.props.navigation.push('CampaignDetailScreen')}>
+                                return <TouchableOpacity onPress={() => this.props.navigation.push('CampaignDetailScreen')}>
                                     <View style={{
                                         flexDirection: 'row',
                                         alignItems: 'center',
@@ -152,10 +171,10 @@ class Dashboard extends Component {
                                             flex: 1,
                                             paddingLeft: 24
                                         }}>
-                                            {item.item.status == 0 && <AntDesign name="closecircle" size={20} color={'#ff3d00'}/>}
+                                            {item.item.status == 0 && <AntDesign name="closecircle" size={20} color={'#ff3d00'} />}
                                             {item.item.status == 1 && <AntDesign name="checkcircle" size={20} color={'#0dac01'} />}
                                         </View>
-                                        
+
                                         <CmlText style={{
                                             color: '#8c95aa',
                                             flex: 1
@@ -172,6 +191,13 @@ class Dashboard extends Component {
             </SafeAreaView>
         );
     }
-  }
-  
-  export default Dashboard;
+}
+
+const mapStateToProps = (state: any) => {
+    return {
+        account: state.dashboardReducer.account,
+        campaignList: state.dashboardReducer.campaignList
+    };
+};
+
+export default compose(connect(mapStateToProps, { loadUserInfo, loadCampaignList }))(Dashboard);

@@ -9,7 +9,7 @@ import { UserService } from '../service/user.service'
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { CmlSpinner } from '../components/loading';
-import { signIn } from '../redux/actions/appActions';
+import { signIn } from '../redux/actions/authActions';
 
 const styles = StyleSheet.create({
     container: {
@@ -168,7 +168,7 @@ class ForgotPasswordScreen extends React.Component<{
 
 const mapStateToProps = (state: any) => {
     return {
-        assets: state.appReducer.assets,
+        assets: state.authReducer.assets,
     };
 };
 

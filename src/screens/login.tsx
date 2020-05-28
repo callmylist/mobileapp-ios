@@ -9,7 +9,7 @@ import { UserService } from '../service/user.service'
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { CmlSpinner } from '../components/loading';
-import { signIn } from '../redux/actions/appActions'
+import { signIn } from '../redux/actions/authActions'
 import { LoginUser } from '../shared/models/loginuser.model'
 
 const styles = StyleSheet.create({
@@ -88,8 +88,8 @@ class LoginScreen extends React.Component<{
         super(props);
 
         this.state = {
-            username: '',
-            password: '',
+            username: 'bilal0018@yopmail.com',
+            password: 'Lmkt@ptcl1234',
         }
     }
 
@@ -214,10 +214,10 @@ class LoginScreen extends React.Component<{
 
 const mapStateToProps = (state: any) => {
     return {
-        assets: state.appReducer.assets,
-        loading: state.appReducer.loading,
-        error: state.appReducer.error,
-        loggedInContact: state.appReducer.loggedInContact
+        assets: state.authReducer.assets,
+        loading: state.authReducer.loading,
+        error: state.authReducer.error,
+        loggedInContact: state.authReducer.loggedInContact
     };
 };
 

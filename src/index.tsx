@@ -29,9 +29,9 @@ import ScheduleScreen from './screens/popup/schedule'
 import CampaignDetailScreen from './screens/campaign_detail'
 import MessageHistoryScreen from './screens/message_history'
 
-import { store } from './redux/store'
+import { persistor, store } from './redux/store'
 import { Provider } from 'react-redux'
-
+import { PersistGate } from 'redux-persist/integration/react'
 const CreatCampaignNavigator = createStackNavigator(
   {
     CampaignCreateScreen,
@@ -131,6 +131,9 @@ export default class MainApp extends Component {
   render() {
     return (
       <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+
+        </PersistGate>
         <MenuProvider>
           <AppNav style={{ flex: 1 }} />
         </MenuProvider>

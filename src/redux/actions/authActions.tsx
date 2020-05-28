@@ -1,4 +1,4 @@
-import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAILED, LOAD_ASSETS_REQUEST, LOAD_ASSETS_SUCCESS } from '../actionTypes/app'
+import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAILED, LOAD_ASSETS_REQUEST, LOAD_ASSETS_SUCCESS } from '../actionTypes/auth'
 
 import Utils from '../../utils'
 import Constant from '../../utils/app_constants'
@@ -6,9 +6,9 @@ import ExConstants from '../../utils/constants'
 import { UserService } from '../../service/user.service'
 import { CommonService } from '../../service/common.service'
 import { forkJoin } from 'rxjs'
-import { dispatch } from 'rxjs/internal/observable/pairs'
 import JwtDecode from 'jwt-decode'
 import { LoginUser } from '../../shared/models/loginuser.model'
+
 export const loadAssets = () => {
     return (dispatch: any, getStore: any) => {
         dispatch({
@@ -65,6 +65,7 @@ export const signIn = (params: any) => {
                     response.data.customize
                 );
 
+                console.log("login : ", loginUser)
                 dispatch({
                     type: USER_LOGIN_SUCCESS,
                     payload: {

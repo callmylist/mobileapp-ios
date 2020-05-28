@@ -3,8 +3,11 @@ import { StyleSheet, Image, View, AsyncStorage } from 'react-native';
 
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { loadAssets } from '../redux/actions/appActions'
-import reducer from '../redux/reducers/appReducer'
+import { loadAssets } from '../redux/actions/authActions'
+import reducer from '../redux/reducers/authReducer'
+import { store } from '../redux/store';
+import RestClient from '../service/restclient';
+
 const styles = StyleSheet.create({
 	container: {
 		marginTop: 50,
@@ -34,11 +37,17 @@ class WelcomeScreen extends Component<{
 
 	componentDidMount() {
 		this.props.loadAssets()
+		RestClient.navigator = this.props.navigation
 	}
 
 	componentDidUpdate(prevProps: any, prevState: any, snapshot: any) {
 		if (this.props.assets) {
-			this.props.navigation.navigate('AuthNavigator')
+			if (store.getState().authReducer.loggedInContact != null) {
+				this.props.navigation.navigate('App')
+			}
+			else {
+				this.props.navigation.navigate('AuthNavigator')
+			}
 		}
 	}
 
@@ -70,7 +79,7 @@ class WelcomeScreen extends Component<{
 
 const mapStateToProps = (state: any) => {
 	return {
-		assets: state.appReducer.assets
+		assets: state.authReducer.assets
 	};
 }
 

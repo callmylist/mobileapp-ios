@@ -1,7 +1,9 @@
-import {combineReducers} from 'redux'
+import { combineReducers } from 'redux'
 
-import appReducer from './appReducer'
+import authReducer from './authReducer'
+import dashboardReducer from './dashboardReducer'
 
 export default combineReducers({
-    appReducer
+    authReducer,
+    dashboardReducer
 })

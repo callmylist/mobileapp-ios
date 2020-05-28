@@ -1,4 +1,4 @@
-import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAILED, LOAD_ASSETS_SUCCESS, LOAD_ASSETS_REQUEST } from '../actionTypes/app'
+import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAILED, LOAD_ASSETS_SUCCESS, UPDATE_TOKEN, RESET_TOKEN } from '../actionTypes/auth'
 import { defaultIfEmpty } from 'rxjs/operators'
 import { LoginUser } from '../../shared/models/loginuser.model'
 
@@ -9,10 +9,11 @@ const initialState = {
         domainUser: null,
         assetsPath: null
     },
-    loggedInContact: null
+    loggedInContact: null,
+    authToken: null
 }
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: any) => {
     switch (action.type) {
         case USER_LOGIN_REQUEST: {
             return {
@@ -47,8 +48,20 @@ const reducer = (state = initialState, action) => {
                 error: null
             }
         }
+        case UPDATE_TOKEN: {
+            return {
+                ...state,
+                loggedInContact: action.payload.loggedInContact
+            }
+        }
+        case RESET_TOKEN: {
+            return {
+                ...state,
+                loggedInContact: null
+            }
+        }
         default: {
-            return initialState
+            return state
         }
     }
 }
