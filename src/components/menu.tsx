@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {StyleSheet, Image, View, TouchableOpacity, SafeAreaView} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Image, View, TouchableOpacity, SafeAreaView } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -17,12 +17,12 @@ const styles = StyleSheet.create({
         borderRightWidth: 1,
         borderRightColor: '#e6e6e6',
         height: 300,
-        marginTop: 56,  
+        marginTop: 56,
         backgroundColor: 'white'
     },
     avatarContainer: {
         flexDirection: 'row',
-        padding: 20, 
+        padding: 20,
     },
     avatar: {
         width: 60,
@@ -99,11 +99,11 @@ const styles = StyleSheet.create({
     },
     dialogSwitchContainer: {
         marginTop: 8,
-        flexDirection: 'row', 
+        flexDirection: 'row',
         alignItems: 'center'
     },
     borderBottom: {
-        borderBottomColor: 'white', 
+        borderBottomColor: 'white',
         borderBottomWidth: 1
     },
     dialogTimeContainer: {
@@ -136,7 +136,7 @@ class Menu extends Component {
     routes = ['Dashboard', 'MessageCenter', 'Campaign', 'Sound', 'ContactList', 'Account', 'Support']
     constructor(props: any) {
         super(props)
-        this.state= {
+        this.state = {
             currentMenu: 0,
             addFunds: false
         }
@@ -166,13 +166,13 @@ class Menu extends Component {
 
     render() {
         return (
-            <SafeAreaView style={{flex: 1}}>
+            <SafeAreaView style={{ flex: 1 }}>
                 <ScrollView style={styles.container}>
                     <View style={styles.avatarContainer}>
                         {/* <FeatherIcon name="menu" color='#535353' size={28} style={{
                             alignSelf: 'center'
                         }}/> */}
-                        <Image 
+                        <Image
                             source={{
                                 uri: 'https://media-exp1.licdn.com/dms/image/C5603AQEfagEkOfFzjw/profile-displayphoto-shrink_200_200/0?e=1594252800&v=beta&t=9R6aFkkkU0AOFbOf8AXDMG7YDTxxd_9OZy_AjgMS9Jo'
                             }}
@@ -184,9 +184,9 @@ class Menu extends Component {
                             <TouchableOpacity style={{
                                 marginTop: 16
                             }}
-                            onPress={() => this.setState({
-                                addFunds: true
-                            })}>
+                                onPress={() => this.setState({
+                                    addFunds: true
+                                })}>
                                 <View style={styles.fundButtonContainer}>
                                     <CmlText style={styles.buttonTitle}>Add Funds</CmlText>
                                 </View>
@@ -204,59 +204,60 @@ class Menu extends Component {
                     </View>
                     <View style={styles.menuContainer}>
                         <TouchableOpacity onPress={() => this.onMenuItem(0)}>
-                            <View style={[styles.menuItem , this.state.currentMenu === 0 && styles.selectedMenu]}>
-                                <Feather name="grid" size={24} color={this.state.currentMenu == 0 ? 'white': '#a9afbb'}/>
+                            <View style={[styles.menuItem, this.state.currentMenu === 0 && styles.selectedMenu]}>
+                                <Feather name="grid" size={24} color={this.state.currentMenu == 0 ? 'white' : '#a9afbb'} />
                                 <CmlText style={[styles.menuLabel, this.state.currentMenu === 0 && styles.selectedMenuText]}>Dashboard</CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(1)}>
-                            <View  style={[styles.menuItem , this.state.currentMenu === 1 && styles.selectedMenu]}>
-                                <Feather name="mail" size={24} color={this.state.currentMenu == 1 ? 'white': '#a9afbb'}/>
+                            <View style={[styles.menuItem, this.state.currentMenu === 1 && styles.selectedMenu]}>
+                                <Feather name="mail" size={24} color={this.state.currentMenu == 1 ? 'white' : '#a9afbb'} />
                                 <CmlText style={[styles.menuLabel, this.state.currentMenu === 1 && styles.selectedMenuText]}>Message Center</CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(2)}>
-                            <View  style={[styles.menuItem , this.state.currentMenu === 2 && styles.selectedMenu]}>
-                                <Feather name="server" size={24} color={this.state.currentMenu == 2 ? 'white': '#a9afbb'}/>
+                            <View style={[styles.menuItem, this.state.currentMenu === 2 && styles.selectedMenu]}>
+                                <Feather name="server" size={24} color={this.state.currentMenu == 2 ? 'white' : '#a9afbb'} />
                                 <CmlText style={[styles.menuLabel, this.state.currentMenu === 2 && styles.selectedMenuText]}>My Campaigns</CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(3)}>
-                            <View  style={[styles.menuItem , this.state.currentMenu === 3 && styles.selectedMenu]}>
-                                <AntDesign name="sound" size={24} color={this.state.currentMenu == 3 ? 'white': '#a9afbb'}/>
+                            <View style={[styles.menuItem, this.state.currentMenu === 3 && styles.selectedMenu]}>
+                                <AntDesign name="sound" size={24} color={this.state.currentMenu == 3 ? 'white' : '#a9afbb'} />
                                 <CmlText style={[styles.menuLabel, this.state.currentMenu === 3 && styles.selectedMenuText]}>Sound</CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(4)}>
-                            <View  style={[styles.menuItem , this.state.currentMenu === 4 && styles.selectedMenu]}>
-                                <AntDesign name="contacts" size={24} color={this.state.currentMenu == 4 ? 'white': '#a9afbb'}/>
+                            <View style={[styles.menuItem, this.state.currentMenu === 4 && styles.selectedMenu]}>
+                                <AntDesign name="contacts" size={24} color={this.state.currentMenu == 4 ? 'white' : '#a9afbb'} />
                                 <CmlText style={[styles.menuLabel, this.state.currentMenu === 4 && styles.selectedMenuText]}>Contact List</CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(5)}>
-                            <View  style={[styles.menuItem , this.state.currentMenu === 5 && styles.selectedMenu]}>
-                                <MaterialCommunityIcons name="account-circle-outline" size={24} color={this.state.currentMenu == 5 ? 'white': '#a9afbb'}/>
+                            <View style={[styles.menuItem, this.state.currentMenu === 5 && styles.selectedMenu]}>
+                                <MaterialCommunityIcons name="account-circle-outline" size={24} color={this.state.currentMenu == 5 ? 'white' : '#a9afbb'} />
                                 <CmlText style={[styles.menuLabel, this.state.currentMenu === 5 && styles.selectedMenuText]}>Account</CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(7)}>
-                            <View  style={[styles.menuItem , this.state.currentMenu === 6 && styles.selectedMenu]}>
-                                <Feather name="help-circle" size={24} color={this.state.currentMenu == 6 ? 'white': '#a9afbb'}/>
+                            <View style={[styles.menuItem, this.state.currentMenu === 6 && styles.selectedMenu]}>
+                                <Feather name="help-circle" size={24} color={this.state.currentMenu == 6 ? 'white' : '#a9afbb'} />
                                 <CmlText style={[styles.menuLabel, this.state.currentMenu === 6 && styles.selectedMenuText]}>Support</CmlText>
                             </View>
                         </TouchableOpacity>
-                        <View style={{height: 50}}></View>
+                        <View style={{ height: 50 }}></View>
                         <TouchableOpacity onPress={() => this.logout()}>
                             <View style={styles.menuItem}>
-                                <AntDesign name="logout" size={24} color='#a9afbb'/>
+                                <AntDesign name="logout" size={24} color='#a9afbb' />
                                 <CmlText style={styles.menuLabel}>Logout</CmlText>
                             </View>
                         </TouchableOpacity>
                     </View>
+
                 </ScrollView>
 
                 <Dialog
-                    visible={this.state.addFunds}
+                    visible={true}
                     onTouchOutside={() => {
                         this.setState({ addFunds: false });
                     }}
@@ -264,18 +265,18 @@ class Menu extends Component {
                     overlayOpacity={0}
                 >
                     <DialogContent>
-                        <View style={{paddingVertical: 16}}>
+                        <View style={{ paddingVertical: 16 }}>
                             <View>
                                 <CmlText style={styles.dialogTitle}>Add Funds</CmlText>
                                 <CmlText style={styles.dialogDescription}>Enter a value for the amount of credits you would like to add to the account.</CmlText>
 
                                 <View style={styles.dialogTimeContainer}>
-                                    <FontAwesome name="dollar" size={20} color={'#ffa67a'}/>
-                                    <CmlTextInput style={styles.dialogTimePlaceholder} style={{flex: 1, fontSize: 14, color: 'white', marginLeft: 8}}></CmlTextInput>
+                                    <FontAwesome name="dollar" size={20} color={'#ffa67a'} />
+                                    <CmlTextInput style={styles.dialogTimePlaceholder} style={{ flex: 1, fontSize: 14, color: 'white', marginLeft: 8 }}></CmlTextInput>
                                 </View>
 
-                                <View style={{flexDirection: 'row', width: '100%', height: 32, justifyContent: 'flex-end'}}>
-                                    <CmlButton title="Add Funds" backgroundColor="#ffa67a" style={{marginTop: 16}} onPress={() => this.setState({addFunds: false})}/>
+                                <View style={{ flexDirection: 'row', width: '100%', height: 32, justifyContent: 'flex-end' }}>
+                                    <CmlButton title="Add Funds" backgroundColor="#ffa67a" style={{ marginTop: 16 }} onPress={() => this.setState({ addFunds: false })} />
                                 </View>
                             </View>
                         </View>
@@ -283,9 +284,9 @@ class Menu extends Component {
                 </Dialog>
             </SafeAreaView>
 
-            
+
         );
     }
-  }
-  
-  export default Menu;
+}
+
+export default Menu;

@@ -15,6 +15,11 @@ class Utils {
             animation: true
         })
     }
+
+    static formatDate(dateString: string) {
+        var date = new Date(Date.parse(dateString));
+        return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + (date.getHours() % 12) + ":" + date.getMinutes() + ":" + date.getSeconds() + (date.getHours() > 12 ? 'PM' : 'AM')
+    }
 }
 
 export default Utils;

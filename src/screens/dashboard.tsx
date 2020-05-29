@@ -12,6 +12,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { CmlSpinner } from '../components/loading';
 import { loadUserInfo, loadCampaignList } from '../redux/actions/dashboardActions'
+import { StatusIcon } from "../components/campaign_status";
 
 const styles = StyleSheet.create({
     container: {
@@ -168,7 +169,9 @@ class Dashboard extends Component<{
                         <FlatList
                             data={this.props.campaignList}
                             renderItem={(item: any) => {
-                                return <TouchableOpacity onPress={() => this.props.navigation.push('CampaignDetailScreen')}>
+                                return <TouchableOpacity onPress={() => this.props.navigation.push('CampaignDetailScreen', {
+                                    campaign: item.item
+                                })}>
                                     <View style={{
                                         flexDirection: 'row',
                                         alignItems: 'center',
@@ -178,15 +181,13 @@ class Dashboard extends Component<{
                                             flex: 1,
                                             paddingLeft: 24
                                         }}>
-                                            {item.item.status == 1 && <Foundation name="burst-new" size={20} color={'#00b7d9'} />}
-                                            {item.item.status == 2 && <MaterialCommunityIcons name="run" size={20} color={'#0dac01'} />}
-                                            {item.item.status == 3 && <AntDesign name="closecircle" size={20} color={'#ff3d00'} />}
-                                            {item.item.status == 4 && <AntDesign name="checkcircle" size={20} color={'#0dac01'} />}
+                                            <StatusIcon campaign={item.item} />
                                         </View>
 
                                         <CmlText style={{
                                             color: '#8c95aa',
-                                            flex: 1
+                                            flex: 1,
+                                            fontSize: 16
                                         }}>{item.item.name}</CmlText>
                                     </View>
                                 </TouchableOpacity>;

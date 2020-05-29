@@ -18,4 +18,18 @@ export class CampaignService {
         )
     }
 
+    static getCampaignDetail(campaignId: string) {
+        return RestClient.get(
+            constants.apiUrl.getCampaignDetail.replace('{userId}', store.getState().authReducer.loggedInContact.id).replace('{campaignId}', campaignId)
+        )
+    }
+
+
+    static performCampaignAction(campaignId: string, action: string) {
+        const url = constants.apiUrl.performCampaignAction
+            .replace("{userId}", store.getState().authReducer.loggedInContact.userId)
+            .replace("{campaignId}", campaignId)
+            .replace("{action}", action);
+        return RestClient.get(url)
+    }
 }

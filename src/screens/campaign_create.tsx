@@ -1,6 +1,6 @@
-import React, {Component, memo} from 'react';
-import {StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView, Image, Switch} from 'react-native';
-import {NavigationActions} from 'react-navigation'
+import React, { Component, memo } from 'react';
+import { StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView, Image, Switch } from 'react-native';
+import { NavigationActions } from 'react-navigation'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
@@ -16,8 +16,8 @@ const styles = StyleSheet.create({
     container: {
         padding: 8,
         flex: 1,
-        flexDirection:'row'
-    }, 
+        flexDirection: 'row'
+    },
     campaignLabel: {
         fontSize: 20,
         textAlign: 'center',
@@ -30,48 +30,48 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     selectedStepContainer: {
-        width: 30, 
-        height: 30, 
-        borderRadius: 15, 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        borderWidth: 3, 
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 3,
         borderColor: '#ffa67a'
     },
     stepContainer: {
-        backgroundColor: '#02b9db', 
-        width: 30, 
-        height: 30, 
-        borderRadius: 15, 
-        borderWidth: 3, 
+        backgroundColor: '#02b9db',
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        borderWidth: 3,
         borderColor: '#02b9db',
-        justifyContent: 'center', 
+        justifyContent: 'center',
         alignItems: 'center'
     },
     stepLabel: {
-        fontSize: 20, 
+        fontSize: 20,
         fontWeight: 'bold',
-        transform: [{rotate: "90deg"}]
+        transform: [{ rotate: "90deg" }]
     },
     campaignTypeLogo: {
         width: 80,
         height: 80
     },
     stepViewContainer: {
-        flexDirection: 'column', 
+        flexDirection: 'column',
         alignItems: 'center',
         flex: 1
     },
     stepDescription: {
-        color: '#02b9db', 
+        color: '#02b9db',
         marginTop: 24,
         textAlign: 'center'
     },
     inputContainer: {
-        flexDirection: 'row', 
-        marginTop: 24, 
-        borderBottomWidth: 1, 
-        borderBottomColor: 'black', 
+        flexDirection: 'row',
+        marginTop: 24,
+        borderBottomWidth: 1,
+        borderBottomColor: 'black',
         padding: 8,
     },
     input: {
@@ -116,13 +116,13 @@ const styles = StyleSheet.create({
         color: '#515151'
     },
     panelBody: {
-        flex: 1, 
-        padding: 24, 
+        flex: 1,
+        padding: 24,
         alignItems: 'center'
     },
     panelSwitchContainer: {
-        flexDirection: 'row', 
-        alignItems: 'center', 
+        flexDirection: 'row',
+        alignItems: 'center',
         width: '100%'
     },
     dialogContainer: {
@@ -137,11 +137,11 @@ const styles = StyleSheet.create({
     },
     dialogSwitchContainer: {
         marginTop: 8,
-        flexDirection: 'row', 
+        flexDirection: 'row',
         alignItems: 'center'
     },
     borderBottom: {
-        borderBottomColor: 'white', 
+        borderBottomColor: 'white',
         borderBottomWidth: 1
     },
     dialogTimeContainer: {
@@ -171,19 +171,19 @@ const styles = StyleSheet.create({
         marginTop: 24
     },
     continueButtonContainer: {
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        borderColor: '#555757', 
-        borderWidth: 1, 
-        borderRadius: 4, 
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: '#555757',
+        borderWidth: 1,
+        borderRadius: 4,
         width: 160,
         justifyContent: 'center',
         height: 42
     },
     continueButtonText: {
-        color: '#555757', 
-        fontSize: 18, 
-        marginTop: 2, 
+        color: '#555757',
+        fontSize: 18,
+        marginTop: 2,
         marginLeft: 8
     }
 });
@@ -201,7 +201,7 @@ class CampaignCreate extends Component {
 
     componentDidMount() {
     }
-    
+
     onBack = () => {
         this.props.navigation.pop()
     }
@@ -227,10 +227,10 @@ class CampaignCreate extends Component {
 
     render() {
         return (
-            <SafeAreaView style={{flex: 1}}>
-                <Header back={true} onBack={this.onBack} menu={false}/>
+            <SafeAreaView style={{ flex: 1 }}>
+                <Header back={true} onBack={this.onBack} menu={false} />
                 <View style={styles.container}>
-                    <View style={{flex: 1, alignItems: 'center'}}>
+                    <View style={{ flex: 1, alignItems: 'center' }}>
                         <CmlText style={styles.campaignLabel}>
                             New Campaign
                         </CmlText>
@@ -239,9 +239,9 @@ class CampaignCreate extends Component {
                             flex: 1
                         }}>
                             {
-                                this.state.step == 0 && 
+                                this.state.step == 0 &&
                                 <View style={styles.stepViewContainer}>
-                                    <Image 
+                                    <Image
                                         source={require("../assets/images/create_logo.png")}
                                         style={styles.logo}
                                     />
@@ -249,20 +249,20 @@ class CampaignCreate extends Component {
                                     <CmlText style={styles.stepDescriptoin}>
                                         What type of campaign would you like to send?
                                     </CmlText>
-                                    <View style={{flexDirection: 'row', marginTop: 24}}>
-                                        <View style={{alignItems: 'center', padding: 16}}>
-                                            <Image 
+                                    <View style={{ flexDirection: 'row', marginTop: 24 }}>
+                                        <View style={{ alignItems: 'center', padding: 16 }}>
+                                            <Image
                                                 source={require("../assets/images/campaign_call.png")}
                                                 style={styles.campaignTypeLogo}
                                             />
-                                            <CmlButton title="CALL" backgroundColor="#02b9db" style={{marginTop: 16}}/>
+                                            <CmlButton title="CALL" backgroundColor="#02b9db" style={{ marginTop: 16 }} />
                                         </View>
-                                        <View style={{alignItems: 'center', padding: 16}}>
-                                            <Image 
+                                        <View style={{ alignItems: 'center', padding: 16 }}>
+                                            <Image
                                                 source={require("../assets/images/campaign_text.png")}
                                                 style={styles.campaignTypeLogo}
                                             />
-                                            <CmlButton title="TEXT" backgroundColor="#ffa67a" style={{marginTop: 16}}/>
+                                            <CmlButton title="TEXT" backgroundColor="#ffa67a" style={{ marginTop: 16 }} />
                                         </View>
                                     </View>
 
@@ -270,51 +270,51 @@ class CampaignCreate extends Component {
                                     <TouchableOpacity style={styles.continueButton} onPress={() => this.continue()}>
                                         <View style={styles.continueButtonContainer}>
                                             <CmlText style={styles.continueButtonText}>CONTINUE</CmlText>
-                                            <MaterialIcons name="navigate-next" size={30}/>
+                                            <MaterialIcons name="navigate-next" size={30} />
                                         </View>
                                     </TouchableOpacity>
                                 </View>
                             }
                             {
-                                this.state.step == 1 && 
+                                this.state.step == 1 &&
                                 <View style={styles.stepViewContainer}>
                                     <CmlText style={styles.stepDescription}>
                                         Enter your campaign name below
                                     </CmlText>
                                     <View style={styles.inputContainer}>
-                                        <CmlTextInput placeholder="Please add campaign name here"  style={styles.input}/>
+                                        <CmlTextInput placeholder="Please add campaign name here" style={styles.input} />
                                     </View>
 
                                     <TouchableOpacity style={styles.continueButton} onPress={() => this.continue()}>
                                         <View style={styles.continueButtonContainer}>
                                             <CmlText style={styles.continueButtonText}>CONTINUE</CmlText>
-                                            <MaterialIcons name="navigate-next" size={30}/>
+                                            <MaterialIcons name="navigate-next" size={30} />
                                         </View>
                                     </TouchableOpacity>
 
                                 </View>
                             }
                             {
-                                this.state.step == 2 && 
+                                this.state.step == 2 &&
                                 <View style={styles.stepViewContainer}>
                                     <CmlText style={styles.stepDescription}>
                                         What number would you like displayed on the Caller ID
                                     </CmlText>
                                     <View style={styles.inputContainer}>
-                                        <CmlTextInput placeholder="Please add caller id" style={styles.input}/>
+                                        <CmlTextInput placeholder="Please add caller id" style={styles.input} />
                                     </View>
 
                                     <TouchableOpacity style={styles.continueButton} onPress={() => this.continue()}>
                                         <View style={styles.continueButtonContainer}>
                                             <CmlText style={styles.continueButtonText}>CONTINUE</CmlText>
-                                            <MaterialIcons name="navigate-next" size={30}/>
+                                            <MaterialIcons name="navigate-next" size={30} />
                                         </View>
                                     </TouchableOpacity>
                                 </View>
 
                             }
                             {
-                                this.state.step == 3 && 
+                                this.state.step == 3 &&
                                 <View style={styles.stepViewContainer}>
                                     <CmlText style={styles.stepDescription}>
                                         Select all options you would like for your campaign
@@ -322,7 +322,7 @@ class CampaignCreate extends Component {
                                     <ScrollView style={styles.panelContainer}>
                                         <View style={styles.panel}>
                                             <View style={styles.leftContainer}>
-                                                <AntDesign 
+                                                <AntDesign
                                                     name="infocirlce"
                                                     size={20}
                                                     color="#7b7b7b"
@@ -330,7 +330,7 @@ class CampaignCreate extends Component {
                                                         marginLeft: 8
                                                     }}
                                                 />
-                                                <Image 
+                                                <Image
                                                     source={require("../assets/images/live_answer.png")}
                                                     style={styles.leftLogo}
                                                     resizeMode="contain"
@@ -343,14 +343,14 @@ class CampaignCreate extends Component {
                                                     />
                                                     <CmlText style={styles.panelOptionText}>Transfer</CmlText>
                                                 </View>
-                                                <View style={[styles.panelSwitchContainer, {marginTop: 8}]}>
+                                                <View style={[styles.panelSwitchContainer, { marginTop: 8 }]}>
                                                     <Switch
                                                     />
                                                     <CmlText style={styles.panelOptionText}>Do Not Call</CmlText>
                                                 </View>
                                                 <View style={styles.panelUploadContainer}>
                                                     <CmlText style={styles.panelUploadLabel}>Select Audio File</CmlText>
-                                                    <Ionicons 
+                                                    <Ionicons
                                                         name="md-arrow-dropdown"
                                                         size={18}
                                                         color="#7b7b7b"
@@ -359,20 +359,20 @@ class CampaignCreate extends Component {
                                                         }}
                                                     />
                                                 </View>
-                                                <CmlButton title="Text To Speech" backgroundColor="#ffa67a" style={{marginTop: 20}}/>
-                                                <CmlButton title="Upload Audio" backgroundColor="#02b9db" style={{marginTop: 8}}/>
+                                                <CmlButton title="Text To Speech" backgroundColor="#ffa67a" style={{ marginTop: 20 }} />
+                                                <CmlButton title="Upload Audio" backgroundColor="#02b9db" style={{ marginTop: 8 }} />
                                             </View>
                                         </View>
                                         <View style={[styles.panel, {
                                             marginTop: 16
                                         }]}>
                                             <View style={styles.leftContainer}>
-                                                <Image 
+                                                <Image
                                                     source={require("../assets/images/voice_mail.png")}
                                                     style={styles.leftLogo}
                                                     resizeMode="contain"
                                                 />
-                                                <AntDesign 
+                                                <AntDesign
                                                     name="infocirlce"
                                                     size={20}
                                                     color="#7b7b7b"
@@ -383,18 +383,18 @@ class CampaignCreate extends Component {
                                             </View>
 
                                             <View style={styles.panelBody}>
-                                                <View style={{width: '100%'}}>
+                                                <View style={{ width: '100%' }}>
                                                     <CmlText>For best results:</CmlText>
-                                                    <CmlText style={{fontSize: 12, color: '#6a6a6a'}}>23-37 seconds recommended</CmlText>
+                                                    <CmlText style={{ fontSize: 12, color: '#6a6a6a' }}>23-37 seconds recommended</CmlText>
                                                 </View>
-                                                <View style={[styles.panelSwitchContainer, {marginTop: 16}]}>
+                                                <View style={[styles.panelSwitchContainer, { marginTop: 16 }]}>
                                                     <Switch
                                                     />
                                                     <CmlText style={styles.panelOptionText}>Use Ringless Voicemail</CmlText>
                                                 </View>
                                                 <View style={styles.panelUploadContainer}>
                                                     <CmlText style={styles.panelUploadLabel}>Select Audio File</CmlText>
-                                                    <Ionicons 
+                                                    <Ionicons
                                                         name="md-arrow-dropdown"
                                                         size={18}
                                                         color="#7b7b7b"
@@ -403,21 +403,21 @@ class CampaignCreate extends Component {
                                                         }}
                                                     />
                                                 </View>
-                                                <CmlButton title="Text To Speech" backgroundColor="#ffa67a" style={{marginTop: 20}}/>
-                                                <CmlButton title="Upload Audio" backgroundColor="#02b9db" style={{marginTop: 8}}/>
+                                                <CmlButton title="Text To Speech" backgroundColor="#ffa67a" style={{ marginTop: 20 }} />
+                                                <CmlButton title="Upload Audio" backgroundColor="#02b9db" style={{ marginTop: 8 }} />
                                             </View>
                                         </View>
                                         <TouchableOpacity style={styles.continueButton} onPress={() => this.continue()}>
                                             <View style={styles.continueButtonContainer}>
                                                 <CmlText style={styles.continueButtonText}>CONTINUE</CmlText>
-                                                <MaterialIcons name="navigate-next" size={30}/>
+                                                <MaterialIcons name="navigate-next" size={30} />
                                             </View>
                                         </TouchableOpacity>
                                     </ScrollView>
                                 </View>
                             }
                             {
-                                this.state.step == 4 && 
+                                this.state.step == 4 &&
                                 <View style={styles.stepViewContainer}>
                                     <CmlText style={styles.stepDescription}>
                                         Select Contact List
@@ -428,9 +428,9 @@ class CampaignCreate extends Component {
                                                 <CmlText style={{
                                                     width: '100%'
                                                 }}>Select Contact List</CmlText>
-                                                <View style={[styles.panelUploadContainer, {marginTop: 8}]}>
+                                                <View style={[styles.panelUploadContainer, { marginTop: 8 }]}>
                                                     <CmlText style={styles.panelUploadLabel}>Select Contact List</CmlText>
-                                                    <Ionicons 
+                                                    <Ionicons
                                                         name="md-arrow-dropdown"
                                                         size={18}
                                                         color="#c1c1c1"
@@ -443,9 +443,9 @@ class CampaignCreate extends Component {
                                                     width: '100%',
                                                     marginTop: 24
                                                 }}>Upload New Contact List</CmlText>
-                                                <View style={[styles.panelUploadContainer, {marginTop: 8}]}>
+                                                <View style={[styles.panelUploadContainer, { marginTop: 8 }]}>
                                                     <CmlText style={styles.panelUploadLabel}>Select Phone Number Column</CmlText>
-                                                    <Ionicons 
+                                                    <Ionicons
                                                         name="md-arrow-dropdown"
                                                         size={18}
                                                         color="#c1c1c1"
@@ -454,26 +454,26 @@ class CampaignCreate extends Component {
                                                         }}
                                                     />
                                                 </View>
-                                                <View style={[styles.panelSwitchContainer, {marginTop: 24}]}>
+                                                <View style={[styles.panelSwitchContainer, { marginTop: 24 }]}>
                                                     <Switch
                                                     />
                                                     <CmlText style={styles.panelOptionText}>Does your file contain headers?</CmlText>
                                                 </View>
 
-                                                <CmlButton title="Upload Contact List" backgroundColor="#02b9db" style={{marginTop: 16, width: 180}}/>
+                                                <CmlButton title="Upload Contact List" backgroundColor="#02b9db" style={{ marginTop: 16, width: 180 }} />
                                             </View>
                                         </View>
                                         <TouchableOpacity style={styles.continueButton} onPress={() => this.continue()}>
                                             <View style={styles.continueButtonContainer}>
                                                 <CmlText style={styles.continueButtonText}>CONTINUE</CmlText>
-                                                <MaterialIcons name="navigate-next" size={30}/>
+                                                <MaterialIcons name="navigate-next" size={30} />
                                             </View>
                                         </TouchableOpacity>
                                     </ScrollView>
                                 </View>
                             }
                             {
-                                this.state.step == 5 && 
+                                this.state.step == 5 &&
                                 <View style={styles.stepViewContainer}>
                                     <CmlText style={styles.stepDescription}>
                                         Campaign Settings
@@ -484,7 +484,7 @@ class CampaignCreate extends Component {
                                                 <CmlText style={{
                                                     width: '100%'
                                                 }}>Maximum Calls Per Minute</CmlText>
-                                                <View style={[styles.panelUploadContainer, {marginTop: 8}]}>
+                                                <View style={[styles.panelUploadContainer, { marginTop: 8 }]}>
                                                     <CmlTextInput style={styles.panelUploadLabel} placeholder="Calls Per Minute"></CmlTextInput>
                                                 </View>
                                                 <CmlText style={{
@@ -496,44 +496,44 @@ class CampaignCreate extends Component {
                                                     fontSize: 12,
                                                     color: '#6a6a6a'
                                                 }}>Which Contacts would you like to retry?</CmlText>
-                                                <View style={[styles.panelSwitchContainer, {marginTop: 16}]}>
+                                                <View style={[styles.panelSwitchContainer, { marginTop: 16 }]}>
                                                     <Switch
                                                     />
                                                     <CmlText style={styles.panelOptionText}>Voicemail</CmlText>
                                                 </View>
-                                                <View style={[styles.panelSwitchContainer, {marginTop: 8}]}>
+                                                <View style={[styles.panelSwitchContainer, { marginTop: 8 }]}>
                                                     <Switch
                                                     />
                                                     <CmlText style={styles.panelOptionText}>Busy</CmlText>
                                                 </View>
-                                                <View style={[styles.panelSwitchContainer, {marginTop: 8}]}>
+                                                <View style={[styles.panelSwitchContainer, { marginTop: 8 }]}>
                                                     <Switch
                                                     />
                                                     <CmlText style={styles.panelOptionText}>No answer</CmlText>
                                                 </View>
 
-                                                <CmlButton title="Upload Contact List" backgroundColor="#02b9db" style={{marginTop: 16, width: 180}}/>
+                                                <CmlButton title="Upload Contact List" backgroundColor="#02b9db" style={{ marginTop: 16, width: 180 }} />
                                             </View>
                                         </View>
                                         <TouchableOpacity style={styles.continueButton} onPress={() => this.continue()}>
                                             <View style={styles.continueButtonContainer}>
                                                 <CmlText style={styles.continueButtonText}>CONTINUE</CmlText>
-                                                <MaterialIcons name="navigate-next" size={30}/>
+                                                <MaterialIcons name="navigate-next" size={30} />
                                             </View>
                                         </TouchableOpacity>
                                     </ScrollView>
                                 </View>
                             }
                             {
-                                this.state.step == 6 && 
+                                this.state.step == 6 &&
                                 <View style={styles.stepViewContainer}>
                                     <CmlText style={styles.stepDescription}>
                                         When would you like to schedule your campaign to start?
                                     </CmlText>
                                     <ScrollView style={styles.panelContainer}>
-                                        <View style={[styles.panel, {width: '70%', alignSelf: 'center'}]}>
-                                            <View style={[styles.panelBody, {padding: 8}]}>
-                                                <Feather 
+                                        <View style={[styles.panel, { width: '70%', alignSelf: 'center' }]}>
+                                            <View style={[styles.panelBody, { padding: 8 }]}>
+                                                <Feather
                                                     name="play-circle"
                                                     size={70}
                                                     color="#7b7b7b"
@@ -541,12 +541,12 @@ class CampaignCreate extends Component {
                                                         marginLeft: 8
                                                     }}
                                                 />
-                                                <CmlButton title="Start Now" backgroundColor="#02b9db" style={{marginTop: 8}} onPress={this.onStart}/>
+                                                <CmlButton title="Start Now" backgroundColor="#02b9db" style={{ marginTop: 8 }} onPress={this.onStart} />
                                             </View>
                                         </View>
-                                        <View style={[styles.panel, {width: '70%', alignSelf: 'center', marginTop: 16}]}>
-                                            <View style={[styles.panelBody, {padding: 8}]}>
-                                                <MaterialIcons 
+                                        <View style={[styles.panel, { width: '70%', alignSelf: 'center', marginTop: 16 }]}>
+                                            <View style={[styles.panelBody, { padding: 8 }]}>
+                                                <MaterialIcons
                                                     name="access-time"
                                                     size={70}
                                                     color="#7b7b7b"
@@ -554,7 +554,7 @@ class CampaignCreate extends Component {
                                                         marginLeft: 8
                                                     }}
                                                 />
-                                                <CmlButton title="In The Future" backgroundColor="#ffa67a" style={{marginTop: 8}}/>
+                                                <CmlButton title="In The Future" backgroundColor="#ffa67a" style={{ marginTop: 8 }} />
                                             </View>
                                         </View>
                                     </ScrollView>
@@ -563,111 +563,111 @@ class CampaignCreate extends Component {
 
 
                         </View>
-                                               
+
                     </View>
-                    <View style={{width: 30}}>
+                    <View style={{ width: 30 }}>
                         <View style={{
                             alignItems: 'center',
                             paddingTop: 100
                         }}>
-                            <TouchableOpacity onPress={() => this.setState({step: 0})}>
-                                <View style={this.state.step == 0?styles.selectedStepContainer:styles.stepContainer}>
-                                    <CmlText style={[styles.stepLabel, {color: this.state.step==0?'black':'white'}]}>1</CmlText>
+                            <TouchableOpacity onPress={() => this.setState({ step: 0 })}>
+                                <View style={this.state.step == 0 ? styles.selectedStepContainer : styles.stepContainer}>
+                                    <CmlText style={[styles.stepLabel, { color: this.state.step == 0 ? 'black' : 'white' }]}>1</CmlText>
                                 </View>
                             </TouchableOpacity>
 
-                            <Image 
+                            <Image
                                 source={require("../assets/images/create_campaign_seperator.png")}
                                 style={{
                                     height: 30
                                 }}
                                 resizeMode="contain"
                             />
-                            <TouchableOpacity onPress={() => this.setState({step: 1})}>
-                                <View style={this.state.step == 1?styles.selectedStepContainer:styles.stepContainer}>
-                                    <CmlText style={[styles.stepLabel, {color: this.state.step==1?'black':'white'}]}>2</CmlText>
+                            <TouchableOpacity onPress={() => this.setState({ step: 1 })}>
+                                <View style={this.state.step == 1 ? styles.selectedStepContainer : styles.stepContainer}>
+                                    <CmlText style={[styles.stepLabel, { color: this.state.step == 1 ? 'black' : 'white' }]}>2</CmlText>
                                 </View>
                             </TouchableOpacity>
 
-                            <Image 
+                            <Image
                                 source={require("../assets/images/create_campaign_seperator.png")}
                                 style={{
                                     height: 30
                                 }}
                                 resizeMode="contain"
                             />
-                            <TouchableOpacity onPress={() => this.setState({step: 2})}>
-                                <View style={this.state.step == 2?styles.selectedStepContainer:styles.stepContainer}>
-                                    <CmlText style={[styles.stepLabel, {color: this.state.step==2?'black':'white'}]}>3</CmlText>
+                            <TouchableOpacity onPress={() => this.setState({ step: 2 })}>
+                                <View style={this.state.step == 2 ? styles.selectedStepContainer : styles.stepContainer}>
+                                    <CmlText style={[styles.stepLabel, { color: this.state.step == 2 ? 'black' : 'white' }]}>3</CmlText>
                                 </View>
                             </TouchableOpacity>
 
-                            <Image 
+                            <Image
                                 source={require("../assets/images/create_campaign_seperator.png")}
                                 style={{
                                     height: 30
                                 }}
                                 resizeMode="contain"
                             />
-                            <TouchableOpacity onPress={() => this.setState({step: 3})}>
-                                <View style={this.state.step == 3?styles.selectedStepContainer:styles.stepContainer}>
-                                    <CmlText style={[styles.stepLabel, {color: this.state.step==3?'black':'white'}]}>4</CmlText>
+                            <TouchableOpacity onPress={() => this.setState({ step: 3 })}>
+                                <View style={this.state.step == 3 ? styles.selectedStepContainer : styles.stepContainer}>
+                                    <CmlText style={[styles.stepLabel, { color: this.state.step == 3 ? 'black' : 'white' }]}>4</CmlText>
                                 </View>
                             </TouchableOpacity>
 
-                            <Image 
+                            <Image
                                 source={require("../assets/images/create_campaign_seperator.png")}
                                 style={{
                                     height: 30
                                 }}
                                 resizeMode="contain"
                             />
-                            <TouchableOpacity onPress={() => this.setState({step: 4})}>
-                                <View style={this.state.step == 4?styles.selectedStepContainer:styles.stepContainer}>
-                                    <CmlText style={[styles.stepLabel, {color: this.state.step==4?'black':'white'}]}>5</CmlText>
+                            <TouchableOpacity onPress={() => this.setState({ step: 4 })}>
+                                <View style={this.state.step == 4 ? styles.selectedStepContainer : styles.stepContainer}>
+                                    <CmlText style={[styles.stepLabel, { color: this.state.step == 4 ? 'black' : 'white' }]}>5</CmlText>
                                 </View>
                             </TouchableOpacity>
 
-                            <Image 
+                            <Image
                                 source={require("../assets/images/create_campaign_seperator.png")}
                                 style={{
                                     height: 30
                                 }}
                                 resizeMode="contain"
                             />
-                            <TouchableOpacity onPress={() => this.setState({step: 5})}>
-                                <View style={this.state.step == 5?styles.selectedStepContainer:styles.stepContainer}>
-                                    <CmlText style={[styles.stepLabel, {color: this.state.step==5?'black':'white'}]}>6</CmlText>
+                            <TouchableOpacity onPress={() => this.setState({ step: 5 })}>
+                                <View style={this.state.step == 5 ? styles.selectedStepContainer : styles.stepContainer}>
+                                    <CmlText style={[styles.stepLabel, { color: this.state.step == 5 ? 'black' : 'white' }]}>6</CmlText>
                                 </View>
                             </TouchableOpacity>
 
-                            <Image 
+                            <Image
                                 source={require("../assets/images/create_campaign_seperator.png")}
                                 style={{
                                     height: 30
                                 }}
                                 resizeMode="contain"
                             />
-                            <TouchableOpacity onPress={() => this.setState({step: 6})}>
-                                <View style={this.state.step == 6?styles.selectedStepContainer:styles.stepContainer}>
-                                    <CmlText style={[styles.stepLabel, {color: this.state.step==6?'black':'white'}]}>7</CmlText>
+                            <TouchableOpacity onPress={() => this.setState({ step: 6 })}>
+                                <View style={this.state.step == 6 ? styles.selectedStepContainer : styles.stepContainer}>
+                                    <CmlText style={[styles.stepLabel, { color: this.state.step == 6 ? 'black' : 'white' }]}>7</CmlText>
                                 </View>
                             </TouchableOpacity>
-                            
+
                         </View>
                     </View>
                 </View>
 
                 <Dialog
-                    visible={this.state.startNow}
+                    visible={true}
                     onTouchOutside={() => {
-                    this.setState({ startNow: false });
+                        this.setState({ startNow: false });
                     }}
                     dialogStyle={styles.dialogContainer}
                     overlayOpacity={0}
                 >
                     <DialogContent>
-                        <View style={{paddingVertical: 16}}>
+                        <View style={{ paddingVertical: 16 }}>
                             <View>
                                 <CmlText style={styles.dialogTitle}>Start Now</CmlText>
                                 <View style={styles.dialogSwitchContainer}>
@@ -677,17 +677,17 @@ class CampaignCreate extends Component {
                                     <View style={{
                                         flex: 1
                                     }}>
-                                        <CmlText style={[styles.panelOptionText, {color: 'white'}]}>Resume campaign the following day if campaign isn't completed by 10 pm</CmlText>
+                                        <CmlText style={[styles.panelOptionText, { color: 'white' }]}>Resume campaign the following day if campaign isn't completed by 10 pm</CmlText>
                                         <View style={styles.borderBottom}>
-                                            <CmlText style={[styles.panelOptionText, {color: 'white', fontSize: 10, marginTop: 8}]}>(Call My List will stop all campaigns if not complete)</CmlText>
+                                            <CmlText style={[styles.panelOptionText, { color: 'white', fontSize: 10, marginTop: 8 }]}>(Call My List will stop all campaigns if not complete)</CmlText>
                                         </View>
                                     </View>
                                 </View>
-                                <View style={[styles.panelSwitchContainer, {marginTop: 16}]}>
+                                <View style={[styles.panelSwitchContainer, { marginTop: 16 }]}>
                                     <Switch
                                         ios_backgroundColor='#9e9e9e'
                                     />
-                                    <CmlText style={[styles.panelOptionText, {color: 'white'}]}>Resume campaign the following day if campaign isn't completed by 10 pm</CmlText>
+                                    <CmlText style={[styles.panelOptionText, { color: 'white' }]}>Resume campaign the following day if campaign isn't completed by 10 pm</CmlText>
                                 </View>
 
                                 <CmlText style={styles.dialogSmallTitle}>Campaign Time Restrictions</CmlText>
@@ -707,12 +707,12 @@ class CampaignCreate extends Component {
 
 
                                 <TouchableOpacity style={[styles.continueButton]} onPress={() => this.start()}>
-                                    <View style={[styles.continueButtonContainer, {borderColor: 'white', width: 140}]}>
+                                    <View style={[styles.continueButtonContainer, { borderColor: 'white', width: 140 }]}>
                                         <CmlText style={[styles.continueButtonText, {
                                             color: 'white',
                                             marginLeft: 8
                                         }]}>START</CmlText>
-                                        <MaterialIcons name="navigate-next" size={30} color="#ffa67a"/>
+                                        <MaterialIcons name="navigate-next" size={30} color="#ffa67a" />
                                     </View>
                                 </TouchableOpacity>
                             </View>
@@ -723,5 +723,5 @@ class CampaignCreate extends Component {
         );
     }
 }
-  
+
 export default CampaignCreate;
