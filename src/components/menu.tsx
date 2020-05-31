@@ -10,6 +10,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { StackActions } from '@react-navigation/native';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { CmlButton } from '../components/button'
+import Modal from 'react-native-modal';
 
 const styles = StyleSheet.create({
     container: {
@@ -256,32 +257,32 @@ class Menu extends Component {
 
                 </ScrollView>
 
-                <Dialog
-                    visible={true}
-                    onTouchOutside={() => {
-                        this.setState({ addFunds: false });
-                    }}
-                    dialogStyle={styles.dialogContainer}
-                    overlayOpacity={0}
+                <Modal
+                    isVisible={this.state.addFunds}
+                    backdropOpacity={0}
+                    onBackdropPress={() => this.setState({ addFunds: false })}
                 >
-                    <DialogContent>
-                        <View style={{ paddingVertical: 16 }}>
-                            <View>
-                                <CmlText style={styles.dialogTitle}>Add Funds</CmlText>
-                                <CmlText style={styles.dialogDescription}>Enter a value for the amount of credits you would like to add to the account.</CmlText>
+                    <View style={{
+                        padding: 16,
+                        backgroundColor: '#000000cc',
+                        paddingBottom: 32,
+                        borderRadius: 16
+                    }}>
+                        <View>
+                            <CmlText style={styles.dialogTitle}>Add Funds</CmlText>
+                            <CmlText style={styles.dialogDescription}>Enter a value for the amount of credits you would like to add to the account.</CmlText>
 
-                                <View style={styles.dialogTimeContainer}>
-                                    <FontAwesome name="dollar" size={20} color={'#ffa67a'} />
-                                    <CmlTextInput style={styles.dialogTimePlaceholder} style={{ flex: 1, fontSize: 14, color: 'white', marginLeft: 8 }}></CmlTextInput>
-                                </View>
+                            <View style={styles.dialogTimeContainer}>
+                                <FontAwesome name="dollar" size={20} color={'#ffa67a'} />
+                                <CmlTextInput style={styles.dialogTimePlaceholder} style={{ flex: 1, fontSize: 14, color: 'white', marginLeft: 8 }}></CmlTextInput>
+                            </View>
 
-                                <View style={{ flexDirection: 'row', width: '100%', height: 32, justifyContent: 'flex-end' }}>
-                                    <CmlButton title="Add Funds" backgroundColor="#ffa67a" style={{ marginTop: 16 }} onPress={() => this.setState({ addFunds: false })} />
-                                </View>
+                            <View style={{ flexDirection: 'row', width: '100%', height: 32, justifyContent: 'flex-end' }}>
+                                <CmlButton title="Add Funds" backgroundColor="#ffa67a" style={{ marginTop: 16 }} onPress={() => this.setState({ addFunds: false })} />
                             </View>
                         </View>
-                    </DialogContent>
-                </Dialog>
+                    </View>
+                </Modal>
             </SafeAreaView>
 
 
