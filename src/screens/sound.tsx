@@ -23,6 +23,7 @@ import { store } from '../redux/store';
 import RNFetchBlob from 'rn-fetch-blob'
 import FileViewer from 'react-native-file-viewer'
 import RNFS from 'react-native-fs'
+import RNPickerSelect from 'react-native-picker-select';
 
 const styles = StyleSheet.create({
     container: {
@@ -110,6 +111,21 @@ const styles = StyleSheet.create({
     },
 });
 
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        fontSize: 12,
+        color: 'white',
+        width: 1000,
+    },
+    inputAndroid: {
+        fontSize: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        color: 'white',
+        width: '100%'
+    },
+});
+
 class SoundScreen extends Component<{
     navigation: any
 }, {
@@ -119,7 +135,9 @@ class SoundScreen extends Component<{
     loading: boolean,
     deleteConfirm: boolean,
     currentItem: any,
-    noSounds: boolean
+    noSounds: boolean,
+    gender: number,
+    text: string
 }> {
 
     constructor(props: any) {
@@ -131,7 +149,9 @@ class SoundScreen extends Component<{
             loading: false,
             deleteConfirm: false,
             currentItem: null,
-            noSounds: false
+            noSounds: false,
+            gender: 1,
+            text: ''
         }
     }
 
@@ -231,6 +251,41 @@ class SoundScreen extends Component<{
                 this.setState({ loading: false })
                 RNFetchBlob.ios.previewDocument(res.data)
             })
+    }
+
+    useText = () => {
+        if (this.state.text.length == 0) {
+            Utils.presentToast("Please enter valid text")
+            return
+        }
+
+        if (this.state.gender == null) {
+            Utils.presentToast("Please select valid gender")
+            return
+        }
+
+        this.setState({
+            loading: true
+        })
+        SoundService.textToSpeech({
+            text: this.state.text,
+            gender: this.state.gender
+        }).subscribe((response: any) => {
+
+            this.setState({
+                text: '',
+                gender: 1,
+                textToSpeech: false,
+                loading: false
+            })
+            if (response.success) {
+                this.loadAudios()
+            }
+            else {
+                Utils.presentToast(response.message + "." + response.submessage)
+            }
+        })
+
     }
 
     render() {
@@ -354,6 +409,60 @@ class SoundScreen extends Component<{
                     </FlatList>
 
                 </View>
+
+                <Modal
+                    isVisible={this.state.textToSpeech}
+                    backdropOpacity={0}
+                    onBackdropPress={() =>
+                        this.setState({ textToSpeech: false })
+                    }>
+                    <View style={AppStyle.dialogContainer}>
+                        <View>
+                            <CmlText style={styles.dialogSmallTitle}>Please enter the text and select void gender below.</CmlText>
+                            <View style={styles.dialogTimeContainer}>
+                                <CmlTextInput style={[styles.dialogTimePlaceholder,
+                                {
+                                    height: 100,
+                                    textAlignVertical: "top",
+                                    fontSize: 12,
+                                    width: '100%'
+                                }]}
+                                    placeholderTextColor="white"
+                                    placeholder="Enter Text To Speech"
+                                    multiline={true}
+                                    blurOnSubmit={true}
+                                    value={this.state.text}
+                                    onChangeText={(value: string) =>
+                                        this.setState({ text: value })
+                                    } />
+                            </View>
+
+                            <CmlText style={styles.dialogDescription}>Voice Gender</CmlText>
+                            <View style={styles.dialogTimeContainer}>
+                                <RNPickerSelect
+                                    style={pickerSelectStyles}
+                                    value={this.state.gender}
+                                    onValueChange={(value) => this.setState({
+                                        gender: value
+                                    })}
+                                    items={[
+                                        { label: 'Male Voice', value: 1 },
+                                        { label: 'Female Voice', value: 2 },
+                                    ]}
+                                />
+                            </View>
+
+                            <View style={{
+                                flexDirection: 'row',
+                                marginTop: 16
+                            }}>
+                                <CmlButton title="Use Text" backgroundColor="#02b9db" style={{ width: 100, marginTop: 16 }} onPress={() => this.useText()} />
+                                <View style={{ flex: 1 }} />
+                                <CmlButton title="Cancel" backgroundColor="#ffa67a" style={{ width: 100, marginTop: 16, marginLeft: 16 }} onPress={() => this.setState({ textToSpeech: false, text: '', gender: 1 })} />
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
 
                 <Dialog
                     visible={this.state.textToSpeech}

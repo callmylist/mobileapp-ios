@@ -232,10 +232,16 @@ class ContactList extends Component<
     };
 
     upload = async () => {
+        if (this.state.headerColumn == null) {
+            Utils.presentToast("Please select valid column header")
+            return
+        }
+
         this.setState({
             loading: true,
             uploadList: false
         })
+
         ContactService.uploadContactList(this.state.currentItem, this.state.containHeader, this.state.headerColumn, (response: any) => {
             console.log(response)
             this.setState({
@@ -384,53 +390,48 @@ class ContactList extends Component<
                         </CmlText>
                         </View>
 
-                        {
-                            this.state.containHeader && <>
-                                <CmlText style={AppStyle.dialogDescription}>
-                                    Select Phone Number Column
+                        <CmlText style={AppStyle.dialogDescription}>
+                            Select Phone Number Column
                                 </CmlText>
-                                <View style={[AppStyle.dialogTimeContainer, {
-                                    padding: 0
-                                }]}><RNPickerSelect
-                                        disabled={!this.state.containHeader}
-                                        style={pickerSelectStyles}
-                                        value={this.state.headerColumn}
-                                        onValueChange={(value) => this.setState({
-                                            headerColumn: value
-                                        })}
-                                        items={[
-                                            { label: 'A', value: 'A' },
-                                            { label: 'B', value: 'B' },
-                                            { label: 'C', value: 'C' },
-                                            { label: 'D', value: 'D' },
-                                            { label: 'E', value: 'E' },
-                                            { label: 'F', value: 'F' },
-                                            { label: 'G', value: 'G' },
-                                            { label: 'H', value: 'H' },
-                                            { label: 'I', value: 'I' },
-                                            { label: 'J', value: 'J' },
-                                            { label: 'K', value: 'K' },
-                                            { label: 'L', value: 'L' },
-                                            { label: 'M', value: 'M' },
-                                            { label: 'N', value: 'N' },
-                                            { label: 'O', value: 'O' },
-                                            { label: 'P', value: 'P' },
-                                            { label: 'Q', value: 'Q' },
-                                            { label: 'R', value: 'R' },
-                                            { label: 'S', value: 'S' },
-                                            { label: 'T', value: 'T' },
-                                            { label: 'U', value: 'U' },
-                                            { label: 'V', value: 'V' },
-                                            { label: 'W', value: 'W' },
-                                            { label: 'X', value: 'X' },
-                                            { label: 'Y', value: 'Y' },
-                                            { label: 'Z', value: 'Z' },
-                                        ]}
-                                    />
-                                </View>
-                            </>
-                        }
-
+                        <View style={[AppStyle.dialogTimeContainer, {
+                            padding: 0
+                        }]}>
+                            <RNPickerSelect
+                                style={pickerSelectStyles}
+                                value={this.state.headerColumn}
+                                onValueChange={(value) => this.setState({
+                                    headerColumn: value
+                                })}
+                                items={[
+                                    { label: 'A', value: 'A' },
+                                    { label: 'B', value: 'B' },
+                                    { label: 'C', value: 'C' },
+                                    { label: 'D', value: 'D' },
+                                    { label: 'E', value: 'E' },
+                                    { label: 'F', value: 'F' },
+                                    { label: 'G', value: 'G' },
+                                    { label: 'H', value: 'H' },
+                                    { label: 'I', value: 'I' },
+                                    { label: 'J', value: 'J' },
+                                    { label: 'K', value: 'K' },
+                                    { label: 'L', value: 'L' },
+                                    { label: 'M', value: 'M' },
+                                    { label: 'N', value: 'N' },
+                                    { label: 'O', value: 'O' },
+                                    { label: 'P', value: 'P' },
+                                    { label: 'Q', value: 'Q' },
+                                    { label: 'R', value: 'R' },
+                                    { label: 'S', value: 'S' },
+                                    { label: 'T', value: 'T' },
+                                    { label: 'U', value: 'U' },
+                                    { label: 'V', value: 'V' },
+                                    { label: 'W', value: 'W' },
+                                    { label: 'X', value: 'X' },
+                                    { label: 'Y', value: 'Y' },
+                                    { label: 'Z', value: 'Z' },
+                                ]}
+                            />
+                        </View>
 
                         <View
                             style={{

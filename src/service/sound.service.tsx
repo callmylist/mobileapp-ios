@@ -26,6 +26,10 @@ export class SoundService {
         )
     }
 
+    static textToSpeech(payload: any) {
+        return RestClient.post(constants.apiUrl.textToSpeach.replace('{userId}', store.getState().authReducer.loggedInContact.userId), payload);
+    }
+
     static uploadSound(fileInfo: any, callback: any) {
         // const name = fileInfo.name;
         // const realPath = fileInfo.uri;
