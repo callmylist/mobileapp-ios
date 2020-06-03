@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     SafeAreaView,
     Switch,
+    Linking
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
@@ -23,6 +24,8 @@ import RNFS from 'react-native-fs';
 import RNPickerSelect from 'react-native-picker-select';
 import { CmlSpinner } from '../components/loading';
 import Utils from '../utils';
+import { store } from '../redux/store';
+import RNFetchBlob from 'rn-fetch-blob'
 
 const styles = StyleSheet.create({
     container: {
@@ -144,7 +147,8 @@ class ContactList extends Component<
         currentItem: any;
         containHeader: boolean;
         headerColumn: string;
-        loading: boolean
+        loading: boolean,
+        noList: boolean
     }
     > {
     constructor(props: any) {
@@ -157,7 +161,8 @@ class ContactList extends Component<
             currentItem: null,
             containHeader: false,
             headerColumn: 'A',
-            loading: false
+            loading: false,
+            noList: false
         };
     }
 
@@ -176,6 +181,7 @@ class ContactList extends Component<
         }).subscribe((response: any) => {
             this.setState({
                 sounds: response.data,
+                noList: response.data.length == 0 ? true : false
             });
         });
     };
@@ -193,6 +199,26 @@ class ContactList extends Component<
             this.loadData();
         });
     };
+
+    download = (item: any) => {
+        let dirs = RNFetchBlob.fs.dirs
+        console.log(dirs.DocumentDir)
+        this.setState({ loading: true })
+        RNFetchBlob
+            .config({
+                // response data will be saved to this path if it has access right.
+                path: dirs.DocumentDir + '/' + item.fileName
+            })
+            .fetch('GET', store.getState().authReducer.assets.assetsPath + item.fileS3Path, {
+                //some headers ..
+            })
+            .then((res) => {
+                // the path should be dirs.DocumentDir + 'path-to-file.anything'
+                console.log(res)
+                Utils.presentToast("File downloaded to application folder.")
+                this.setState({ loading: false })
+            })
+    }
 
     uploadList = async () => {
         const res = await DocumentPicker.pick({
@@ -251,7 +277,17 @@ class ContactList extends Component<
                             </View>
                         </TouchableOpacity>
                     </View>
+                    {
+                        this.state.noList && <View style={{
+                            padding: 16
+                        }}>
 
+                            <CmlText state={{
+                                paddingLeft: 20,
+                                marginTop: 20,
+                            }}>No sounds</CmlText>
+                        </View>
+                    }
                     <FlatList
                         style={{
                             marginTop: 24,
@@ -302,7 +338,7 @@ class ContactList extends Component<
                                     <TouchableOpacity
                                         style={{
                                             marginRight: 8,
-                                        }}>
+                                        }} onPress={() => this.download(item.item)}>
                                         <View style={styles.itemIcon}>
                                             <AntDesign name="download" size={14} color="#f57536" />
                                         </View>

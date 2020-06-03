@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView } from 'react-native';
+import { StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView, Linking } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -15,6 +15,14 @@ import AppConstants from '../utils/app_constants'
 import Modal from 'react-native-modal';
 import AppStyle from '../shared/styles'
 import Player from "../components/player";
+import DocumentPicker from 'react-native-document-picker';
+
+import { CmlSpinner } from '../components/loading';
+import Utils from '../utils';
+import { store } from '../redux/store';
+import RNFetchBlob from 'rn-fetch-blob'
+import FileViewer from 'react-native-file-viewer'
+import RNFS from 'react-native-fs'
 
 const styles = StyleSheet.create({
     container: {
@@ -107,7 +115,11 @@ class SoundScreen extends Component<{
 }, {
     sounds: any[],
     textToSpeech: boolean,
-    playSound: boolean
+    playSound: boolean,
+    loading: boolean,
+    deleteConfirm: boolean,
+    currentItem: any,
+    noSounds: boolean
 }> {
 
     constructor(props: any) {
@@ -115,14 +127,23 @@ class SoundScreen extends Component<{
         this.state = {
             sounds: [],
             textToSpeech: false,
-            playSound: false
+            playSound: false,
+            loading: false,
+            deleteConfirm: false,
+            currentItem: null,
+            noSounds: false
         }
     }
 
     componentDidMount() {
+        this.loadAudios()
+    }
+
+    loadAudios = () => {
         SoundService.getSoundList().subscribe((response: any) => {
             this.setState({
-                sounds: response.data
+                sounds: response.data,
+                noSounds: response.data.length == 0 ? true : false
             })
         })
     }
@@ -131,27 +152,25 @@ class SoundScreen extends Component<{
         this.props.navigation.openDrawer()
     }
 
-    playSound = async (sound: any) => {
-        console.log(sound)
-        // TrackPlayer.addEventListener('playback-state', (data: any) => {
-        //     console.log(data)
-        // })
-        this.setState({
-            playSound: true
-        })
+    playSound = async (item: any) => {
+        const url = store.getState().authReducer.assets.assetsPath + item.wavFilePath;
 
-        // TrackPlayer.addEventListener('playback-track-changed', (data: any) => {
-        //     console.log(data)
-        // })
-        await TrackPlayer.setupPlayer();
-        await TrackPlayer.add({
-            id: sound.id,
-            url: AppConstants.RESOURCE_URL + sound.wavFilePath,
-            title: sound.fileName,
-            artist: "",
-        });
+        const localFile = `${RNFS.CachesDirectoryPath}/` + item.fileName;
 
-        await TrackPlayer.play();
+        this.setState({ loading: true })
+        const options = {
+            fromUrl: url,
+            toFile: localFile
+        };
+        RNFS.downloadFile(options).promise
+            .then(() => {
+                this.setState({ loading: false }, () => {
+                    setTimeout(() => {
+
+                        FileViewer.open(localFile)
+                    }, 500)
+                })
+            })
     }
 
     togglePlayback = async () => {
@@ -168,10 +187,59 @@ class SoundScreen extends Component<{
         await TrackPlayer.reset()
     }
 
+    uploadAudio = async () => {
+        const res = await DocumentPicker.pick({
+            type: [DocumentPicker.types.audio]
+        });
+
+        this.setState({ loading: true })
+        SoundService.uploadSound(res, (response: any) => {
+            this.setState({ loading: false })
+            if (response.success == true) {
+                this.loadAudios()
+            }
+            else {
+                Utils.presentToast(response.message)
+            }
+        })
+    }
+
+    deleteSound = () => {
+        let item = this.state.currentItem;
+        SoundService.deleteSound(item.id).subscribe((response: any) => {
+            this.setState({
+                deleteConfirm: false,
+            });
+            this.loadAudios()
+        });
+    };
+
+    download = (item: any) => {
+        let dirs = RNFetchBlob.fs.dirs
+        this.setState({ loading: true })
+        RNFetchBlob
+            .config({
+                // response data will be saved to this path if it has access right.
+                path: dirs.DocumentDir + '/' + item.fileName
+            })
+            .fetch('GET', store.getState().authReducer.assets.assetsPath + item.wavFilePath, {
+                //some headers ..
+            })
+            .then((res: any) => {
+                // the path should be dirs.DocumentDir + 'path-to-file.anything'
+                Utils.presentToast("File downloaded to application folder.")
+                this.setState({ loading: false })
+                RNFetchBlob.ios.previewDocument(res.data)
+            })
+    }
+
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <Header onMenu={this.onMenu} menu={true} />
+                <CmlSpinner
+                    visible={this.state.loading}
+                />
                 <View style={styles.container}>
 
                     <CmlText style={styles.campaignLabel}>
@@ -194,7 +262,8 @@ class SoundScreen extends Component<{
                         </TouchableOpacity>
                         <TouchableOpacity style={{
                             marginTop: 16
-                        }}>
+                        }}
+                            onPress={() => this.uploadAudio()}>
                             <View style={[styles.buttonContainer, { backgroundColor: '#565757' }]}>
                                 <Feather
                                     name="upload"
@@ -214,7 +283,17 @@ class SoundScreen extends Component<{
                         IT’s Simple. Add and review your audio files here. We have given you 3 easy ways to add sounds. You may record sound files using our recording interface. All sound files will be listed below. Please call
                         1-317-552-0035. When prompted enter Id: 92632# and Password: 9559#
                     </CmlText>
+                    {
+                        this.state.noSounds && <View style={{
+                            padding: 16
+                        }}>
 
+                            <CmlText state={{
+                                paddingLeft: 20,
+                                marginTop: 20,
+                            }}>No sounds</CmlText>
+                        </View>
+                    }
                     <FlatList
                         data={this.state.sounds}
                         renderItem={(item: any) => {
@@ -241,7 +320,7 @@ class SoundScreen extends Component<{
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     marginRight: 8
-                                }}>
+                                }} onPress={() => this.download(item.item)}>
                                     <View style={styles.itemIcon}>
                                         <AntDesign
                                             name="download"
@@ -252,6 +331,11 @@ class SoundScreen extends Component<{
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     marginRight: 8
+                                }} onPress={() => {
+                                    this.setState({
+                                        deleteConfirm: true,
+                                        currentItem: item.item,
+                                    });
                                 }}>
                                     <View style={[styles.itemIcon, {
                                         borderColor: 'red'
@@ -321,6 +405,51 @@ class SoundScreen extends Component<{
                         <Player
                             onTogglePlayback={this.togglePlayback}
                         />
+                    </View>
+                </Modal>
+
+                <Modal
+                    isVisible={this.state.deleteConfirm}
+                    backdropOpacity={0}
+                    onBackdropPress={() =>
+                        this.setState({ deleteConfirm: false, currentItem: null })
+                    }>
+                    <View style={AppStyle.dialogContainer}>
+                        <View>
+                            <CmlText
+                                style={[
+                                    AppStyle.dialogTitle,
+                                    {
+                                        textAlign: 'center',
+                                        fontSize: 16,
+                                    },
+                                ]}>
+                                Confirmation
+                            </CmlText>
+                            <CmlText style={AppStyle.dialogDescription}>
+                                Are you sure you want delete this sound file?
+                            </CmlText>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    height: 32,
+                                    justifyContent: 'flex-end',
+                                }}>
+                                <CmlButton
+                                    title="Yes"
+                                    backgroundColor="#ffa67a"
+                                    style={{ marginTop: 16, marginRight: 16 }}
+                                    onPress={() => this.deleteSound()}
+                                />
+                                <CmlButton
+                                    title="No"
+                                    backgroundColor="#02b9db"
+                                    style={{ marginTop: 16 }}
+                                    onPress={() => this.setState({ deleteConfirm: false })}
+                                />
+                            </View>
+                        </View>
                     </View>
                 </Modal>
             </SafeAreaView >
