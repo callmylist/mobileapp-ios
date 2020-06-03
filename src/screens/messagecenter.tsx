@@ -1,19 +1,20 @@
-import React, {Component} from 'react';
-import {StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Header from '../components/header'
 import { CmlText } from '../components/text'
 import { CmlTextInput } from '../components/textinput'
-import { Menu, MenuTrigger, MenuOptions, MenuOption} from 'react-native-popup-menu';
+import { Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import { CmlButton } from '../components/button'
-import Dialog, { DialogContent } from 'react-native-popup-dialog';
+import Modal from 'react-native-modal';
+import AppStyle from '../shared/styles'
 
 const styles = StyleSheet.create({
     container: {
         marginTop: 50,
-    }, 
+    },
     messageList: {
         // marginTop: 20,
         flex: 1,
@@ -78,11 +79,11 @@ const styles = StyleSheet.create({
     },
     dialogSwitchContainer: {
         marginTop: 8,
-        flexDirection: 'row', 
+        flexDirection: 'row',
         alignItems: 'center'
     },
     borderBottom: {
-        borderBottomColor: 'white', 
+        borderBottomColor: 'white',
         borderBottomWidth: 1
     },
     dialogTimeContainer: {
@@ -189,8 +190,8 @@ class MessageCenter extends Component {
 
     render() {
         return (
-            <SafeAreaView style={{flex: 1}}>
-                <Header onMenu={this.onMenu} menu={true}/>
+            <SafeAreaView style={{ flex: 1 }}>
+                <Header onMenu={this.onMenu} menu={true} />
                 <View style={{
                     flex: 1,
                     padding: 8
@@ -199,14 +200,14 @@ class MessageCenter extends Component {
                         height: 60,
                         alignItems: 'flex-end'
                     }}>
-                        <CmlButton title="New Message" backgroundColor="#ffa67a" style={{marginTop: 16}} onPress={() => this.setState({newMessage: true})}/>
+                        <CmlButton title="New Message" backgroundColor="#ffa67a" style={{ marginTop: 16 }} onPress={() => this.setState({ newMessage: true })} />
                     </View>
                     <View style={styles.searchContainer}>
-                        <CmlTextInput 
+                        <CmlTextInput
                             placeholder="search"
                             style={styles.searchBox}
                         />
-                        <AntDesign name="search1" size={20} color={'#a9afbb'}/>
+                        <AntDesign name="search1" size={20} color={'#a9afbb'} />
                     </View>
 
                     <View style={{
@@ -217,13 +218,13 @@ class MessageCenter extends Component {
                             marginTop: 16,
                             flex: 1
                         }}
-                        onPress={() => this.onTab(0)}>
-                            <View style={[styles.tabButton ,{
-                                backgroundColor: this.state.index == 0?'white':'#00b7d9',
-                                borderColor: this.state.index == 0?'#9e9e9e':'#00b7d9'
+                            onPress={() => this.onTab(0)}>
+                            <View style={[styles.tabButton, {
+                                backgroundColor: this.state.index == 0 ? 'white' : '#00b7d9',
+                                borderColor: this.state.index == 0 ? '#9e9e9e' : '#00b7d9'
                             }]}>
                                 <CmlText style={{
-                                    color: this.state.index == 0?'black':'white',
+                                    color: this.state.index == 0 ? 'black' : 'white',
                                     fontSize: 14,
                                     fontWeight: '600'
                                 }}>Recent</CmlText>
@@ -238,13 +239,13 @@ class MessageCenter extends Component {
                             marginTop: 16,
                             flex: 1,
                         }}
-                        onPress={() => this.onTab(1)}>
+                            onPress={() => this.onTab(1)}>
                             <View style={[styles.tabButton, {
-                                backgroundColor: this.state.index == 1?'white':'#2c2d2d',
-                                borderColor: this.state.index == 1?'#9e9e9e':'#2c2d2d'
+                                backgroundColor: this.state.index == 1 ? 'white' : '#2c2d2d',
+                                borderColor: this.state.index == 1 ? '#9e9e9e' : '#2c2d2d'
                             }]}>
                                 <CmlText style={{
-                                    color: this.state.index == 1?'black':'white',
+                                    color: this.state.index == 1 ? 'black' : 'white',
                                     fontSize: 14,
                                     fontWeight: '600'
                                 }}>Favourite</CmlText>
@@ -260,13 +261,13 @@ class MessageCenter extends Component {
                             marginTop: 16,
                             flex: 1
                         }}
-                        onPress={() => this.onTab(2)}>
+                            onPress={() => this.onTab(2)}>
                             <View style={[styles.tabButton, {
-                                backgroundColor: this.state.index == 2?'white':'#fa8c56',
-                                borderColor: this.state.index == 2?'#9e9e9e':'#fa8c56'
+                                backgroundColor: this.state.index == 2 ? 'white' : '#fa8c56',
+                                borderColor: this.state.index == 2 ? '#9e9e9e' : '#fa8c56'
                             }]}>
                                 <CmlText style={{
-                                    color: this.state.index == 2?'black':'white',
+                                    color: this.state.index == 2 ? 'black' : 'white',
                                     fontSize: 14,
                                     fontWeight: '600'
                                 }}>Follow up</CmlText>
@@ -274,98 +275,95 @@ class MessageCenter extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.messageList}>
-                        <FlatList 
+                        <FlatList
                             data={this.state.messages}
                             renderItem={(item: any) => {
-                            return <>
-                                <TouchableOpacity onPress={() => this.props.navigation.push('MessageHistoryScreen')}>
-                                    <View style={[styles.messageContainer, {
-                                        backgroundColor: item.index % 2 == 1? '#f7f7f7': 'white'
-                                    }]}>
-                                        <Feather name="star" size={20} color={'#fa8c56'} style={{marginTop: 8}}/>
-                                        <View style={styles.messageInfoContainer}>
-                                            <CmlText style={styles.messagePhone}>{item.item.phone}</CmlText>
-                                            <CmlText style={styles.messageTime}>{item.item.time}</CmlText>
-                                        </View>
-                                        <View style={{
-                                            flex: 1
-                                        }}>
-                                            <CmlText style={styles.message}>{item.item.comment}</CmlText>
-                                        </View>
-                                        <Menu>
-                                            <MenuTrigger>
-                                                <Entypo name="dots-three-vertical" size={20} color={'#7b7b7b'} style={{marginTop: 8}}/>
-                                            </MenuTrigger>
-                                            <MenuOptions customStyles={{
-                                                optionText: {
-                                                    padding: 4
-                                                }
+                                return <>
+                                    <TouchableOpacity onPress={() => this.props.navigation.push('MessageHistoryScreen')}>
+                                        <View style={[styles.messageContainer, {
+                                            backgroundColor: item.index % 2 == 1 ? '#f7f7f7' : 'white'
+                                        }]}>
+                                            <Feather name="star" size={20} color={'#fa8c56'} style={{ marginTop: 8 }} />
+                                            <View style={styles.messageInfoContainer}>
+                                                <CmlText style={styles.messagePhone}>{item.item.phone}</CmlText>
+                                                <CmlText style={styles.messageTime}>{item.item.time}</CmlText>
+                                            </View>
+                                            <View style={{
+                                                flex: 1
                                             }}>
-                                                <MenuOption text='View Contact' />
-                                                <MenuOption text='Mark As Favorite' />
-                                                <MenuOption text='Create Follow Up Task' />
-                                                <MenuOption text='Edit' />
-                                                <MenuOption text='Delete' />
-                                                <MenuOption text='Archive' />
-                                            </MenuOptions>
-                                        </Menu>
-                                    </View>
-                                </TouchableOpacity>
+                                                <CmlText style={styles.message}>{item.item.comment}</CmlText>
+                                            </View>
+                                            <Menu>
+                                                <MenuTrigger>
+                                                    <Entypo name="dots-three-vertical" size={20} color={'#7b7b7b'} style={{ marginTop: 8 }} />
+                                                </MenuTrigger>
+                                                <MenuOptions customStyles={{
+                                                    optionText: {
+                                                        padding: 4
+                                                    }
+                                                }}>
+                                                    <MenuOption text='View Contact' />
+                                                    <MenuOption text='Mark As Favorite' />
+                                                    <MenuOption text='Create Follow Up Task' />
+                                                    <MenuOption text='Edit' />
+                                                    <MenuOption text='Delete' />
+                                                    <MenuOption text='Archive' />
+                                                </MenuOptions>
+                                            </Menu>
+                                        </View>
+                                    </TouchableOpacity>
 
-                            </>;
-                        }}>
+                                </>;
+                            }}>
 
                         </FlatList>
 
                     </View>
                 </View>
 
-                <Dialog
-                    visible={this.state.newMessage}
-                    onTouchOutside={() => {
-                    this.setState({ newMessage: false });
-                    }}
-                    dialogStyle={styles.dialogContainer}
-                    overlayOpacity={0}
+
+                <Modal
+                    isVisible={this.state.newMessage}
+                    backdropOpacity={0}
+                    onBackdropPress={() => this.setState({ newMessage: false })}
                 >
-                    <DialogContent>
-                        <View style={{paddingVertical: 0}}>
-                            <View>
-                                <CmlText style={styles.dialogSmallTitle}>New Message</CmlText>
+                    <View style={AppStyle.dialogContainer}>
+                        <View>
+                            <CmlText style={AppStyle.dialogSmallTitle}>New Message</CmlText>
 
-                                <View style={styles.dialogTimeContainer}>
-                                    <CmlText style={styles.dialogTimePlaceholder}>Contact Search</CmlText>
-                                    <Feather name="search" size={20} color={'white'} style={{marginTop: 8}}/>
-                                </View>
-                                
-                                <View style={styles.dialogTimeContainer}>
-                                    <CmlTextInput style={[styles.dialogTimePlaceholder,
-                                            {
-                                            height: 100,
-                                            textAlignVertical: "top"
-                                        }]}
-                                        placeholderTextColor = "white"
-                                        placeholder="Message"
-                                        multiline={true}/>
-                                </View>
+                            <View style={AppStyle.dialogTimeContainer}>
+                                <CmlText style={AppStyle.dialogTimePlaceholder}>Contact Search</CmlText>
+                                <Feather name="search" size={20} color={'white'} style={{ marginTop: 8 }} />
+                            </View>
 
+                            <View style={AppStyle.dialogTimeContainer}>
+                                <CmlTextInput style={[AppStyle.dialogTimePlaceholder,
+                                {
+                                    height: 100,
+                                    textAlignVertical: "top"
+                                }]}
+                                    placeholderTextColor="white"
+                                    placeholder="Message"
+                                    multiline={true} />
+                            </View>
 
 
-                                <View style={{
-                                    flexDirection: 'row',
-                                    marginTop: 16
-                                }}>
-                                    <CmlButton title="Send" backgroundColor="#02b9db" style={{width: 100, marginTop: 16}}/>
-                                    <View style={{flex: 1}} />
-                                    <CmlButton title="Cancel" backgroundColor="#ffa67a" style={{width: 100, marginTop: 16, marginLeft: 16}}/>
-                                </View>
+
+                            <View style={{
+                                flexDirection: 'row',
+                                marginTop: 16
+                            }}>
+                                <CmlButton title="Send" backgroundColor="#02b9db" style={{ width: 100, marginTop: 16 }} />
+                                <View style={{ flex: 1 }} />
+                                <CmlButton title="Cancel" backgroundColor="#ffa67a" style={{ width: 100, marginTop: 16, marginLeft: 16 }} />
                             </View>
                         </View>
-                    </DialogContent>
-                </Dialog>
+                    </View>
+                </Modal>
+
             </SafeAreaView>
         );
     }
-  }
-  
+}
+
 export default MessageCenter;

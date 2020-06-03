@@ -3,7 +3,7 @@ import Constants from '../utils/app_constants';
 import axios from 'axios';
 import { from, throwError as observableThrowError, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { User } from 'src/shared/models/user.model';
+import { User } from '../shared/models/user.model';
 import RestClient from './restclient'
 import { store } from '../redux/store'
 
@@ -31,5 +31,18 @@ export class CampaignService {
             .replace("{campaignId}", campaignId)
             .replace("{action}", action);
         return RestClient.get(url)
+    }
+
+    static sendTestCall(payload: any) {
+        return RestClient.post(
+            constants.apiUrl.testYourCall.replace("{userId}", store.getState().authReducer.loggedInContact.id),
+            payload
+        )
+    }
+
+    static deleteCampaign(campaignId: string) {
+        return RestClient.delete(
+            constants.apiUrl.deleteCampaign.replace("{userId}", store.getState().authReducer.loggedInContact.id).replace("{campaignId}", campaignId)
+        )
     }
 }

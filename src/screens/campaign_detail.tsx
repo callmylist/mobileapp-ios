@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, View, SafeAreaView } from 'react-native';
+import { StyleSheet, Keyboard, View, SafeAreaView } from 'react-native';
 import Foundation from 'react-native-vector-icons/Foundation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Header from '../components/header';
 import SemiCircleProgress from '../components/progress';
 import { CmlText } from '../components/text'
@@ -15,6 +16,10 @@ import { StatusIcon } from "../components/campaign_status";
 import moment from 'moment'
 import { CampaignService } from '../service/campaign.service';
 import { CmlSpinner } from '../components/loading';
+import Modal from 'react-native-modal';
+import AppStyle from '../shared/styles'
+import { CmlTextInput } from '../components/textinput'
+import { CmlButton } from '../components/button'
 
 const styles = StyleSheet.create({
     container: {
@@ -65,7 +70,10 @@ class CampaignDetail extends Component<{
     campaignDetail: any[],
     callDetail: any[],
     contactListName: string,
-    loading: boolean
+    loading: boolean,
+    sendTestCall: boolean,
+    testCallNumber: string,
+    deleteConfirm: boolean
 }> {
     constructor(props: any) {
         super(props)
@@ -75,7 +83,10 @@ class CampaignDetail extends Component<{
             campaignDetail: [],
             callDetail: [],
             contactListName: "",
-            loading: false
+            loading: false,
+            sendTestCall: false,
+            testCallNumber: "",
+            deleteConfirm: false
         }
     }
     componentDidMount() {
@@ -126,14 +137,86 @@ class CampaignDetail extends Component<{
     }
 
     startCampaign = () => {
+
         this.setState({
             loading: true
         })
+
         CampaignService.performCampaignAction(this.state.campaign.id, 'start').subscribe((response: any) => {
             this.setState({
                 loading: false
             })
             Utils.presentToast(response.message + ". " + response.submessage)
+        })
+    }
+
+    sendTestCall = () => {
+        Keyboard.dismiss()
+
+        if (!Utils.validatePhoneNumber(this.state.testCallNumber)) {
+            Utils.presentToast("Please enter valid phone number.")
+            return
+        }
+
+        this.setState({
+            sendTestCall: false
+        })
+
+        const payload: any = {
+            number: this.state.sendTestCall,
+            callerId: this.state.campaign.call.callerId,
+        };
+
+        if (this.state.campaign.call.voicemail.isRingless) {
+            payload["voicemail"] = this.state.campaign.call.voicemail;
+        }
+        else if (!this.state.campaign.call.voicemail.isRingless && !this.state.campaign.call.transfer && !this.state.campaign.call.dnc) {
+            payload["voicemail"] = this.state.campaign.call.voicemail;
+            payload["liveanswer"] = this.state.campaign.call.liveanswer;
+        } else if (this.state.campaign.call.transfer && this.state.campaign.call.dnc) {
+            payload["voicemail"] = this.state.campaign.call.voicemail;
+            payload["liveanswer"] = this.state.campaign.call.liveanswer;
+            payload["transfer"] = this.state.campaign.call.transfer;
+            payload["dnc"] = this.state.campaign.call.dnc;
+        } else if (this.state.campaign.call.transfer && !this.state.campaign.call.dnc) {
+            payload["voicemail"] = this.state.campaign.call.voicemail;
+            payload["liveanswer"] = this.state.campaign.call.liveanswer;
+            payload["transfer"] = this.state.campaign.call.transfer;
+        }
+        else if (!this.state.campaign.call.transfer && this.state.campaign.call.dnc) {
+            payload["voicemail"] = this.state.campaign.call.voicemail;
+            payload["liveanswer"] = this.state.campaign.call.liveanswer;
+            payload["dnc"] = this.state.campaign.call.dnc;
+        }
+        this.setState({
+            loading: true
+        })
+        CampaignService.sendTestCall(payload).subscribe((response: any) => {
+            this.setState({
+                loading: false
+            })
+            if (response.success) {
+                Utils.presentToast("Call sent successfully.")
+            }
+            else {
+                Utils.presentToast("Error :" + response.message)
+            }
+        })
+    }
+
+    deleteCampaign = () => {
+        this.setState({
+            deleteConfirm: false
+        })
+
+        CampaignService.deleteCampaign(this.state.campaign.id).subscribe((response: any) => {
+            if (response.success) {
+                Utils.presentToast("Successfully Deleted.")
+                this.onBack()
+            }
+            else {
+                Utils.presentToast("Error occured. Please try again.")
+            }
         })
     }
 
@@ -174,9 +257,11 @@ class CampaignDetail extends Component<{
                                     }}>
                                         <MenuOption text='Start Campaign' onSelect={() => this.startCampaign()} />
                                         <MenuOption text='Rerun Campaign' />
-                                        <MenuOption text='Send Test Call' />
-                                        <MenuOption text='View Campaign' />
-                                        <MenuOption text='Delete' />
+                                        <MenuOption text='Send Test Call' onSelect={() => this.setState({ sendTestCall: true, testCallNumber: "" })} />
+                                        <MenuOption text='Delete' onSelect={() =>
+                                            this.setState({
+                                                deleteConfirm: true
+                                            })} />
                                     </MenuOptions>
                                 </Menu>
                             </View>
@@ -269,6 +354,52 @@ class CampaignDetail extends Component<{
 
                         </ScrollView>
 
+                        <Modal
+                            isVisible={this.state.sendTestCall}
+                            backdropOpacity={0}
+                            onBackdropPress={() => this.setState({ sendTestCall: false })}
+                        >
+                            <View style={AppStyle.dialogContainer}>
+                                <View>
+                                    <CmlText style={[AppStyle.dialogTitle, {
+                                        textAlign: 'center',
+                                        fontSize: 16
+                                    }]}>Please enter the number you would like to receive the test call</CmlText>
+
+                                    <View style={AppStyle.dialogTimeContainer}>
+                                        <CmlTextInput
+                                            value={this.state.testCallNumber}
+                                            onChangeText={(value: string) =>
+                                                this.setState({ testCallNumber: value })
+                                            }
+                                            keyboardType='phone-pad' style={AppStyle.dialogTimePlaceholder}></CmlTextInput>
+                                    </View>
+
+                                    <View style={{ flexDirection: 'row', width: '100%', height: 32, justifyContent: 'flex-end' }}>
+                                        <CmlButton title="Send Test Call" backgroundColor="#ffa67a" style={{ marginTop: 16 }} onPress={() => this.sendTestCall()} />
+                                    </View>
+                                </View>
+                            </View>
+                        </Modal>
+                        <Modal
+                            isVisible={this.state.deleteConfirm}
+                            backdropOpacity={0}
+                            onBackdropPress={() => this.setState({ deleteConfirm: false })}
+                        >
+                            <View style={AppStyle.dialogContainer}>
+                                <View>
+                                    <CmlText style={[AppStyle.dialogTitle, {
+                                        textAlign: 'center',
+                                        fontSize: 16
+                                    }]}>Confirmation</CmlText>
+                                    <CmlText style={AppStyle.dialogDescription}>Are you sure you want delete this campaign?</CmlText>
+                                    <View style={{ flexDirection: 'row', width: '100%', height: 32, justifyContent: 'flex-end' }}>
+                                        <CmlButton title="Yes" backgroundColor="#ffa67a" style={{ marginTop: 16, marginRight: 16 }} onPress={() => this.deleteCampaign()} />
+                                        <CmlButton title="No" backgroundColor="#02b9db" style={{ marginTop: 16 }} onPress={() => this.setState({ deleteConfirm: false })} />
+                                    </View>
+                                </View>
+                            </View>
+                        </Modal>
                     </View>
                 }
 

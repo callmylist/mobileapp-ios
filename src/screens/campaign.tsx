@@ -1,17 +1,19 @@
-import React, {Component} from 'react';
-import {StyleSheet, FlatList, View, SafeAreaView} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, FlatList, View, SafeAreaView } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Header from '../components/header';
 import SemiCircleProgress from '../components/progress';
 import { CmlText } from '../components/text'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { CampaignService } from '../service/campaign.service'
+import { StatusIcon } from "../components/campaign_status";
 
 const styles = StyleSheet.create({
     container: {
         padding: 8,
         flex: 1
-    }, 
+    },
     campaignLabel: {
         fontSize: 20,
         textAlign: 'center',
@@ -58,86 +60,46 @@ const styles = StyleSheet.create({
     }
 });
 
-class Campaign extends Component {
+class Campaign extends Component<{
+    navigation: any
+}, {
+    campaigns: []
+}>{
+
+    constructor(props: any) {
+        super(props)
+
+        this.state = {
+            campaigns: []
+        }
+    }
+
     onMenu = () => {
         this.props.navigation.openDrawer()
     }
 
-    state = {
-        campaigns: [
-            {
-                name: 'Rudi Doe',
-                status: 1,
-                contacts: 10,
-                dials: 12
-            },
-            {
-                name: 'Rudi Doe',
-                status: 0,
-                contacts: 10,
-                dials: 12
-            },
-            {
-                name: 'Rudi Doe',
-                status: 1,
-                contacts: 10,
-                dials: 12
-            },
-            {
-                name: 'Rudi Doe',
-                status: 0,
-                contacts: 10,
-                dials: 12
-            },
-            {
-                name: 'Rudi Doe',
-                status: 0,
-                contacts: 10,
-                dials: 12
-            },
-            {
-                name: 'Rudi Doe',
-                status: 1,
-                contacts: 10,
-                dials: 12
-            },
-            {
-                name: 'Rudi Doe',
-                status: 0,
-                contacts: 10,
-                dials: 12
-            },
-            {
-                name: 'Rudi Doe',
-                status: 0,
-                contacts: 10,
-                dials: 12
-            },
-            {
-                name: 'Rudi Doe',
-                status: 0,
-                contacts: 10,
-                dials: 12
-            },
-            {
-                name: 'Rudi Doe',
-                status: 0,
-                contacts: 10,
-                dials: 12
-            },
-            {
-                name: 'Rudi Doe',
-                status: 1,
-                contacts: 10,
-                dials: 12
-            },
-        ]
+
+    componentDidMount() {
+        this.loadCampaignList()
+
+        this.props.navigation.addListener('willFocus', (payload: any) => {
+            this.loadCampaignList()
+        })
+    }
+
+    loadCampaignList = () => {
+        CampaignService.getCampaignList(0, 500).subscribe((response: any) => {
+            console.log(response.data)
+            this.setState({
+                campaigns: response.data
+            })
+        })
     }
 
     render() {
         return (
-            <SafeAreaView style={{flex: 1}}>
-                <Header onMenu={this.onMenu} menu={true}/>
+            <SafeAreaView style={{ flex: 1 }}>
+                <Header onMenu={this.onMenu} menu={true} />
                 <View style={styles.container}>
 
                     <CmlText style={styles.campaignLabel}>
@@ -165,22 +127,24 @@ class Campaign extends Component {
                         <FlatList
                             data={this.state.campaigns}
                             renderItem={(item: any) => {
-                            return <TouchableOpacity onPress={() => this.props.navigation.push('CampaignDetailScreen')}>
-                                <View style={[styles.item, {
-                                    backgroundColor: item.index % 2 == 1? 'white': '#e4f9fd'
-                                }]}>
-                                    <View style={styles.iconContainer}>
-                                        {item.item.status == 0 && <FontAwesome name="circle" size={20} color={'#ff3d00'}/>}
-                                        {item.item.status == 1 && <Feather name="check-circle" size={20} color={'#0dac01'} />}
+                                return <TouchableOpacity onPress={() => this.props.navigation.push('CampaignDetailScreen', {
+                                    campaign: item.item
+                                })}>
+                                    <View style={[styles.item, {
+                                        backgroundColor: item.index % 2 == 1 ? 'white' : '#e4f9fd'
+                                    }]}>
+                                        <View style={styles.iconContainer}>
+                                            <StatusIcon campaign={item.item} />
+
+                                        </View>
+
+                                        <CmlText style={styles.itemName}>{item.item.name}</CmlText>
+
+                                        <CmlText style={styles.itemContact}>{item.item.call.stats.total}</CmlText>
+
+                                        <CmlText style={styles.itemDial}>{item.item.call.stats.dialed}</CmlText>
                                     </View>
-                                    
-                                    <CmlText style={styles.itemName}>{item.item.name}</CmlText>
-                                    
-                                    <CmlText style={styles.itemContact}>{item.item.contacts}</CmlText>
-                                    
-                                    <CmlText style={styles.itemDial}>{item.item.dials}</CmlText>
-                                </View>
-                            </TouchableOpacity>;
+                                </TouchableOpacity>;
                             }}
                         >
 
@@ -191,6 +155,6 @@ class Campaign extends Component {
             </SafeAreaView>
         );
     }
-  }
-  
-  export default Campaign;
+}
+
+export default Campaign;

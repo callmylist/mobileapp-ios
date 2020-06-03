@@ -64,6 +64,11 @@ class Dashboard extends Component<{
     componentDidMount() {
         this.props.loadUserInfo()
         this.props.loadCampaignList()
+
+        this.props.navigation.addListener('willFocus', (payload: any) => {
+            this.props.loadUserInfo()
+            this.props.loadCampaignList()
+        })
     }
 
     componentDidUpdate(prevProps: any, prevState: any, snapshot: any) {
@@ -80,9 +85,6 @@ class Dashboard extends Component<{
                 }
             }
         }
-
-        console.log(this.props.campaignList)
-
     }
 
 

@@ -3,8 +3,9 @@ import Constants from '../utils/app_constants';
 import axios from 'axios';
 import { from, throwError as observableThrowError, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { User } from 'src/shared/models/user.model';
+import { User } from '../shared/models/user.model';
 import RestClient from './restclient'
+import { store } from '../redux/store';
 
 export class UserService {
     static getUserByDomain(domain: string) {
@@ -28,5 +29,9 @@ export class UserService {
 
     static loadUserInfo() {
         return RestClient.get(constants.apiUrl.getUserById)
+    }
+
+    static sendSupportMessage(body: any) {
+        return RestClient.post(constants.apiUrl.sendSupportMessage.replace("{userId}", store.getState().authReducer.loggedInContact.id), body)
     }
 }

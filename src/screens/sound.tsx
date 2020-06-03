@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -8,12 +8,19 @@ import { CmlText } from '../components/text'
 import { CmlTextInput } from '../components/textinput'
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { CmlButton } from '../components/button'
+import { SoundService } from '../service/sound.service'
+import TrackPlayer from 'react-native-track-player';
+import AppConstants from '../utils/app_constants'
+
+import Modal from 'react-native-modal';
+import AppStyle from '../shared/styles'
+import Player from "../components/player";
 
 const styles = StyleSheet.create({
     container: {
         padding: 8,
         flex: 1
-    }, 
+    },
     campaignLabel: {
         fontSize: 20,
         textAlign: 'center',
@@ -63,11 +70,11 @@ const styles = StyleSheet.create({
     },
     dialogSwitchContainer: {
         marginTop: 8,
-        flexDirection: 'row', 
+        flexDirection: 'row',
         alignItems: 'center'
     },
     borderBottom: {
-        borderBottomColor: 'white', 
+        borderBottomColor: 'white',
         borderBottomWidth: 1
     },
     dialogTimeContainer: {
@@ -95,54 +102,76 @@ const styles = StyleSheet.create({
     },
 });
 
-class Sound extends Component {
-
-    state = {
-        sounds: [
-            {
-                name: 'My voice'
-            },
-            {
-                name: 'My voice'
-            },
-            {
-                name: 'My voice'
-            },
-            {
-                name: 'My voice'
-            },
-            {
-                name: 'My voice'
-            },
-            {
-                name: 'My voice'
-            },
-            {
-                name: 'My voice'
-            },
-            {
-                name: 'My voice'
-            },
-        ],
-        textToSpeech: false
-    }
+class SoundScreen extends Component<{
+    navigation: any
+}, {
+    sounds: any[],
+    textToSpeech: boolean,
+    playSound: boolean
+}> {
 
     constructor(props: any) {
         super(props)
+        this.state = {
+            sounds: [],
+            textToSpeech: false,
+            playSound: false
+        }
     }
 
     componentDidMount() {
-
+        SoundService.getSoundList().subscribe((response: any) => {
+            this.setState({
+                sounds: response.data
+            })
+        })
     }
-    
+
     onMenu = () => {
         this.props.navigation.openDrawer()
     }
 
+    playSound = async (sound: any) => {
+        console.log(sound)
+        // TrackPlayer.addEventListener('playback-state', (data: any) => {
+        //     console.log(data)
+        // })
+        this.setState({
+            playSound: true
+        })
+
+        // TrackPlayer.addEventListener('playback-track-changed', (data: any) => {
+        //     console.log(data)
+        // })
+        await TrackPlayer.setupPlayer();
+        await TrackPlayer.add({
+            id: sound.id,
+            url: AppConstants.RESOURCE_URL + sound.wavFilePath,
+            title: sound.fileName,
+            artist: "",
+        });
+
+        await TrackPlayer.play();
+    }
+
+    togglePlayback = async () => {
+        let playbackState = await TrackPlayer.getState()
+        if (playbackState === TrackPlayer.STATE_PAUSED) {
+            await TrackPlayer.play();
+        } else {
+            await TrackPlayer.pause();
+        }
+    }
+
+    resetPlayer = async () => {
+        this.setState({ playSound: false })
+        await TrackPlayer.reset()
+    }
+
     render() {
         return (
-            <SafeAreaView style={{flex: 1}}>
-                <Header onMenu={this.onMenu} menu={true}/>
+            <SafeAreaView style={{ flex: 1 }}>
+                <Header onMenu={this.onMenu} menu={true} />
                 <View style={styles.container}>
 
                     <CmlText style={styles.campaignLabel}>
@@ -153,9 +182,9 @@ class Sound extends Component {
                     }}>
                         <TouchableOpacity style={{
                             marginTop: 16
-                        }} onPress={() => this.setState({textToSpeech: true})}>
+                        }} onPress={() => this.setState({ textToSpeech: true })}>
                             <View style={styles.buttonContainer}>
-                                <FontAwesome 
+                                <FontAwesome
                                     name="comment"
                                     color="white"
                                     size={20}
@@ -166,8 +195,8 @@ class Sound extends Component {
                         <TouchableOpacity style={{
                             marginTop: 16
                         }}>
-                            <View style={[styles.buttonContainer, {backgroundColor:'#565757'}]}>
-                                <Feather 
+                            <View style={[styles.buttonContainer, { backgroundColor: '#565757' }]}>
+                                <Feather
                                     name="upload"
                                     color="white"
                                     size={20}
@@ -182,20 +211,20 @@ class Sound extends Component {
                         alignSelf: 'center',
                         marginBottom: 24
                     }]}>
-                    IT’s Simple. Add and review your audio files here. We have given you 3 easy ways to add sounds. You may record sound files using our recording interface. All sound files will be listed below. Please call 
-1-317-552-0035. When prompted enter Id: 92632# and Password: 9559# 
+                        IT’s Simple. Add and review your audio files here. We have given you 3 easy ways to add sounds. You may record sound files using our recording interface. All sound files will be listed below. Please call
+                        1-317-552-0035. When prompted enter Id: 92632# and Password: 9559#
                     </CmlText>
 
-                    <FlatList 
+                    <FlatList
                         data={this.state.sounds}
                         renderItem={(item: any) => {
-                        return <View style={[styles.itemContainer, {
-                            backgroundColor: item.index % 2 == 1? 'white': '#f6fbfd'
-                        }]}>
+                            return <View style={[styles.itemContainer, {
+                                backgroundColor: item.index % 2 == 1 ? 'white' : '#f6fbfd'
+                            }]}>
                                 <CmlText style={{
                                     width: 20
                                 }}>{item.index + 1}.</CmlText>
-                                
+
                                 <CmlText style={{
                                     fontSize: 16
                                 }}>{item.item.name}</CmlText>
@@ -204,8 +233,8 @@ class Sound extends Component {
                                 }} />
                                 <TouchableOpacity style={{
                                     marginRight: 8
-                                }}>
-                                    <AntDesign 
+                                }} onPress={() => this.playSound(item.item)}>
+                                    <AntDesign
                                         name="playcircleo"
                                         size={24}
                                     />
@@ -214,7 +243,7 @@ class Sound extends Component {
                                     marginRight: 8
                                 }}>
                                     <View style={styles.itemIcon}>
-                                        <AntDesign 
+                                        <AntDesign
                                             name="download"
                                             size={14}
                                             color="#f57536"
@@ -227,7 +256,7 @@ class Sound extends Component {
                                     <View style={[styles.itemIcon, {
                                         borderColor: 'red'
                                     }]}>
-                                        <AntDesign 
+                                        <AntDesign
                                             name="delete"
                                             size={14}
                                             color="red"
@@ -245,24 +274,24 @@ class Sound extends Component {
                 <Dialog
                     visible={this.state.textToSpeech}
                     onTouchOutside={() => {
-                    this.setState({ textToSpeech: false });
+                        this.setState({ textToSpeech: false });
                     }}
                     dialogStyle={styles.dialogContainer}
                     overlayOpacity={0}
                 >
                     <DialogContent>
-                        <View style={{paddingVertical: 0}}>
+                        <View style={{ paddingVertical: 0 }}>
                             <View>
                                 <CmlText style={styles.dialogSmallTitle}>Please enter the text and select void gender below.</CmlText>
                                 <View style={styles.dialogTimeContainer}>
                                     <CmlTextInput style={[styles.dialogTimePlaceholder,
-                                            {
-                                            height: 100,
-                                            textAlignVertical: "top"
-                                        }]}
-                                        placeholderTextColor = "white"
+                                    {
+                                        height: 100,
+                                        textAlignVertical: "top"
+                                    }]}
+                                        placeholderTextColor="white"
                                         placeholder="Enter Text To Speech"
-                                        multiline={true}/>
+                                        multiline={true} />
                                 </View>
 
                                 <CmlText style={styles.dialogDescription}>Voice Gender</CmlText>
@@ -274,17 +303,29 @@ class Sound extends Component {
                                     flexDirection: 'row',
                                     marginTop: 16
                                 }}>
-                                    <CmlButton title="Use Text" backgroundColor="#02b9db" style={{width: 100, marginTop: 16}}/>
-                                    <View style={{flex: 1}} />
-                                    <CmlButton title="Cancel" backgroundColor="#ffa67a" style={{width: 100, marginTop: 16, marginLeft: 16}}/>
+                                    <CmlButton title="Use Text" backgroundColor="#02b9db" style={{ width: 100, marginTop: 16 }} />
+                                    <View style={{ flex: 1 }} />
+                                    <CmlButton title="Cancel" backgroundColor="#ffa67a" style={{ width: 100, marginTop: 16, marginLeft: 16 }} />
                                 </View>
                             </View>
                         </View>
                     </DialogContent>
                 </Dialog>
-            </SafeAreaView>
+
+                <Modal
+                    isVisible={this.state.playSound}
+                    backdropOpacity={0}
+                    onBackdropPress={() => this.resetPlayer()}
+                >
+                    <View style={AppStyle.dialogContainer}>
+                        <Player
+                            onTogglePlayback={this.togglePlayback}
+                        />
+                    </View>
+                </Modal>
+            </SafeAreaView >
         );
     }
 }
-  
-export default Sound;
+
+export default SoundScreen;

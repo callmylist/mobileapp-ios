@@ -11,6 +11,7 @@ import { StackActions } from '@react-navigation/native';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { CmlButton } from '../components/button'
 import Modal from 'react-native-modal';
+import AppStyle from '../shared/styles'
 
 const styles = StyleSheet.create({
     container: {
@@ -88,48 +89,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '600'
     },
-    dialogContainer: {
-        backgroundColor: '#000000bb',
-        width: '80%'
-    },
-    dialogTitle: {
-        color: 'white',
-        fontWeight: 'bold',
-        alignSelf: 'center',
-        fontSize: 20
-    },
-    dialogSwitchContainer: {
-        marginTop: 8,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    borderBottom: {
-        borderBottomColor: 'white',
-        borderBottomWidth: 1
-    },
-    dialogTimeContainer: {
-        borderBottomWidth: 1,
-        borderBottomColor: 'white',
-        paddingVertical: 8,
-        flexDirection: 'row'
-    },
-    dialogTimePlaceholder: {
-        color: 'white',
-        fontSize: 10,
-        marginTop: 12
-    },
-    dialogDescription: {
-        color: 'white',
-        fontWeight: '500',
-        fontSize: 10,
-        marginTop: 8
-    },
-    dialogSmallTitle: {
-        color: 'white',
-        fontWeight: '500',
-        fontSize: 16,
-        marginTop: 24
-    },
+
 });
 
 class Menu extends Component {
@@ -240,7 +200,7 @@ class Menu extends Component {
                                 <CmlText style={[styles.menuLabel, this.state.currentMenu === 5 && styles.selectedMenuText]}>Account</CmlText>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.onMenuItem(7)}>
+                        <TouchableOpacity onPress={() => this.onMenuItem(6)}>
                             <View style={[styles.menuItem, this.state.currentMenu === 6 && styles.selectedMenu]}>
                                 <Feather name="help-circle" size={24} color={this.state.currentMenu == 6 ? 'white' : '#a9afbb'} />
                                 <CmlText style={[styles.menuLabel, this.state.currentMenu === 6 && styles.selectedMenuText]}>Support</CmlText>
@@ -262,19 +222,14 @@ class Menu extends Component {
                     backdropOpacity={0}
                     onBackdropPress={() => this.setState({ addFunds: false })}
                 >
-                    <View style={{
-                        padding: 16,
-                        backgroundColor: '#000000cc',
-                        paddingBottom: 32,
-                        borderRadius: 16
-                    }}>
+                    <View style={AppStyle.dialogContainer}>
                         <View>
-                            <CmlText style={styles.dialogTitle}>Add Funds</CmlText>
-                            <CmlText style={styles.dialogDescription}>Enter a value for the amount of credits you would like to add to the account.</CmlText>
+                            <CmlText style={AppStyle.dialogTitle}>Add Funds</CmlText>
+                            <CmlText style={AppStyle.dialogDescription}>Enter a value for the amount of credits you would like to add to the account.</CmlText>
 
-                            <View style={styles.dialogTimeContainer}>
+                            <View style={AppStyle.dialogTimeContainer}>
                                 <FontAwesome name="dollar" size={20} color={'#ffa67a'} />
-                                <CmlTextInput style={styles.dialogTimePlaceholder} style={{ flex: 1, fontSize: 14, color: 'white', marginLeft: 8 }}></CmlTextInput>
+                                <CmlTextInput style={AppStyle.dialogTimePlaceholder} style={{ flex: 1, fontSize: 14, color: 'white', marginLeft: 8 }}></CmlTextInput>
                             </View>
 
                             <View style={{ flexDirection: 'row', width: '100%', height: 32, justifyContent: 'flex-end' }}>
