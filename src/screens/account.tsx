@@ -1,19 +1,40 @@
-import React, {Component} from 'react';
-import {StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView, Image} from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import React, { Component } from 'react';
+import {
+    StyleSheet, FlatList, View, TouchableOpacity, SafeAreaView, Image,
+    KeyboardAvoidingView,
+    Platform, Keyboard
+} from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from '../components/header'
 import { CmlText } from '../components/text'
 import { CmlTextInput } from '../components/textinput'
 import { ScrollView } from 'react-native-gesture-handler';
 import { CmlButton } from '../components/button'
-import { Menu, MenuTrigger, MenuOptions, MenuOption} from 'react-native-popup-menu';
+import { Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { UserService } from '../service/user.service'
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import moment from 'moment'
+import RNPickerSelect from 'react-native-picker-select';
+import AppConstants from '../utils/app_constants'
+import Utils from '../utils';
+import { UPDATE_PROFILE } from '../redux/actionTypes/auth'
+import { store } from '../redux/store';
+import { CmlSpinner } from '../components/loading';
+import DocumentPicker from 'react-native-document-picker';
+
+import Modal from 'react-native-modal';
+import AppStyle from '../shared/styles'
+import ImagePicker from 'react-native-image-picker';
+import RNFS from 'react-native-fs'
 
 const styles = StyleSheet.create({
     container: {
         padding: 8,
         flex: 1
-    }, 
+    },
     campaignLabel: {
         fontSize: 20,
         textAlign: 'center',
@@ -118,55 +139,374 @@ const styles = StyleSheet.create({
     },
 });
 
-class Account extends Component {
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        fontSize: 14,
+        color: '#767676',
+        width: 1000,
+        marginTop: 2
+    },
+    inputAndroid: {
+        fontSize: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        color: '#767676',
+        width: '100%'
+    },
+});
 
-    state = {
-        children: [
-            {
-                name: 'Wang Dan',
-                email: 'apaladin1993@outlook.com',
-                funds: 256
+
+class AccountScreen extends Component<{
+    navigation: any,
+    loggedInContact: any,
+    assetsPath: string
+}, {
+    user: any,
+    children: any[],
+    startTimepicker: boolean,
+    endTimepicker: boolean,
+    restrictions: any,
+    logoUrl: string,
+    loading: boolean,
+    updatePassword: boolean,
+    existingPassword: string,
+    newPassword: string,
+    confirmPassword: string,
+    deleteConfirm: boolean
+}> {
+    timezones: any[] = []
+
+    constructor(props: any) {
+        super(props)
+
+        let startDate = new Date();
+        startDate.setHours(9)
+        startDate.setMinutes(0);
+
+        console.log(startDate.toISOString())
+
+        let endDate = new Date();
+        endDate.setHours(16)
+        endDate.setMinutes(0);
+
+        this.state = {
+            user: null,
+            children: [
+                {
+                    name: 'Wang Dan',
+                    email: 'apaladin1993@outlook.com',
+                    funds: 256
+                },
+                {
+                    name: 'Wang Dan',
+                    email: 'apaladin1993@outlook.com',
+                    funds: 256
+                },
+                {
+                    name: 'Wang Dan',
+                    email: 'apaladin1993@outlook.com',
+                    funds: 256
+                },
+                {
+                    name: 'Wang Dan',
+                    email: 'apaladin1993@outlook.com',
+                    funds: 256
+                },
+                {
+                    name: 'Wang Dan',
+                    email: 'apaladin1993@outlook.com',
+                    funds: 256
+                },
+                {
+                    name: 'Wang Dan',
+                    email: 'apaladin1993@outlook.com',
+                    funds: 256
+                },
+            ],
+            startTimepicker: false,
+            endTimepicker: false,
+            restrictions: {
+                startTime: startDate,
+                endTime: endDate,
+                timeZone: "US/Eastern"
             },
-            {
-                name: 'Wang Dan',
-                email: 'apaladin1993@outlook.com',
-                funds: 256
-            },
-            {
-                name: 'Wang Dan',
-                email: 'apaladin1993@outlook.com',
-                funds: 256
-            },
-            {
-                name: 'Wang Dan',
-                email: 'apaladin1993@outlook.com',
-                funds: 256
-            },
-            {
-                name: 'Wang Dan',
-                email: 'apaladin1993@outlook.com',
-                funds: 256
-            },
-            {
-                name: 'Wang Dan',
-                email: 'apaladin1993@outlook.com',
-                funds: 256
-            },
-        ]
+            logoUrl: "",
+            loading: false,
+            updatePassword: false,
+            deleteConfirm: false,
+            existingPassword: "",
+            newPassword: "",
+            confirmPassword: "",
+        }
+    }
+
+    componentDidUpdate(prevProps: any, prevState: any, snapshot: any) {
+        if (prevProps.loggedInContact !== this.props.loggedInContact) {
+            this.setState({
+                user: this.props.loggedInContact,
+                logoUrl: this.props.assetsPath + this.props.loggedInContact.customize.logoPath
+            })
+        }
     }
 
     componentDidMount() {
+
+        this.setState({
+            user: this.props.loggedInContact,
+            logoUrl: this.props.assetsPath + this.props.loggedInContact.customize.logoPath
+        })
+
+        UserService.loadUserInfo().subscribe((response: any) => {
+            var loggedInContact = this.props.loggedInContact
+
+            loggedInContact.phone = response.data.phone
+            loggedInContact.firstName = response.data.firstName
+            loggedInContact.lastName = response.data.lastName
+            loggedInContact.companyName = response.data.companyName
+            loggedInContact.customize = response.data.customize
+
+            store.dispatch({
+                type: UPDATE_PROFILE,
+                payload: {
+                    loggedInContact: loggedInContact
+                }
+            })
+            this.setState({
+                user: loggedInContact
+            })
+
+            if (response.data.restrictions) {
+                let startTime = new Date();
+                startTime.setHours(response.data.restrictions.startTime[0])
+                startTime.setMinutes(response.data.restrictions.startTime[1])
+
+                let endTime = new Date();
+                endTime.setHours(response.data.restrictions.endTime[0])
+                endTime.setMinutes(response.data.restrictions.endTime[1])
+
+                this.setState({
+                    restrictions: {
+                        startTime: startTime,
+                        endTime: endTime,
+                        timeZone: response.data.restrictions.timeZone
+                    }
+                })
+            }
+        })
     }
-    
+
     onMenu = () => {
         this.props.navigation.openDrawer()
     }
 
+    updateProfile = () => {
+        if (this.state.user.firstName.length == 0) {
+            Utils.presentToast("Please enter valid first name")
+            return
+        }
+        if (this.state.user.lastName.length == 0) {
+            Utils.presentToast("Please enter valid last name")
+            return
+        }
+        if (this.state.user.companyName.length == 0) {
+            Utils.presentToast("Please enter valid company name")
+            return
+        }
+        if (this.state.user.email.length == 0) {
+            Utils.presentToast("Please enter valid email")
+            return
+        }
+        if (this.state.user.phone.length == 0 || !Utils.validatePhoneNumber(this.state.user.phone)) {
+            Utils.presentToast("Please enter valid email")
+            return
+        }
+        if (!this.state.restrictions.timeZone) {
+            Utils.presentToast("Please select time zone")
+            return
+        }
+
+        const user: any = {
+            firstName: this.state.user.firstName,
+            lastName: this.state.user.lastName,
+            companyName: this.state.user.companyName,
+            email: this.state.user.email,
+            phone: this.state.user.phone,
+            password: "dummydummy",
+            parentId: this.props.loggedInContact.parentId,
+            restrictions: {
+                startTime: [
+                    this.state.restrictions.startTime.getHours(),
+                    this.state.restrictions.startTime.getMinutes(),
+                ],
+                endTime: [
+                    this.state.restrictions.endTime.getHours(),
+                    this.state.restrictions.endTime.getMinutes(),
+                ],
+                timeZone: this.state.restrictions.timeZone
+            }
+        }
+
+        this.setState({
+            loading: true
+        })
+
+        UserService.saveAccountUpdate(user).subscribe((response: any) => {
+
+            this.setState({
+                loading: false
+            })
+
+            if (response.success) {
+                Utils.presentToast("Successfully updated profile.")
+
+                var loggedInContact = this.props.loggedInContact
+
+                loggedInContact.phone = response.data.phone
+                loggedInContact.firstName = response.data.firstName
+                loggedInContact.lastName = response.data.lastName
+                loggedInContact.companyName = response.data.companyName
+                loggedInContact.customize = response.data.customize
+
+                store.dispatch({
+                    type: UPDATE_PROFILE,
+                    payload: {
+                        loggedInContact: loggedInContact
+                    }
+                })
+
+                this.setState({
+                    user: loggedInContact
+                })
+            }
+            else {
+                Utils.presentToast("Error occured. Please try again.")
+            }
+        })
+    }
+
+    updatePassword = () => {
+        if (this.state.existingPassword.length == 0) {
+            Utils.presentToast("Error occured. Please try again.")
+            return;
+        }
+        if (this.state.newPassword.length < 8) {
+            Utils.presentToast("Password length should be at least 8")
+            return
+        }
+        if (this.state.confirmPassword.length < 8) {
+            Utils.presentToast("Password length should be at least 8")
+            return
+        }
+
+        if (this.state.newPassword != this.state.confirmPassword) {
+            Utils.presentToast("Passwords does not match")
+            return
+        }
+
+        let data = {
+            oldPassword: this.state.existingPassword,
+            newPassword: this.state.newPassword,
+        }
+        Keyboard.dismiss()
+        UserService.updatePassword(data).subscribe((response: any) => {
+            if (response.success) {
+                Utils.presentToast("Updated password successfully.")
+                this.setState({
+                    updatePassword: false,
+                    newPassword: "",
+                    existingPassword: "",
+                    confirmPassword: ""
+                })
+            }
+            else {
+                Utils.presentToast(response.message + ". " + response.submessage)
+            }
+        })
+    }
+
+    editLogo = async () => {
+
+        ImagePicker.showImagePicker({}, (fileInfo: any) => {
+            this.setState({
+                loading: true
+            })
+            UserService.updateLogo(fileInfo, (response: any) => {
+                console.log(response)
+                this.setState({
+                    loading: false
+                })
+                if (response.success) {
+                    Utils.presentToast("Successfully updated logo.")
+                    var loggedInContact = this.props.loggedInContact
+
+                    loggedInContact.phone = response.data.phone
+                    loggedInContact.firstName = response.data.firstName
+                    loggedInContact.lastName = response.data.lastName
+                    loggedInContact.companyName = response.data.companyName
+                    loggedInContact.customize = response.data.customize
+                    store.dispatch({
+                        type: UPDATE_PROFILE,
+                        payload: {
+                            loggedInContact: loggedInContact
+                        }
+                    })
+                    this.setState({
+                        user: loggedInContact
+                    })
+                }
+                else {
+                    Utils.presentToast(response.message + ". " + response.submessage)
+                }
+            });
+        })
+    }
+
+    deleteLogo = () => {
+        this.setState({
+            loading: true,
+            deleteConfirm: false
+        })
+        UserService.deleteAccountLogo().subscribe((response: any) => {
+            this.setState({
+                loading: false,
+            })
+            if (response.success) {
+                Utils.presentToast("Account logo deleted successfully")
+
+                var loggedInContact = this.props.loggedInContact
+
+                loggedInContact.phone = response.data.phone
+                loggedInContact.firstName = response.data.firstName
+                loggedInContact.lastName = response.data.lastName
+                loggedInContact.companyName = response.data.companyName
+                loggedInContact.customize = response.data.customize
+                store.dispatch({
+                    type: UPDATE_PROFILE,
+                    payload: {
+                        loggedInContact: loggedInContact
+                    }
+                })
+                this.setState({
+                    user: loggedInContact
+                })
+            }
+            else {
+                Utils.presentToast("Error occured. Please try again.")
+            }
+        });
+    }
+
     render() {
         return (
-            <SafeAreaView style={{flex: 1}}>
-                <Header onMenu={this.onMenu} menu={true}/>
-                <View style={styles.container}>
+            <SafeAreaView style={{ flex: 1 }}>
+                <Header onMenu={this.onMenu} menu={true} />
+                <CmlSpinner
+                    visible={this.state.loading}
+                />
+                <KeyboardAvoidingView
+                    style={styles.container}
+                    behavior="padding"
+                    keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -500}>
                     <ScrollView>
                         <CmlText style={styles.campaignLabel}>
                             Account
@@ -175,7 +515,7 @@ class Account extends Component {
                         <CmlText style={styles.campaignDesc}>
                             Billing Details
                         </CmlText>
-                        
+
                         <View style={{
                             flexDirection: 'row',
                             marginTop: 16,
@@ -195,7 +535,7 @@ class Account extends Component {
                                     1/1/2020
                                 </CmlText>
                             </View>
-                            <View style={{flex: 1}} />
+                            <View style={{ flex: 1 }} />
                             <View style={[styles.badgeContainer, {
                                 borderColor: '#21bedf'
                             }]}>
@@ -214,7 +554,7 @@ class Account extends Component {
                                     Billing Increment:
                                 </CmlText>
                             </View>
-                            <View style={{flex: 1}} />
+                            <View style={{ flex: 1 }} />
                             <View style={[styles.badgeContainer, {
                                 borderColor: '#474747'
                             }]}>
@@ -246,141 +586,256 @@ class Account extends Component {
                         <CmlText style={styles.campaignLabel}>
                             Edit Contact
                         </CmlText>
-
-                        <View style={{
-                            padding: 16,
-                            borderWidth: 1,
-                            borderColor: '#fa9a68',
-                            borderRadius: 8,
-                            marginTop: 8
-                        }}>
-                            <View style={{
-                                flexDirection: 'row'
+                        {
+                            this.state.user && <View style={{
+                                padding: 16,
+                                borderWidth: 1,
+                                borderColor: '#fa9a68',
+                                borderRadius: 8,
+                                marginTop: 8
                             }}>
-                                <View style={[styles.editContainer, {
-                                    width: '48%'
-                                }]}>
-                                    <CmlText style={styles.marginBottom}>
-                                        First Name
-                                    </CmlText>
-                                    <CmlTextInput style={styles.editInput}>
-                                        Dan
-                                    </CmlTextInput>
-                                </View>
-                                <View style={{flex: 1}} />
-                                <View style={[styles.editContainer, {
-                                    width: '48%'
-                                }]}>
-                                    <CmlText style={styles.marginBottom}>
-                                        Last Name
-                                    </CmlText>
-                                    <CmlTextInput style={styles.editInput}>
-                                        Wang
-                                    </CmlTextInput>
-                                </View>
-                            </View>
-                            <View style={[styles.editContainer]}>
-                                <CmlText style={styles.marginBottom}>
-                                    Email
-                                </CmlText>
-                                <CmlTextInput style={styles.editInput}>
-                                    apaladin1993@outlook.com
-                                </CmlTextInput>
-                            </View>
-                            <View style={[styles.editContainer]}>
-                                <CmlText style={styles.marginBottom}>
-                                    Company
-                                </CmlText>
-                                <CmlTextInput style={styles.editInput}>
-                                    Blast My Call
-                                </CmlTextInput>
-                            </View>
-                            <View style={[styles.editContainer]}>
-                                <CmlText style={styles.marginBottom}>
-                                    Phone Number
-                                </CmlText>
-                                <CmlTextInput style={styles.editInput}>
-                                    3135082344
-                                </CmlTextInput>
-                            </View>
-
-                            <CmlText style={{
-                                fontSize: 18,
-                                marginTop: 16
-                            }}>
-                                Time Restrictions
-                            </CmlText>
-                            <CmlText style={{
-                                fontSize: 10,
-                                color: '#404040'
-                            }}>
-                                Contacts will not be dialed outside these hours
-                            </CmlText>
-                            <View style={{
-                                flexDirection: 'row'
-                            }}>
-                                <View style={[styles.editContainer, {
-                                    width: '48%'
-                                }]}>
-                                    <CmlText style={styles.marginBottom}>
-                                        Start Time
-                                    </CmlText>
-                                    <CmlText style={styles.editInput}>
-                                        09:00PM
-                                    </CmlText>
-                                </View>
-                                <View style={{flex: 1}} />
-                                <View style={[styles.editContainer, {
-                                    width: '48%'
-                                }]}>
-                                    <CmlText style={styles.marginBottom}>
-                                        End Time
-                                    </CmlText>
-                                    <CmlText style={styles.editInput}>
-                                        09:00PM
-                                    </CmlText>
-                                </View>
-                            </View>
-                            <View style={{
-                                flexDirection: 'row'
-                            }}>
-                                <View style={[styles.editContainer, {
-                                    width: '48%'
-                                }]}>
-                                    <CmlText style={styles.marginBottom}>
-                                        Time Zone
-                                    </CmlText>
-                                    <CmlText style={styles.editInput}>
-                                        US/Eastern Time (EST)
-                                    </CmlText>
-                                </View>
-                            </View>
-
-                            <View style={{
-                                flexDirection: 'row',
-                                marginTop: 16
-                            }}>
-                                <Image source={require("../assets/images/avatar.png")} style={{
-                                    width: '25%',
-                                    aspectRatio: 1
-                                }} />
                                 <View style={{
-                                    justifyContent: 'center',
-                                    padding: 16
+                                    flexDirection: 'row'
                                 }}>
-                                    <CmlText style={{
-                                        color: '#484848'
-                                    }}>Change Profile Image</CmlText>
+                                    <View style={[styles.editContainer, {
+                                        width: '48%'
+                                    }]}>
+                                        <CmlText style={styles.marginBottom}>
+                                            First Name
+                                            </CmlText>
+                                        <CmlTextInput
+                                            style={styles.editInput}
+                                            value={this.state.user.firstName}
+                                            onChangeText={(value: any) => {
+                                                this.setState({
+                                                    user: {
+                                                        ...this.state.user,
+                                                        firstName: value
+                                                    }
+                                                })
+                                            }}>
+                                        </CmlTextInput>
+                                    </View>
+                                    <View style={{ flex: 1 }} />
+                                    <View style={[styles.editContainer, {
+                                        width: '48%'
+                                    }]}>
+                                        <CmlText style={styles.marginBottom}>
+                                            Last Name
+                                            </CmlText>
+                                        <CmlTextInput style={styles.editInput}
+                                            value={this.state.user.lastName}
+                                            onChangeText={(value: any) => {
+                                                this.setState({
+                                                    user: {
+                                                        ...this.state.user,
+                                                        lastName: value
+                                                    }
+                                                })
+                                            }}>
+
+                                        </CmlTextInput>
+                                    </View>
+                                </View>
+                                <View style={[styles.editContainer]}>
+                                    <CmlText style={styles.marginBottom}>
+                                        Email
+                                        </CmlText>
+                                    <CmlTextInput style={styles.editInput}
+                                        value={this.state.user.email}
+                                        onChangeText={(value: any) => {
+                                            this.setState({
+                                                user: {
+                                                    ...this.state.user,
+                                                    email: value
+                                                }
+                                            })
+                                        }}>
+                                    </CmlTextInput>
+                                </View>
+                                <View style={[styles.editContainer]}>
+                                    <CmlText style={styles.marginBottom}>
+                                        Company
+                                        </CmlText>
+                                    <CmlTextInput style={styles.editInput}
+                                        value={this.state.user.companyName}
+                                        onChangeText={(value: any) => {
+                                            this.setState({
+                                                user: {
+                                                    ...this.state.user,
+                                                    companyName: value
+                                                }
+                                            })
+                                        }}>
+                                    </CmlTextInput>
+                                </View>
+                                <View style={[styles.editContainer]}>
+                                    <CmlText style={styles.marginBottom}>
+                                        Phone Number
+                                        </CmlText>
+                                    <CmlTextInput style={styles.editInput}
+                                        value={this.state.user.phone}
+                                        onChangeText={(value: any) => {
+                                            this.setState({
+                                                user: {
+                                                    ...this.state.user,
+                                                    phone: value
+                                                }
+                                            })
+                                        }}>
+                                    </CmlTextInput>
+                                </View>
+
+                                <CmlText style={{
+                                    fontSize: 18,
+                                    marginTop: 16
+                                }}>
+                                    Time Restrictions
+                                    </CmlText>
+                                <CmlText style={{
+                                    fontSize: 10,
+                                    color: '#404040'
+                                }}>
+                                    Contacts will not be dialed outside these hours
+                                    </CmlText>
+                                <View style={{
+                                    flexDirection: 'row'
+                                }}>
+                                    <View style={[styles.editContainer, {
+                                        width: '48%'
+                                    }]}>
+                                        <CmlText style={styles.marginBottom}>
+                                            Start Time
+                                            </CmlText>
+                                        <TouchableOpacity onPress={() => {
+
+                                            this.setState({
+                                                startTimepicker: true,
+                                            })
+                                        }
+                                        }>
+
+                                            <CmlText style={styles.editInput}>
+                                                {moment(this.state.restrictions.startTime).format('h:mm a')}
+                                            </CmlText>
+                                        </TouchableOpacity>
+                                        <DateTimePickerModal
+                                            isVisible={this.state.startTimepicker}
+                                            mode="time"
+                                            date={this.state.restrictions.startTime}
+                                            onConfirm={(value: any) => this.setState({
+                                                restrictions: {
+                                                    ...this.state.restrictions,
+                                                    startTime: value
+                                                },
+                                                startTimepicker: false
+                                            })}
+                                            onCancel={() => this.setState({
+                                                startTimepicker: false
+                                            })}
+                                        />
+                                    </View>
+                                    <View style={{ flex: 1 }} />
+                                    <View style={[styles.editContainer, {
+                                        width: '48%'
+                                    }]}>
+                                        <CmlText style={styles.marginBottom}>
+                                            End Time
+                                        </CmlText>
+                                        <TouchableOpacity onPress={() => {
+
+                                            this.setState({
+                                                endTimepicker: true,
+                                            })
+                                        }
+                                        }>
+
+                                            <CmlText style={styles.editInput}>
+                                                {moment(this.state.restrictions.endTime).format('h:mm a')}
+                                            </CmlText>
+                                        </TouchableOpacity>
+                                        <DateTimePickerModal
+                                            isVisible={this.state.endTimepicker}
+                                            mode="time"
+                                            date={this.state.restrictions.endTime}
+                                            onConfirm={(value: any) => this.setState({
+                                                restrictions: {
+                                                    ...this.state.restrictions,
+                                                    endTime: value
+                                                },
+                                                endTimepicker: false
+                                            })}
+                                            onCancel={() => this.setState({
+                                                endTimepicker: false
+                                            })}
+                                        />
+                                    </View>
+                                </View>
+                                <View style={{
+                                    flexDirection: 'row'
+                                }}>
+                                    <View style={[styles.editContainer, {
+                                        width: '48%'
+                                    }]}>
+                                        <CmlText style={styles.marginBottom}>
+                                            Time Zone
+                                        </CmlText>
+                                        <RNPickerSelect
+                                            style={pickerSelectStyles}
+                                            value={this.state.restrictions.timeZone}
+                                            onValueChange={(value) => {
+                                                this.setState({
+                                                    restrictions: {
+                                                        ...this.state.restrictions,
+                                                        timeZone: value
+                                                    }
+                                                })
+                                            }}
+                                            items={AppConstants.timeZones}
+                                        />
+                                    </View>
+                                </View>
+
+
+                                <View style={{
+                                    flexDirection: 'row'
+                                }}>
+                                    <CmlButton title="RESET PASSWORD" backgroundColor="#ffa67a" style={{ marginTop: 16 }} onPress={() => {
+                                        this.setState({
+                                            updatePassword: true
+                                        })
+                                    }} />
+                                    <CmlButton title="UPDATE" backgroundColor="#02b9db" style={{ marginTop: 16, marginLeft: 16 }} onPress={() => this.updateProfile()} />
+                                </View>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    marginTop: 16
+                                }}>
+                                    <Image source={{
+                                        uri: this.props.assetsPath + this.state.user.customize.logoPath
+                                    }} style={{
+                                        width: '25%',
+                                        aspectRatio: 1,
+                                        borderWidth: 1,
+                                        borderColor: '#767676',
+                                    }} />
+                                    <View style={{
+                                        justifyContent: 'center',
+                                        padding: 16
+                                    }}>
+                                        <TouchableOpacity onPress={() => this.editLogo()}>
+                                            <MaterialCommunityIcons name="square-edit-outline" size={32} color='#767676' />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => this.setState({
+                                            deleteConfirm: true
+                                        })}>
+                                            <MaterialCommunityIcons name="delete" size={32} color='#767676' />
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
+                        }
 
-                            <View style={{
-                                flexDirection: 'row'
-                            }}>
-                                <CmlButton title="Text To Speech" backgroundColor="#ffa67a" style={{marginTop: 16}}/>
-                                <CmlButton title="Upload Audio" backgroundColor="#02b9db" style={{marginTop: 16, marginLeft: 16}}/>
-                            </View>
-                        </View>
 
                         <CmlText style={{
                             fontSize: 18,
@@ -394,7 +849,8 @@ class Account extends Component {
                             borderWidth: 1,
                             borderColor: '#fa9a68',
                             borderRadius: 8,
-                            marginTop: 8
+                            marginTop: 8,
+                            overflow: 'hidden'
                         }}>
                             <View style={styles.tableHeader}>
                                 <CmlText style={[styles.tableLabel, {
@@ -408,73 +864,217 @@ class Account extends Component {
                                     flex: 1
                                 }]}>Funds Available</CmlText>
                             </View>
-                            <FlatList 
+                            <FlatList
                                 data={this.state.children}
                                 renderItem={(item: any) => {
-                                return <TouchableOpacity>
-                                    <View style={[styles.item, {
-                                        backgroundColor: item.index % 2 == 1? 'white': '#e4f9fd'
-                                    }]}>
-                                        <View style={styles.iconContainer}>
-                                            {item.item.status == 0 && <FontAwesome name="circle" size={20} color={'#ff3d00'}/>}
-                                            {item.item.status == 1 && <Feather name="check-circle" size={20} color={'#0dac01'} />}
-                                        </View>
-                                        <View style={{
-                                            flex: 1,
-                                            padding: 4
-                                        }}>
-                                            <CmlText style={styles.itemName}>{item.item.name}</CmlText>
-                                            <CmlText style={{
-                                                color: '#7f8788',
-                                                fontSize: 8
-                                            }}>{'PM 5:25, 1/2/20'}</CmlText>
+                                    return <TouchableOpacity>
+                                        <View style={[styles.item, {
+                                            backgroundColor: item.index % 2 == 1 ? 'white' : '#e4f9fd'
+                                        }]}>
+                                            <View style={styles.iconContainer}>
+                                                {item.item.status == 0 && <FontAwesome name="circle" size={20} color={'#ff3d00'} />}
+                                                {item.item.status == 1 && <Feather name="check-circle" size={20} color={'#0dac01'} />}
+                                            </View>
+                                            <View style={{
+                                                flex: 1,
+                                                padding: 4
+                                            }}>
+                                                <CmlText style={styles.itemName}>{item.item.name}</CmlText>
+                                                <CmlText style={{
+                                                    color: '#7f8788',
+                                                    fontSize: 8
+                                                }}>{'PM 5:25, 1/2/20'}</CmlText>
 
-                                        </View>
-                                        
-                                        <CmlText style={styles.itemContact}>{item.item.email}</CmlText>
-                                        
-                                        <CmlText style={styles.itemDial}>${item.item.funds}</CmlText>
+                                            </View>
 
-                                        <View style={{
-                                            width: 40
-                                        }}>
-                                            <Menu>
-                                                <MenuTrigger customStyles={
-                                                    {
-                                                        triggerTouchable: {
-                                                            underlayColor: '#00000000',
-                                                            activeOpacity: 70,
+                                            <CmlText style={styles.itemContact}>{item.item.email}</CmlText>
+
+                                            <CmlText style={styles.itemDial}>${item.item.funds}</CmlText>
+
+                                            <View style={{
+                                                width: 40
+                                            }}>
+                                                <Menu>
+                                                    <MenuTrigger customStyles={
+                                                        {
+                                                            triggerTouchable: {
+                                                                underlayColor: '#00000000',
+                                                                activeOpacity: 70,
+                                                            }
                                                         }
-                                                    }
-                                                }>
-                                                    <Entypo name="dots-three-vertical" size={20} color={'#7b7b7b'} style={{marginTop: 8}}/>
-                                                </MenuTrigger>
-                                                <MenuOptions customStyles={{
-                                                    optionText: {
-                                                        padding: 4
-                                                    }
-                                                }}>
-                                                    <MenuOption text='Edit Account' />
-                                                    <MenuOption text='Lock' />
-                                                    <MenuOption text='Add Funds' />
-                                                    <MenuOption text='Delete' />
-                                                </MenuOptions>
-                                            </Menu>
+                                                    }>
+                                                        <Entypo name="dots-three-vertical" size={20} color={'#7b7b7b'} style={{ marginTop: 8 }} />
+                                                    </MenuTrigger>
+                                                    <MenuOptions customStyles={{
+                                                        optionText: {
+                                                            padding: 4
+                                                        }
+                                                    }}>
+                                                        <MenuOption text='Edit Account' />
+                                                        <MenuOption text='Lock' />
+                                                        <MenuOption text='Add Funds' />
+                                                        <MenuOption text='Delete' />
+                                                    </MenuOptions>
+                                                </Menu>
+                                            </View>
                                         </View>
-                                    </View>
-                                </TouchableOpacity>;
+                                    </TouchableOpacity>;
                                 }}
-                            >
-
-                            </FlatList>
-
+                            />
                         </View>
                     </ScrollView>
+                    <Modal
+                        isVisible={this.state.updatePassword}
+                        backdropOpacity={0}
+                        onBackdropPress={() =>
+                            this.setState({
+                                updatePassword: false,
+                                existingPassword: "",
+                                newPassword: "",
+                                confirmPassword: ""
+                            })
+                        }>
+                        <View style={AppStyle.dialogContainer}>
+                            <View>
+                                <CmlText
+                                    style={[
+                                        AppStyle.dialogTitle,
+                                        {
+                                            textAlign: 'center',
+                                            fontSize: 16,
+                                        },
+                                    ]}>
+                                    Update Password
+                                </CmlText>
+                                <View>
 
-                </View>
+                                    <View style={AppStyle.dialogTimeContainer}>
+                                        <CmlTextInput style={[AppStyle.dialogTimePlaceholder, {
+                                            width: '100%',
+                                            fontSize: 14
+                                        }]}
+                                            secureTextEntry={true}
+                                            placeholder="Existing Password"
+                                            placeholderTextColor="#bbbbbb"
+                                            value={this.state.existingPassword}
+                                            onChangeText={(value: string) =>
+                                                this.setState({ existingPassword: value })
+                                            }></CmlTextInput>
+                                    </View>
+
+                                    <View style={AppStyle.dialogTimeContainer}>
+                                        <CmlTextInput style={[AppStyle.dialogTimePlaceholder, {
+                                            width: '100%',
+                                            fontSize: 14
+                                        }]}
+                                            secureTextEntry={true}
+                                            placeholder="New Password"
+                                            placeholderTextColor="#bbbbbb"
+                                            value={this.state.newPassword}
+                                            onChangeText={(value: string) =>
+                                                this.setState({ newPassword: value })
+                                            }></CmlTextInput>
+                                    </View>
+
+                                    <View style={AppStyle.dialogTimeContainer}>
+                                        <CmlTextInput style={[AppStyle.dialogTimePlaceholder, {
+                                            width: '100%',
+                                            fontSize: 14
+                                        }]}
+                                            secureTextEntry={true}
+                                            placeholder="Confirm Password"
+                                            placeholderTextColor="#bbbbbb"
+                                            value={this.state.confirmPassword}
+                                            onChangeText={(value: string) =>
+                                                this.setState({ confirmPassword: value })
+                                            }></CmlTextInput>
+                                    </View>
+                                </View>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        width: '100%',
+                                        height: 32,
+                                        justifyContent: 'flex-end',
+                                    }}>
+                                    <CmlButton
+                                        title="Cancel"
+                                        backgroundColor="#ffa67a"
+                                        style={{ marginTop: 16, marginRight: 16 }}
+                                        onPress={() => this.setState({
+                                            updatePassword: false,
+                                            existingPassword: "",
+                                            newPassword: "",
+                                            confirmPassword: ""
+                                        })}
+                                    />
+                                    <CmlButton
+                                        title="Save"
+                                        backgroundColor="#02b9db"
+                                        style={{ marginTop: 16 }}
+                                        onPress={() => this.updatePassword()}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+
+
+                    <Modal
+                        isVisible={this.state.deleteConfirm}
+                        backdropOpacity={0}
+                        onBackdropPress={() =>
+                            this.setState({ deleteConfirm: false })
+                        }>
+                        <View style={AppStyle.dialogContainer}>
+                            <View>
+                                <CmlText
+                                    style={[
+                                        AppStyle.dialogTitle,
+                                        {
+                                            textAlign: 'center',
+                                            fontSize: 16,
+                                        },
+                                    ]}>
+                                    Confirmation
+                            </CmlText>
+                                <CmlText style={AppStyle.dialogDescription}>
+                                    Are you sure you want delete?
+                            </CmlText>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        width: '100%',
+                                        height: 32,
+                                        justifyContent: 'flex-end',
+                                    }}>
+                                    <CmlButton
+                                        title="Yes"
+                                        backgroundColor="#ffa67a"
+                                        style={{ marginTop: 16, marginRight: 16 }}
+                                        onPress={() => this.deleteLogo()}
+                                    />
+                                    <CmlButton
+                                        title="No"
+                                        backgroundColor="#02b9db"
+                                        style={{ marginTop: 16 }}
+                                        onPress={() => this.setState({ deleteConfirm: false })}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+                </KeyboardAvoidingView>
             </SafeAreaView>
         );
     }
 }
-  
-export default Account;
+
+const mapStateToProps = (state: any) => {
+    return {
+        loggedInContact: state.authReducer.loggedInContact,
+        assetsPath: state.authReducer.assets.assetsPath
+    };
+};
+
+export default compose(connect(mapStateToProps, {}))(AccountScreen);

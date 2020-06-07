@@ -9,3 +9,6 @@ export const LOAD_ASSETS_SUCCESS = 'LOAD_ASSETS_SUCCESS'
 
 export const UPDATE_TOKEN = 'UPDATE_TOKEN'
 export const RESET_TOKEN = 'RESET_TOKEN'
+
+export const UPDATE_PROFILE = 'UPDATE_PROFILE'
+

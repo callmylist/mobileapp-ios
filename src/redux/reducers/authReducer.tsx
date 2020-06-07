@@ -1,4 +1,4 @@
-import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAILED, LOAD_ASSETS_SUCCESS, UPDATE_TOKEN, RESET_TOKEN } from '../actionTypes/auth'
+import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAILED, LOAD_ASSETS_SUCCESS, UPDATE_TOKEN, RESET_TOKEN, UPDATE_PROFILE } from '../actionTypes/auth'
 import { defaultIfEmpty } from 'rxjs/operators'
 import { LoginUser } from '../../shared/models/loginuser.model'
 
@@ -58,6 +58,12 @@ const reducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 loggedInContact: null
+            }
+        }
+        case UPDATE_PROFILE: {
+            return {
+                ...state,
+                loggedInContact: action.payload.loggedInContact
             }
         }
         default: {

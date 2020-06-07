@@ -31,9 +31,6 @@ export class ContactService {
     }
 
     static uploadContactList(fileInfo: any, hasHeader: boolean, numberColumn: string, callback: any) {
-        // const name = fileInfo.name;
-        // const realPath = fileInfo.uri;
-
         const split = fileInfo.uri.split('/');
         const name = split.pop();
         const inbox = split.pop();
