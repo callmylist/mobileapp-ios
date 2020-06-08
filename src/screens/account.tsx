@@ -5,6 +5,7 @@ import {
     Platform, Keyboard
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../components/header'
 import { CmlText } from '../components/text'
 import { CmlTextInput } from '../components/textinput'
@@ -29,6 +30,7 @@ import Modal from 'react-native-modal';
 import AppStyle from '../shared/styles'
 import ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs'
+import { CommonService } from '../service/common.service';
 
 const styles = StyleSheet.create({
     container: {
@@ -172,7 +174,10 @@ class AccountScreen extends Component<{
     existingPassword: string,
     newPassword: string,
     confirmPassword: string,
-    deleteConfirm: boolean
+    deleteConfirm: boolean,
+    lockAccount: boolean,
+    currentAccount: any,
+    deleteAccount: boolean
 }> {
     timezones: any[] = []
 
@@ -192,36 +197,6 @@ class AccountScreen extends Component<{
         this.state = {
             user: null,
             children: [
-                {
-                    name: 'Wang Dan',
-                    email: 'apaladin1993@outlook.com',
-                    funds: 256
-                },
-                {
-                    name: 'Wang Dan',
-                    email: 'apaladin1993@outlook.com',
-                    funds: 256
-                },
-                {
-                    name: 'Wang Dan',
-                    email: 'apaladin1993@outlook.com',
-                    funds: 256
-                },
-                {
-                    name: 'Wang Dan',
-                    email: 'apaladin1993@outlook.com',
-                    funds: 256
-                },
-                {
-                    name: 'Wang Dan',
-                    email: 'apaladin1993@outlook.com',
-                    funds: 256
-                },
-                {
-                    name: 'Wang Dan',
-                    email: 'apaladin1993@outlook.com',
-                    funds: 256
-                },
             ],
             startTimepicker: false,
             endTimepicker: false,
@@ -237,6 +212,9 @@ class AccountScreen extends Component<{
             existingPassword: "",
             newPassword: "",
             confirmPassword: "",
+            lockAccount: false,
+            currentAccount: null,
+            deleteAccount: false
         }
     }
 
@@ -293,6 +271,8 @@ class AccountScreen extends Component<{
                 })
             }
         })
+
+        this.loadChildAccounts()
     }
 
     onMenu = () => {
@@ -494,6 +474,58 @@ class AccountScreen extends Component<{
                 Utils.presentToast("Error occured. Please try again.")
             }
         });
+    }
+
+    loadChildAccounts = () => {
+        CommonService.getChildAccount().subscribe((response: any) => {
+            if (response.success) {
+                this.setState({
+                    children: response.data
+                })
+            }
+        })
+    }
+
+    lockAccount = () => {
+        this.setState({
+            lockAccount: false,
+            loading: true
+        })
+
+        CommonService.lockChildAccount(this.state.currentAccount.id).subscribe((response: any) => {
+            this.setState({
+                currentAccount: null,
+                loading: false
+            })
+            if (response.success) {
+                Utils.presentToast("Child account locked successfully.")
+                this.loadChildAccounts()
+            }
+            else {
+                Utils.presentToast(response.message + ". " + response.submessage)
+            }
+        })
+    }
+
+    deleteAccount = () => {
+        this.setState({
+            deleteAccount: false,
+            loading: true
+        })
+
+        CommonService.deleteChildAccount(this.state.currentAccount.id).subscribe((response: any) => {
+            this.setState({
+                currentAccount: null,
+                loading: false
+            })
+            if (response.success) {
+                Utils.presentToast("Child account deleted successfully.")
+                this.loadChildAccounts()
+            }
+            else {
+                Utils.presentToast("Error occured. Please try again later.")
+            }
+        })
     }
 
     render() {
@@ -829,21 +861,30 @@ class AccountScreen extends Component<{
                                         <TouchableOpacity onPress={() => this.setState({
                                             deleteConfirm: true
                                         })}>
-                                            <MaterialCommunityIcons name="delete" size={32} color='#767676' />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
                         }
 
+                        <View>
+                            <CmlText style={{
+                                fontSize: 18,
+                                marginTop: 16,
+                                textAlign: 'center'
+                            }}>
+                                Child Accounts
+                            </CmlText>
 
-                        <CmlText style={{
-                            fontSize: 18,
-                            marginTop: 16,
-                            textAlign: 'center'
-                        }}>
-                            Child Accounts
-                        </CmlText>
+                            <TouchableOpacity style={{
+                                position: 'absolute',
+                                top: 8,
+                                right: 16
+                            }} onPress={() => this.props.navigation.push('AddAccountScreen')}>
+                                <AntDesign name="adduser" size={32} color='#767676' />
+
+                            </TouchableOpacity>
+                        </View>
 
                         <View style={{
                             borderWidth: 1,
@@ -871,10 +912,6 @@ class AccountScreen extends Component<{
                                         <View style={[styles.item, {
                                             backgroundColor: item.index % 2 == 1 ? 'white' : '#e4f9fd'
                                         }]}>
-                                            <View style={styles.iconContainer}>
-                                                {item.item.status == 0 && <FontAwesome name="circle" size={20} color={'#ff3d00'} />}
-                                                {item.item.status == 1 && <Feather name="check-circle" size={20} color={'#0dac01'} />}
-                                            </View>
                                             <View style={{
                                                 flex: 1,
                                                 padding: 4
@@ -883,13 +920,13 @@ class AccountScreen extends Component<{
                                                 <CmlText style={{
                                                     color: '#7f8788',
                                                     fontSize: 8
-                                                }}>{'PM 5:25, 1/2/20'}</CmlText>
+                                                }}>{moment(item.item.createDate).format('MM/DD/YY, h:mm A')}</CmlText>
 
                                             </View>
 
                                             <CmlText style={styles.itemContact}>{item.item.email}</CmlText>
 
-                                            <CmlText style={styles.itemDial}>${item.item.funds}</CmlText>
+                                            <CmlText style={styles.itemDial}>${item.item.fundsavailable}</CmlText>
 
                                             <View style={{
                                                 width: 40
@@ -911,9 +948,19 @@ class AccountScreen extends Component<{
                                                         }
                                                     }}>
                                                         <MenuOption text='Edit Account' />
-                                                        <MenuOption text='Lock' />
+                                                        <MenuOption text='Lock' onSelect={() => {
+                                                            this.setState({
+                                                                currentAccount: item.item,
+                                                                lockAccount: true
+                                                            })
+                                                        }} />
                                                         <MenuOption text='Add Funds' />
-                                                        <MenuOption text='Delete' />
+                                                        <MenuOption text='Delete' onSelect={() => {
+                                                            this.setState({
+                                                                currentAccount: item.item,
+                                                                deleteAccount: true
+                                                            })
+                                                        }} />
                                                     </MenuOptions>
                                                 </Menu>
                                             </View>
@@ -1059,6 +1106,96 @@ class AccountScreen extends Component<{
                                         backgroundColor="#02b9db"
                                         style={{ marginTop: 16 }}
                                         onPress={() => this.setState({ deleteConfirm: false })}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+
+                    <Modal
+                        isVisible={this.state.lockAccount}
+                        backdropOpacity={0}
+                        onBackdropPress={() =>
+                            this.setState({ lockAccount: false })
+                        }>
+                        <View style={AppStyle.dialogContainer}>
+                            <View>
+                                <CmlText
+                                    style={[
+                                        AppStyle.dialogTitle,
+                                        {
+                                            textAlign: 'center',
+                                            fontSize: 16,
+                                        },
+                                    ]}>
+                                    Confirmation
+                                </CmlText>
+                                <CmlText style={AppStyle.dialogDescription}>
+                                    Are you sure you want lock this child account?
+                                </CmlText>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        width: '100%',
+                                        height: 32,
+                                        justifyContent: 'flex-end',
+                                    }}>
+                                    <CmlButton
+                                        title="Yes"
+                                        backgroundColor="#ffa67a"
+                                        style={{ marginTop: 16, marginRight: 16 }}
+                                        onPress={() => this.lockAccount()}
+                                    />
+                                    <CmlButton
+                                        title="No"
+                                        backgroundColor="#02b9db"
+                                        style={{ marginTop: 16 }}
+                                        onPress={() => this.setState({ lockAccount: false, currentAccount: null })}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+
+                    <Modal
+                        isVisible={this.state.deleteAccount}
+                        backdropOpacity={0}
+                        onBackdropPress={() =>
+                            this.setState({ deleteAccount: false })
+                        }>
+                        <View style={AppStyle.dialogContainer}>
+                            <View>
+                                <CmlText
+                                    style={[
+                                        AppStyle.dialogTitle,
+                                        {
+                                            textAlign: 'center',
+                                            fontSize: 16,
+                                        },
+                                    ]}>
+                                    Confirmation
+                                </CmlText>
+                                <CmlText style={AppStyle.dialogDescription}>
+                                    Are you sure you want delete this child account?
+                                </CmlText>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        width: '100%',
+                                        height: 32,
+                                        justifyContent: 'flex-end',
+                                    }}>
+                                    <CmlButton
+                                        title="Yes"
+                                        backgroundColor="#ffa67a"
+                                        style={{ marginTop: 16, marginRight: 16 }}
+                                        onPress={() => this.deleteAccount()}
+                                    />
+                                    <CmlButton
+                                        title="No"
+                                        backgroundColor="#02b9db"
+                                        style={{ marginTop: 16 }}
+                                        onPress={() => this.setState({ deleteAccount: false, currentAccount: null })}
                                     />
                                 </View>
                             </View>

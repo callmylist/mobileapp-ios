@@ -127,7 +127,7 @@ class SupportScreen extends Component<{
                         style={{
                             flex: 1,
                         }}
-                        behavior="padding"
+                        behavior="position"
                         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -500}>
                         <ScrollView>
                             <View style={styles.inputContainer}>

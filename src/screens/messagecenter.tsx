@@ -10,6 +10,9 @@ import { Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-m
 import { CmlButton } from '../components/button'
 import Modal from 'react-native-modal';
 import AppStyle from '../shared/styles'
+import { MessageCenterService } from '../service/message-center.service'
+import moment from 'moment'
+import { CmlSpinner } from '../components/loading';
 
 const styles = StyleSheet.create({
     container: {
@@ -30,13 +33,18 @@ const styles = StyleSheet.create({
         flex: 1,
         marginLeft: 20,
     },
+    messageName: {
+        color: '#383838',
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
     messagePhone: {
         color: '#383838',
-        fontSize: 18
+        fontSize: 16
     },
     messageTime: {
         color: '#00b7d9',
-        marginLeft: 16
+        fontSize: 14
     },
     message: {
         color: '#fa8c56'
@@ -112,86 +120,63 @@ const styles = StyleSheet.create({
     },
 });
 
-class MessageCenter extends Component {
+class MessageCenter extends Component<
+    {
+        navigation: any
+    },
+    {
+        contact_filter: number,
+        messages: any[],
+        loading: boolean,
+    }
+    > {
 
     state = {
+        contact_filter: 1,
         messages: [
-            {
-                phone: '+13172892420',
-                time: '9:36AM',
-                comment: 'Can I get 6 pack 16oz bud light can'
-            },
-            {
-                phone: '+13172892420',
-                time: '9:36AM',
-                comment: 'Can I get 6 pack 16oz bud light can'
-            },
-            {
-                phone: '+13172892420',
-                time: '9:36AM',
-                comment: 'Can I get 6 pack 16oz bud light can'
-            },
-            {
-                phone: '+13172892420',
-                time: '9:36AM',
-                comment: 'Can I get 6 pack 16oz bud light can'
-            },
-            {
-                phone: '+13172892420',
-                time: '9:36AM',
-                comment: 'Can I get 6 pack 16oz bud light can'
-            },
-            {
-                phone: '+13172892420',
-                time: '9:36AM',
-                comment: 'Can I get 6 pack 16oz bud light can'
-            },
-            {
-                phone: '+13172892420',
-                time: '9:36AM',
-                comment: 'Can I get 6 pack 16oz bud light can'
-            },
-            {
-                phone: '+13172892420',
-                time: '9:36AM',
-                comment: 'Can I get 6 pack 16oz bud light can'
-            },
-            {
-                phone: '+13172892420',
-                time: '9:36AM',
-                comment: 'Can I get 6 pack 16oz bud light can'
-            },
-            {
-                phone: '+13172892420',
-                time: '9:36AM',
-                comment: 'Can I get 6 pack 16oz bud light can'
-            },
-            {
-                phone: '+13172892420',
-                time: '9:36AM',
-                comment: 'Can I get 6 pack 16oz bud light can'
-            },
         ],
-        index: 0,
-        newMessage: false
+        newMessage: false,
+        loading: false
     }
 
     componentDidMount() {
+        this.onTab(1)
     }
+
     onMenu = () => {
         this.props.navigation.openDrawer()
     }
 
     onTab = (index: number) => {
         this.setState({
-            index: index
+            contact_filter: index,
+        }, () => {
+            this.loadContacts()
         })
     };
+
+    loadContacts = () => {
+        this.setState({
+            loading: true
+        })
+        MessageCenterService.GetAllContacts(this.state.contact_filter + "").subscribe((response: any) => {
+            this.setState({
+                loading: false
+            })
+            if (response.success)
+                this.setState({
+                    messages: response.data
+                })
+        })
+    }
 
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <Header onMenu={this.onMenu} menu={true} />
+                <CmlSpinner
+                    visible={this.state.loading}
+                />
                 <View style={{
                     flex: 1,
                     padding: 8
@@ -218,13 +203,13 @@ class MessageCenter extends Component {
                             marginTop: 16,
                             flex: 1
                         }}
-                            onPress={() => this.onTab(0)}>
+                            onPress={() => this.onTab(1)}>
                             <View style={[styles.tabButton, {
-                                backgroundColor: this.state.index == 0 ? 'white' : '#00b7d9',
-                                borderColor: this.state.index == 0 ? '#9e9e9e' : '#00b7d9'
+                                backgroundColor: this.state.contact_filter == 1 ? 'white' : '#00b7d9',
+                                borderColor: this.state.contact_filter == 1 ? '#9e9e9e' : '#00b7d9'
                             }]}>
                                 <CmlText style={{
-                                    color: this.state.index == 0 ? 'black' : 'white',
+                                    color: this.state.contact_filter == 1 ? 'black' : 'white',
                                     fontSize: 14,
                                     fontWeight: '600'
                                 }}>Recent</CmlText>
@@ -239,13 +224,13 @@ class MessageCenter extends Component {
                             marginTop: 16,
                             flex: 1,
                         }}
-                            onPress={() => this.onTab(1)}>
+                            onPress={() => this.onTab(2)}>
                             <View style={[styles.tabButton, {
-                                backgroundColor: this.state.index == 1 ? 'white' : '#2c2d2d',
-                                borderColor: this.state.index == 1 ? '#9e9e9e' : '#2c2d2d'
+                                backgroundColor: this.state.contact_filter == 2 ? 'white' : '#2c2d2d',
+                                borderColor: this.state.contact_filter == 2 ? '#9e9e9e' : '#2c2d2d'
                             }]}>
                                 <CmlText style={{
-                                    color: this.state.index == 1 ? 'black' : 'white',
+                                    color: this.state.contact_filter == 2 ? 'black' : 'white',
                                     fontSize: 14,
                                     fontWeight: '600'
                                 }}>Favourite</CmlText>
@@ -261,13 +246,13 @@ class MessageCenter extends Component {
                             marginTop: 16,
                             flex: 1
                         }}
-                            onPress={() => this.onTab(2)}>
+                            onPress={() => this.onTab(3)}>
                             <View style={[styles.tabButton, {
-                                backgroundColor: this.state.index == 2 ? 'white' : '#fa8c56',
-                                borderColor: this.state.index == 2 ? '#9e9e9e' : '#fa8c56'
+                                backgroundColor: this.state.contact_filter == 3 ? 'white' : '#fa8c56',
+                                borderColor: this.state.contact_filter == 3 ? '#9e9e9e' : '#fa8c56'
                             }]}>
                                 <CmlText style={{
-                                    color: this.state.index == 2 ? 'black' : 'white',
+                                    color: this.state.contact_filter == 3 ? 'black' : 'white',
                                     fontSize: 14,
                                     fontWeight: '600'
                                 }}>Follow up</CmlText>
@@ -279,19 +264,22 @@ class MessageCenter extends Component {
                             data={this.state.messages}
                             renderItem={(item: any) => {
                                 return <>
-                                    <TouchableOpacity onPress={() => this.props.navigation.push('MessageHistoryScreen')}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.push('MessageHistoryScreen', {
+                                        contact: item.item
+                                    })}>
                                         <View style={[styles.messageContainer, {
                                             backgroundColor: item.index % 2 == 1 ? '#f7f7f7' : 'white'
                                         }]}>
                                             <Feather name="star" size={20} color={'#fa8c56'} style={{ marginTop: 8 }} />
                                             <View style={styles.messageInfoContainer}>
+                                                <CmlText style={styles.messageName}>{item.item.firstName + " " + (item.item.lastName ? item.item.lastName : "")}</CmlText>
                                                 <CmlText style={styles.messagePhone}>{item.item.phone}</CmlText>
-                                                <CmlText style={styles.messageTime}>{item.item.time}</CmlText>
+                                                <CmlText style={styles.messageTime}>{moment(item.item.createDate).format('MMM dd, YYYY')}</CmlText>
                                             </View>
                                             <View style={{
                                                 flex: 1
                                             }}>
-                                                <CmlText style={styles.message}>{item.item.comment}</CmlText>
+                                                {item.item.recentMessage && <CmlText style={styles.message}>{item.item.recentMessage.body}</CmlText>}
                                             </View>
                                             <Menu>
                                                 <MenuTrigger>

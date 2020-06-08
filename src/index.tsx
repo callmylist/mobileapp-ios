@@ -20,6 +20,7 @@ import CampaignScreen from './screens/campaign'
 import SoundScreen from './screens/sound'
 import AccountScreen from './screens/account'
 import SupportScreen from './screens/support'
+import AddAccountScreen from './screens/add_account'
 import ContactListScreen from './screens/contact_list'
 import Menu from './components/menu'
 import { View, StatusBar, Platform } from 'react-native';
@@ -83,7 +84,8 @@ const App = createStackNavigator({
   Dashboard,
   CreatCampaignNavigator,
   CampaignDetailScreen,
-  MessageHistoryScreen
+  MessageHistoryScreen,
+  AddAccountScreen
 },
   {
     initialRouteName: 'Dashboard',

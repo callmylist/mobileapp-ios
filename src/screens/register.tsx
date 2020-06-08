@@ -24,6 +24,7 @@ import { User } from '../shared/models/user.model';
 import Constants from '../utils/constants';
 import { UserService } from '../service/user.service'
 import { CmlSpinner } from '../components/loading';
+import { KeyboardAvoidingScrollView } from 'react-native-keyboard-avoiding-scroll-view';
 
 const styles = StyleSheet.create({
 	container: {
@@ -161,171 +162,164 @@ class RegisterScreen extends Component<{
 				<CmlSpinner
 					visible={this.state.loading}
 				/>
-				<KeyboardAvoidingView
+				<KeyboardAvoidingScrollView
 					style={{
-						flex: 1,
-					}}
-					behavior="padding"
-					keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -500}>
-					<ScrollView
+						zIndex: 999,
+					}}>
+					<View
 						style={{
-							zIndex: 999,
+							alignItems: 'center',
+							flex: 1,
 						}}>
+						<Image
+							source={require('../assets/images/register_logo.png')}
+							style={styles.logo}
+						/>
 						<View
-							style={{
-								alignItems: 'center',
-								flex: 1,
-							}}>
-							<Image
-								source={require('../assets/images/register_logo.png')}
-								style={styles.logo}
+							style={[
+								styles.inputContainer,
+								!this.state.firstName &&
+								this.state.showValidate &&
+								styles.highlight,
+							]}>
+							<CmlTextInput
+								style={styles.input}
+								placeholder="First name"
+								value={this.state.firstName}
+								onChangeText={(value: string) =>
+									this.setState({ firstName: value, showValidate: false })
+								}
 							/>
-							<View
-								style={[
-									styles.inputContainer,
-									!this.state.firstName &&
-									this.state.showValidate &&
-									styles.highlight,
-								]}>
-								<CmlTextInput
-									style={styles.input}
-									placeholder="First name"
-									value={this.state.firstName}
-									onChangeText={(value: string) =>
-										this.setState({ firstName: value, showValidate: false })
-									}
-								/>
-							</View>
+						</View>
 
-							<View
-								style={[
-									styles.inputContainer,
-									!this.state.lastName &&
-									this.state.showValidate &&
-									styles.highlight,
-								]}>
-								<CmlTextInput
-									style={styles.input}
-									placeholder="Last name"
-									value={this.state.lastName}
-									onChangeText={(value: string) =>
-										this.setState({ lastName: value, showValidate: false })
-									}
-								/>
-							</View>
+						<View
+							style={[
+								styles.inputContainer,
+								!this.state.lastName &&
+								this.state.showValidate &&
+								styles.highlight,
+							]}>
+							<CmlTextInput
+								style={styles.input}
+								placeholder="Last name"
+								value={this.state.lastName}
+								onChangeText={(value: string) =>
+									this.setState({ lastName: value, showValidate: false })
+								}
+							/>
+						</View>
 
-							<View
-								style={[
-									styles.inputContainer,
-									(!Utils.validateEmail(this.state.email) ||
-										!this.state.email) &&
-									this.state.showValidate &&
-									styles.highlight,
-								]}>
-								<CmlTextInput
-									style={styles.input}
-									placeholder="Email address"
-									keyboardType="email-address"
-									autoCapitalize='none'
-									value={this.state.email}
-									onChangeText={(value: string) =>
-										this.setState({ email: value, showValidate: false })
-									}
-								/>
-							</View>
-							{!Utils.validateEmail(this.state.email) &&
-								this.state.showValidate && (
-									<CmlText style={styles.errorLabel}>
-										Email format is invalid
-									</CmlText>
-								)}
-
-							<View
-								style={[
-									styles.inputContainer,
-									(!Utils.validatePhoneNumber(this.state.phone) ||
-										!this.state.phone) &&
-									this.state.showValidate &&
-									styles.highlight,
-								]}>
-								<CmlTextInput
-									style={styles.input}
-									placeholder="Phone no"
-									keyboardType="phone-pad"
-									value={this.state.phone}
-									onChangeText={(value: string) =>
-										this.setState({ phone: value, showValidate: false })
-									}
-								/>
-							</View>
-
-							<View
-								style={[
-									styles.inputContainer,
-									!this.state.companyName &&
-									this.state.showValidate &&
-									styles.highlight,
-								]}>
-								<CmlTextInput
-									style={styles.input}
-									placeholder="Company name"
-									value={this.state.companyName}
-									onChangeText={(value: string) =>
-										this.setState({ companyName: value, showValidate: false })
-									}
-								/>
-							</View>
-
-							<View
-								style={[
-									styles.inputContainer,
-									(this.state.password.length < 8 || !this.state.password) &&
-									this.state.showValidate &&
-									styles.highlight,
-								]}>
-								<CmlTextInput
-									style={styles.input}
-									placeholder="Password"
-									secureTextEntry={true}
-									value={this.state.password}
-									onChangeText={(value: string) =>
-										this.setState({ password: value, showValidate: false })
-									}
-								/>
-							</View>
-							{this.state.password.length < 8 && this.state.showValidate && (
+						<View
+							style={[
+								styles.inputContainer,
+								(!Utils.validateEmail(this.state.email) ||
+									!this.state.email) &&
+								this.state.showValidate &&
+								styles.highlight,
+							]}>
+							<CmlTextInput
+								style={styles.input}
+								placeholder="Email address"
+								keyboardType="email-address"
+								autoCapitalize='none'
+								value={this.state.email}
+								onChangeText={(value: string) =>
+									this.setState({ email: value, showValidate: false })
+								}
+							/>
+						</View>
+						{!Utils.validateEmail(this.state.email) &&
+							this.state.showValidate && (
 								<CmlText style={styles.errorLabel}>
-									Password minimum length should be 8
+									Email format is invalid
 								</CmlText>
 							)}
-							<View
-								style={{
-									width: '80%',
-									flexDirection: 'row',
-									justifyContent: 'center',
-									marginTop: 16,
-								}}>
-								<TouchableOpacity
-									style={[
-										styles.button,
-										{
-											backgroundColor: '#00b7d9',
-										},
-									]}
-									onPress={() => this.signUp()}>
-									<CmlText
-										style={{
-											color: 'white',
-											fontSize: 18,
-											fontWeight: '600',
-										}}>
-										Sign Up
-                  					</CmlText>
-								</TouchableOpacity>
-							</View>
+
+						<View
+							style={[
+								styles.inputContainer,
+								(!Utils.validatePhoneNumber(this.state.phone) ||
+									!this.state.phone) &&
+								this.state.showValidate &&
+								styles.highlight,
+							]}>
+							<CmlTextInput
+								style={styles.input}
+								placeholder="Phone no"
+								keyboardType="phone-pad"
+								value={this.state.phone}
+								onChangeText={(value: string) =>
+									this.setState({ phone: value, showValidate: false })
+								}
+							/>
 						</View>
-					</ScrollView>
-				</KeyboardAvoidingView>
+
+						<View
+							style={[
+								styles.inputContainer,
+								!this.state.companyName &&
+								this.state.showValidate &&
+								styles.highlight,
+							]}>
+							<CmlTextInput
+								style={styles.input}
+								placeholder="Company name"
+								value={this.state.companyName}
+								onChangeText={(value: string) =>
+									this.setState({ companyName: value, showValidate: false })
+								}
+							/>
+						</View>
+
+						<View
+							style={[
+								styles.inputContainer,
+								(this.state.password.length < 8 || !this.state.password) &&
+								this.state.showValidate &&
+								styles.highlight,
+							]}>
+							<CmlTextInput
+								style={styles.input}
+								placeholder="Password"
+								secureTextEntry={true}
+								value={this.state.password}
+								onChangeText={(value: string) =>
+									this.setState({ password: value, showValidate: false })
+								}
+							/>
+						</View>
+						{this.state.password.length < 8 && this.state.showValidate && (
+							<CmlText style={styles.errorLabel}>
+								Password minimum length should be 8
+							</CmlText>
+						)}
+						<View
+							style={{
+								width: '80%',
+								flexDirection: 'row',
+								justifyContent: 'center',
+								marginTop: 16,
+							}}>
+							<TouchableOpacity
+								style={[
+									styles.button,
+									{
+										backgroundColor: '#00b7d9',
+									},
+								]}
+								onPress={() => this.signUp()}>
+								<CmlText
+									style={{
+										color: 'white',
+										fontSize: 18,
+										fontWeight: '600',
+									}}>
+									Sign Up
+                  					</CmlText>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</KeyboardAvoidingScrollView>
 
 				{/* <Image 
                     source={require("../assets/images/back_bottom.png")}
@@ -338,7 +332,7 @@ class RegisterScreen extends Component<{
 
 const mapStateToProps = (state: any) => {
 	return {
-		assets: state.appReducer.assets,
+		assets: state.authReducer.assets,
 	};
 };
 
