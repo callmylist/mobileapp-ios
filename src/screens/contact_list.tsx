@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
     StyleSheet,
     FlatList,
@@ -6,26 +6,26 @@ import {
     TouchableOpacity,
     SafeAreaView,
     Switch,
-    Linking
+    Linking,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../components/header';
-import { CmlText } from '../components/text';
-import { CmlTextInput } from '../components/textinput';
-import Dialog, { DialogContent } from 'react-native-popup-dialog';
-import { CmlButton } from '../components/button';
-import { ContactService } from '../service/contact.service';
+import {CmlText} from '../components/text';
+import {CmlTextInput} from '../components/textinput';
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
+import {CmlButton} from '../components/button';
+import {ContactService} from '../service/contact.service';
 import Modal from 'react-native-modal';
 import AppStyle from '../shared/styles';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import RNPickerSelect from 'react-native-picker-select';
-import { CmlSpinner } from '../components/loading';
+import {CmlSpinner} from '../components/loading';
 import Utils from '../utils';
-import { store } from '../redux/store';
-import RNFetchBlob from 'rn-fetch-blob'
+import {store} from '../redux/store';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const styles = StyleSheet.create({
     container: {
@@ -134,12 +134,12 @@ const pickerSelectStyles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 8,
         color: 'white',
-        width: '100%'
+        width: '100%',
     },
 });
 
 class ContactList extends Component<
-    { navigation: any },
+    {navigation: any},
     {
         deleteConfirm: boolean;
         sounds: any[];
@@ -147,10 +147,10 @@ class ContactList extends Component<
         currentItem: any;
         containHeader: boolean;
         headerColumn: string;
-        loading: boolean,
-        noList: boolean
+        loading: boolean;
+        noList: boolean;
     }
-    > {
+> {
     constructor(props: any) {
         super(props);
 
@@ -162,7 +162,7 @@ class ContactList extends Component<
             containHeader: false,
             headerColumn: 'A',
             loading: false,
-            noList: false
+            noList: false,
         };
     }
 
@@ -181,7 +181,7 @@ class ContactList extends Component<
         }).subscribe((response: any) => {
             this.setState({
                 sounds: response.data,
-                noList: response.data.length == 0 ? true : false
+                noList: response.data.length == 0 ? true : false,
             });
         });
     };
@@ -201,68 +201,74 @@ class ContactList extends Component<
     };
 
     download = (item: any) => {
-        let dirs = RNFetchBlob.fs.dirs
-        console.log(dirs.DocumentDir)
-        this.setState({ loading: true })
-        RNFetchBlob
-            .config({
-                // response data will be saved to this path if it has access right.
-                path: dirs.DocumentDir + '/' + item.fileName
-            })
-            .fetch('GET', store.getState().authReducer.assets.assetsPath + item.fileS3Path, {
-                //some headers ..
-            })
+        let dirs = RNFetchBlob.fs.dirs;
+        console.log(dirs.DocumentDir);
+        this.setState({loading: true});
+        RNFetchBlob.config({
+            // response data will be saved to this path if it has access right.
+            path: dirs.DocumentDir + '/' + item.fileName,
+        })
+            .fetch(
+                'GET',
+                store.getState().authReducer.assets.assetsPath +
+                    item.fileS3Path,
+                {
+                    //some headers ..
+                },
+            )
             .then((res) => {
                 // the path should be dirs.DocumentDir + 'path-to-file.anything'
-                console.log(res)
-                Utils.presentToast("File downloaded to application folder.")
-                this.setState({ loading: false })
-            })
-    }
+                console.log(res);
+                Utils.presentToast('File downloaded to application folder.');
+                this.setState({loading: false});
+            });
+    };
 
     uploadList = async () => {
         const res = await DocumentPicker.pick({
-            type: [DocumentPicker.types.csv]
+            type: [DocumentPicker.types.csv],
         });
 
         this.setState({
             uploadList: true,
-            currentItem: res
+            currentItem: res,
         });
     };
 
     upload = async () => {
         if (this.state.headerColumn == null) {
-            Utils.presentToast("Please select valid column header")
-            return
+            Utils.presentToast('Please select valid column header');
+            return;
         }
 
         this.setState({
             loading: true,
-            uploadList: false
-        })
+            uploadList: false,
+        });
 
-        ContactService.uploadContactList(this.state.currentItem, this.state.containHeader, this.state.headerColumn, (response: any) => {
-            console.log(response)
-            this.setState({
-                loading: false
-            })
-            if (response.success == true) {
-                this.loadData()
-            }
-            else {
-                Utils.presentToast(response.message)
-            }
-        })
-    }
+        ContactService.uploadContactList(
+            this.state.currentItem,
+            this.state.containHeader,
+            this.state.headerColumn,
+            (response: any) => {
+                console.log(response);
+                this.setState({
+                    loading: false,
+                });
+                if (response.success == true) {
+                    this.loadData();
+                } else {
+                    Utils.presentToast(response.message);
+                }
+            },
+        );
+    };
 
     render() {
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{flex: 1}}>
                 <Header onMenu={this.onMenu} menu={true} />
-                <CmlSpinner
-                    visible={this.state.loading}
-                />
+                <CmlSpinner visible={this.state.loading} />
                 <View style={styles.container}>
                     <CmlText style={styles.campaignLabel}>Contact List</CmlText>
                     <View
@@ -275,25 +281,35 @@ class ContactList extends Component<
                             }}
                             onPress={() => this.uploadList()}>
                             <View
-                                style={[styles.buttonContainer, { backgroundColor: '#565757' }]}>
-                                <Feather name="upload" color="white" size={18} />
+                                style={[
+                                    styles.buttonContainer,
+                                    {backgroundColor: '#565757'},
+                                ]}>
+                                <Feather
+                                    name="upload"
+                                    color="white"
+                                    size={18}
+                                />
                                 <CmlText style={styles.buttonTitle}>
                                     Upload Contact List
                                 </CmlText>
                             </View>
                         </TouchableOpacity>
                     </View>
-                    {
-                        this.state.noList && <View style={{
-                            padding: 16
-                        }}>
-
-                            <CmlText state={{
-                                paddingLeft: 20,
-                                marginTop: 20,
-                            }}>No sounds</CmlText>
+                    {this.state.noList && (
+                        <View
+                            style={{
+                                padding: 16,
+                            }}>
+                            <CmlText
+                                state={{
+                                    paddingLeft: 20,
+                                    marginTop: 20,
+                                }}>
+                                No sounds
+                            </CmlText>
                         </View>
-                    }
+                    )}
                     <FlatList
                         style={{
                             marginTop: 24,
@@ -306,7 +322,9 @@ class ContactList extends Component<
                                         styles.itemContainer,
                                         {
                                             backgroundColor:
-                                                item.index % 2 == 1 ? 'white' : '#f6fbfd',
+                                                item.index % 2 == 1
+                                                    ? 'white'
+                                                    : '#f6fbfd',
                                         },
                                     ]}>
                                     <CmlText
@@ -344,9 +362,16 @@ class ContactList extends Component<
                                     <TouchableOpacity
                                         style={{
                                             marginRight: 8,
-                                        }} onPress={() => this.download(item.item)}>
+                                        }}
+                                        onPress={() =>
+                                            this.download(item.item)
+                                        }>
                                         <View style={styles.itemIcon}>
-                                            <AntDesign name="download" size={14} color="#f57536" />
+                                            <AntDesign
+                                                name="download"
+                                                size={14}
+                                                color="#f57536"
+                                            />
                                         </View>
                                     </TouchableOpacity>
                                     <TouchableOpacity
@@ -366,7 +391,11 @@ class ContactList extends Component<
                                                     borderColor: 'red',
                                                 },
                                             ]}>
-                                            <AntDesign name="delete" size={14} color="red" />
+                                            <AntDesign
+                                                name="delete"
+                                                size={14}
+                                                color="red"
+                                            />
                                         </View>
                                     </TouchableOpacity>
                                 </View>
@@ -377,58 +406,78 @@ class ContactList extends Component<
                 <Modal
                     isVisible={this.state.uploadList}
                     backdropOpacity={0}
-                    onBackdropPress={() => this.setState({ uploadList: false })}>
+                    onBackdropPress={() => this.setState({uploadList: false})}>
                     <View style={AppStyle.dialogContainer}>
-                        <CmlText style={AppStyle.dialogSmallTitle}>Upload New List</CmlText>
-
-                        <View style={[AppStyle.panelSwitchContainer, { marginTop: 16 }]}>
-                            <Switch ios_backgroundColor="#9e9e9e"
-                                onValueChange={(value) => this.setState({ containHeader: value })}
-                                value={this.state.containHeader} />
-                            <CmlText style={[AppStyle.panelOptionText, { color: 'white' }]}>
-                                Does your file contain headers?
+                        <CmlText style={AppStyle.dialogSmallTitle}>
+                            Upload New List
                         </CmlText>
+
+                        <View
+                            style={[
+                                AppStyle.panelSwitchContainer,
+                                {marginTop: 16},
+                            ]}>
+                            <Switch
+                                ios_backgroundColor="#9e9e9e"
+                                onValueChange={(value) =>
+                                    this.setState({containHeader: value})
+                                }
+                                value={this.state.containHeader}
+                            />
+                            <CmlText
+                                style={[
+                                    AppStyle.panelOptionText,
+                                    {color: 'white'},
+                                ]}>
+                                Does your file contain headers?
+                            </CmlText>
                         </View>
 
                         <CmlText style={AppStyle.dialogDescription}>
                             Select Phone Number Column
-                                </CmlText>
-                        <View style={[AppStyle.dialogTimeContainer, {
-                            padding: 0
-                        }]}>
+                        </CmlText>
+                        <View
+                            style={[
+                                AppStyle.dialogTimeContainer,
+                                {
+                                    padding: 0,
+                                },
+                            ]}>
                             <RNPickerSelect
                                 style={pickerSelectStyles}
                                 value={this.state.headerColumn}
-                                onValueChange={(value) => this.setState({
-                                    headerColumn: value
-                                })}
+                                onValueChange={(value) =>
+                                    this.setState({
+                                        headerColumn: value,
+                                    })
+                                }
                                 items={[
-                                    { label: 'A', value: 'A' },
-                                    { label: 'B', value: 'B' },
-                                    { label: 'C', value: 'C' },
-                                    { label: 'D', value: 'D' },
-                                    { label: 'E', value: 'E' },
-                                    { label: 'F', value: 'F' },
-                                    { label: 'G', value: 'G' },
-                                    { label: 'H', value: 'H' },
-                                    { label: 'I', value: 'I' },
-                                    { label: 'J', value: 'J' },
-                                    { label: 'K', value: 'K' },
-                                    { label: 'L', value: 'L' },
-                                    { label: 'M', value: 'M' },
-                                    { label: 'N', value: 'N' },
-                                    { label: 'O', value: 'O' },
-                                    { label: 'P', value: 'P' },
-                                    { label: 'Q', value: 'Q' },
-                                    { label: 'R', value: 'R' },
-                                    { label: 'S', value: 'S' },
-                                    { label: 'T', value: 'T' },
-                                    { label: 'U', value: 'U' },
-                                    { label: 'V', value: 'V' },
-                                    { label: 'W', value: 'W' },
-                                    { label: 'X', value: 'X' },
-                                    { label: 'Y', value: 'Y' },
-                                    { label: 'Z', value: 'Z' },
+                                    {label: 'A', value: 'A'},
+                                    {label: 'B', value: 'B'},
+                                    {label: 'C', value: 'C'},
+                                    {label: 'D', value: 'D'},
+                                    {label: 'E', value: 'E'},
+                                    {label: 'F', value: 'F'},
+                                    {label: 'G', value: 'G'},
+                                    {label: 'H', value: 'H'},
+                                    {label: 'I', value: 'I'},
+                                    {label: 'J', value: 'J'},
+                                    {label: 'K', value: 'K'},
+                                    {label: 'L', value: 'L'},
+                                    {label: 'M', value: 'M'},
+                                    {label: 'N', value: 'N'},
+                                    {label: 'O', value: 'O'},
+                                    {label: 'P', value: 'P'},
+                                    {label: 'Q', value: 'Q'},
+                                    {label: 'R', value: 'R'},
+                                    {label: 'S', value: 'S'},
+                                    {label: 'T', value: 'T'},
+                                    {label: 'U', value: 'U'},
+                                    {label: 'V', value: 'V'},
+                                    {label: 'W', value: 'W'},
+                                    {label: 'X', value: 'X'},
+                                    {label: 'Y', value: 'Y'},
+                                    {label: 'Z', value: 'Z'},
                                 ]}
                             />
                         </View>
@@ -441,20 +490,26 @@ class ContactList extends Component<
                             <CmlButton
                                 title="Upload"
                                 backgroundColor="#02b9db"
-                                style={{ width: 100, marginTop: 16 }}
+                                style={{width: 100, marginTop: 16}}
                                 onPress={() => this.upload()}
                             />
-                            <View style={{ flex: 1 }} />
+                            <View style={{flex: 1}} />
                             <CmlButton
                                 title="Cancel"
                                 backgroundColor="#ffa67a"
-                                onPress={() => this.setState({
-                                    uploadList: false,
-                                    headerColumn: 'A',
-                                    containHeader: false,
-                                    currentItem: null
-                                })}
-                                style={{ width: 100, marginTop: 16, marginLeft: 16 }}
+                                onPress={() =>
+                                    this.setState({
+                                        uploadList: false,
+                                        headerColumn: 'A',
+                                        containHeader: false,
+                                        currentItem: null,
+                                    })
+                                }
+                                style={{
+                                    width: 100,
+                                    marginTop: 16,
+                                    marginLeft: 16,
+                                }}
                             />
                         </View>
                     </View>
@@ -464,7 +519,7 @@ class ContactList extends Component<
                     isVisible={this.state.deleteConfirm}
                     backdropOpacity={0}
                     onBackdropPress={() =>
-                        this.setState({ deleteConfirm: false, currentItem: null })
+                        this.setState({deleteConfirm: false, currentItem: null})
                     }>
                     <View style={AppStyle.dialogContainer}>
                         <View>
@@ -491,14 +546,16 @@ class ContactList extends Component<
                                 <CmlButton
                                     title="Yes"
                                     backgroundColor="#ffa67a"
-                                    style={{ marginTop: 16, marginRight: 16 }}
+                                    style={{marginTop: 16, marginRight: 16}}
                                     onPress={() => this.deleteList()}
                                 />
                                 <CmlButton
                                     title="No"
                                     backgroundColor="#02b9db"
-                                    style={{ marginTop: 16 }}
-                                    onPress={() => this.setState({ deleteConfirm: false })}
+                                    style={{marginTop: 16}}
+                                    onPress={() =>
+                                        this.setState({deleteConfirm: false})
+                                    }
                                 />
                             </View>
                         </View>

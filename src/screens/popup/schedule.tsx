@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
 
-const styles = StyleSheet.create({
-
-});
+const styles = StyleSheet.create({});
 
 class ScheduleScreen extends Component {
-
     render() {
         return (
             <View>
@@ -15,5 +12,5 @@ class ScheduleScreen extends Component {
         );
     }
 }
-  
+
 export default ScheduleScreen;

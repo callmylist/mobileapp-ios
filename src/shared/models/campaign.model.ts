@@ -11,5 +11,5 @@ export class Campaign {
   summary: boolean;
   message: boolean;
 
-  constructor() {}
+  constructor() { }
 }

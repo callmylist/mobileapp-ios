@@ -1,17 +1,23 @@
-import React, { Component } from 'react';
-import { StyleSheet, Image, View, TouchableOpacity, SafeAreaView } from 'react-native';
+import React, {Component} from 'react';
+import {
+    StyleSheet,
+    Image,
+    View,
+    TouchableOpacity,
+    SafeAreaView,
+} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { CmlText } from '../components/text'
-import { CmlTextInput } from '../components/textinput'
-import { ScrollView } from 'react-native-gesture-handler';
-import { StackActions } from '@react-navigation/native';
-import Dialog, { DialogContent } from 'react-native-popup-dialog';
-import { CmlButton } from '../components/button'
+import {CmlText} from '../components/text';
+import {CmlTextInput} from '../components/textinput';
+import {ScrollView} from 'react-native-gesture-handler';
+import {StackActions} from '@react-navigation/native';
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
+import {CmlButton} from '../components/button';
 import Modal from 'react-native-modal';
-import AppStyle from '../shared/styles'
+import AppStyle from '../shared/styles';
 
 const styles = StyleSheet.create({
     container: {
@@ -20,7 +26,7 @@ const styles = StyleSheet.create({
         borderRightColor: '#e6e6e6',
         height: 300,
         marginTop: 56,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
     },
     avatarContainer: {
         flexDirection: 'row',
@@ -30,12 +36,12 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         borderRadius: 30,
-        marginLeft: 8
+        marginLeft: 8,
     },
     nameContainer: {
         justifyContent: 'center',
         marginLeft: 16,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     welcome: {
         color: '#a9afbb',
@@ -43,7 +49,7 @@ const styles = StyleSheet.create({
     },
     name: {
         color: '#3c4858',
-        fontSize: 20
+        fontSize: 20,
     },
     menuContainer: {
         paddingLeft: 16,
@@ -60,21 +66,21 @@ const styles = StyleSheet.create({
     menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 16
+        padding: 16,
     },
     menuLabel: {
         color: '#3c4858',
         fontSize: 16,
         marginLeft: 16,
         letterSpacing: 1.5,
-        fontWeight: '500'
+        fontWeight: '500',
     },
     selectedMenu: {
         backgroundColor: '#00b7d9',
-        borderRadius: 6
+        borderRadius: 6,
     },
     selectedMenuText: {
-        color: 'white'
+        color: 'white',
     },
     fundButtonContainer: {
         backgroundColor: '#2c2d2d',
@@ -82,52 +88,57 @@ const styles = StyleSheet.create({
         height: 32,
         justifyContent: 'center',
         alignItems: 'center',
-        width: 160
+        width: 160,
     },
     buttonTitle: {
         color: 'white',
         fontSize: 14,
-        fontWeight: '600'
+        fontWeight: '600',
     },
-
 });
 
 class Menu extends Component {
-
-    routes = ['Dashboard', 'MessageCenter', 'Campaign', 'Sound', 'ContactList', 'Account', 'Support']
+    routes = [
+        'Dashboard',
+        'MessageCenter',
+        'Campaign',
+        'Sound',
+        'ContactList',
+        'Account',
+        'Support',
+    ];
     constructor(props: any) {
-        super(props)
+        super(props);
         this.state = {
             currentMenu: 0,
-            addFunds: false
-        }
+            addFunds: false,
+        };
     }
 
-    componentDidMount() {
-    }
+    componentDidMount() {}
 
     onMenuItem = (index: number) => {
         this.setState({
-            currentMenu: index
-        })
+            currentMenu: index,
+        });
 
-        this.props.navigation.closeDrawer()
-        this.props.navigation.navigate(this.routes[index])
-    }
+        this.props.navigation.closeDrawer();
+        this.props.navigation.navigate(this.routes[index]);
+    };
 
     onCreateCampaign = () => {
-        this.props.navigation.closeDrawer()
-        this.props.navigation.push('CreatCampaignNavigator')
-    }
+        this.props.navigation.closeDrawer();
+        this.props.navigation.push('CreatCampaignNavigator');
+    };
 
     logout = () => {
-        this.props.navigation.closeDrawer()
-        this.props.navigation.navigate('AuthNavigator')
-    }
+        this.props.navigation.closeDrawer();
+        this.props.navigation.navigate('AuthNavigator');
+    };
 
     render() {
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{flex: 1}}>
                 <ScrollView style={styles.container}>
                     <View style={styles.avatarContainer}>
                         {/* <FeatherIcon name="menu" color='#535353' size={28} style={{
@@ -135,112 +146,297 @@ class Menu extends Component {
                         }}/> */}
                         <Image
                             source={{
-                                uri: 'https://media-exp1.licdn.com/dms/image/C5603AQEfagEkOfFzjw/profile-displayphoto-shrink_200_200/0?e=1594252800&v=beta&t=9R6aFkkkU0AOFbOf8AXDMG7YDTxxd_9OZy_AjgMS9Jo'
+                                uri:
+                                    'https://media-exp1.licdn.com/dms/image/C5603AQEfagEkOfFzjw/profile-displayphoto-shrink_200_200/0?e=1594252800&v=beta&t=9R6aFkkkU0AOFbOf8AXDMG7YDTxxd_9OZy_AjgMS9Jo',
                             }}
                             style={styles.avatar}
                         />
                         <View style={styles.nameContainer}>
                             <CmlText style={styles.welcome}>Welcome,</CmlText>
                             <CmlText style={styles.name}>Mr. Wang</CmlText>
-                            <TouchableOpacity style={{
-                                marginTop: 16
-                            }}
-                                onPress={() => this.setState({
-                                    addFunds: true
-                                })}>
+                            <TouchableOpacity
+                                style={{
+                                    marginTop: 16,
+                                }}
+                                onPress={() =>
+                                    this.setState({
+                                        addFunds: true,
+                                    })
+                                }>
                                 <View style={styles.fundButtonContainer}>
-                                    <CmlText style={styles.buttonTitle}>Add Funds</CmlText>
+                                    <CmlText style={styles.buttonTitle}>
+                                        Add Funds
+                                    </CmlText>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity style={{
-                                marginTop: 8
-                            }} onPress={() => this.onCreateCampaign()}>
-                                <View style={[styles.fundButtonContainer, {
-                                    backgroundColor: '#fda478'
-                                }]}>
-                                    <CmlText style={styles.buttonTitle}>Create Campaign</CmlText>
+                            <TouchableOpacity
+                                style={{
+                                    marginTop: 8,
+                                }}
+                                onPress={() => this.onCreateCampaign()}>
+                                <View
+                                    style={[
+                                        styles.fundButtonContainer,
+                                        {
+                                            backgroundColor: '#fda478',
+                                        },
+                                    ]}>
+                                    <CmlText style={styles.buttonTitle}>
+                                        Create Campaign
+                                    </CmlText>
                                 </View>
                             </TouchableOpacity>
                         </View>
                     </View>
                     <View style={styles.menuContainer}>
                         <TouchableOpacity onPress={() => this.onMenuItem(0)}>
-                            <View style={[styles.menuItem, this.state.currentMenu === 0 && styles.selectedMenu]}>
-                                <Feather name="grid" size={24} color={this.state.currentMenu == 0 ? 'white' : '#a9afbb'} />
-                                <CmlText style={[styles.menuLabel, this.state.currentMenu === 0 && styles.selectedMenuText]}>Dashboard</CmlText>
+                            <View
+                                style={[
+                                    styles.menuItem,
+                                    this.state.currentMenu === 0 &&
+                                        styles.selectedMenu,
+                                ]}>
+                                <Feather
+                                    name="grid"
+                                    size={24}
+                                    color={
+                                        this.state.currentMenu == 0
+                                            ? 'white'
+                                            : '#a9afbb'
+                                    }
+                                />
+                                <CmlText
+                                    style={[
+                                        styles.menuLabel,
+                                        this.state.currentMenu === 0 &&
+                                            styles.selectedMenuText,
+                                    ]}>
+                                    Dashboard
+                                </CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(1)}>
-                            <View style={[styles.menuItem, this.state.currentMenu === 1 && styles.selectedMenu]}>
-                                <Feather name="mail" size={24} color={this.state.currentMenu == 1 ? 'white' : '#a9afbb'} />
-                                <CmlText style={[styles.menuLabel, this.state.currentMenu === 1 && styles.selectedMenuText]}>Message Center</CmlText>
+                            <View
+                                style={[
+                                    styles.menuItem,
+                                    this.state.currentMenu === 1 &&
+                                        styles.selectedMenu,
+                                ]}>
+                                <Feather
+                                    name="mail"
+                                    size={24}
+                                    color={
+                                        this.state.currentMenu == 1
+                                            ? 'white'
+                                            : '#a9afbb'
+                                    }
+                                />
+                                <CmlText
+                                    style={[
+                                        styles.menuLabel,
+                                        this.state.currentMenu === 1 &&
+                                            styles.selectedMenuText,
+                                    ]}>
+                                    Message Center
+                                </CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(2)}>
-                            <View style={[styles.menuItem, this.state.currentMenu === 2 && styles.selectedMenu]}>
-                                <Feather name="server" size={24} color={this.state.currentMenu == 2 ? 'white' : '#a9afbb'} />
-                                <CmlText style={[styles.menuLabel, this.state.currentMenu === 2 && styles.selectedMenuText]}>My Campaigns</CmlText>
+                            <View
+                                style={[
+                                    styles.menuItem,
+                                    this.state.currentMenu === 2 &&
+                                        styles.selectedMenu,
+                                ]}>
+                                <Feather
+                                    name="server"
+                                    size={24}
+                                    color={
+                                        this.state.currentMenu == 2
+                                            ? 'white'
+                                            : '#a9afbb'
+                                    }
+                                />
+                                <CmlText
+                                    style={[
+                                        styles.menuLabel,
+                                        this.state.currentMenu === 2 &&
+                                            styles.selectedMenuText,
+                                    ]}>
+                                    My Campaigns
+                                </CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(3)}>
-                            <View style={[styles.menuItem, this.state.currentMenu === 3 && styles.selectedMenu]}>
-                                <AntDesign name="sound" size={24} color={this.state.currentMenu == 3 ? 'white' : '#a9afbb'} />
-                                <CmlText style={[styles.menuLabel, this.state.currentMenu === 3 && styles.selectedMenuText]}>Sound</CmlText>
+                            <View
+                                style={[
+                                    styles.menuItem,
+                                    this.state.currentMenu === 3 &&
+                                        styles.selectedMenu,
+                                ]}>
+                                <AntDesign
+                                    name="sound"
+                                    size={24}
+                                    color={
+                                        this.state.currentMenu == 3
+                                            ? 'white'
+                                            : '#a9afbb'
+                                    }
+                                />
+                                <CmlText
+                                    style={[
+                                        styles.menuLabel,
+                                        this.state.currentMenu === 3 &&
+                                            styles.selectedMenuText,
+                                    ]}>
+                                    Sound
+                                </CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(4)}>
-                            <View style={[styles.menuItem, this.state.currentMenu === 4 && styles.selectedMenu]}>
-                                <AntDesign name="contacts" size={24} color={this.state.currentMenu == 4 ? 'white' : '#a9afbb'} />
-                                <CmlText style={[styles.menuLabel, this.state.currentMenu === 4 && styles.selectedMenuText]}>Contact List</CmlText>
+                            <View
+                                style={[
+                                    styles.menuItem,
+                                    this.state.currentMenu === 4 &&
+                                        styles.selectedMenu,
+                                ]}>
+                                <AntDesign
+                                    name="contacts"
+                                    size={24}
+                                    color={
+                                        this.state.currentMenu == 4
+                                            ? 'white'
+                                            : '#a9afbb'
+                                    }
+                                />
+                                <CmlText
+                                    style={[
+                                        styles.menuLabel,
+                                        this.state.currentMenu === 4 &&
+                                            styles.selectedMenuText,
+                                    ]}>
+                                    Contact List
+                                </CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(5)}>
-                            <View style={[styles.menuItem, this.state.currentMenu === 5 && styles.selectedMenu]}>
-                                <MaterialCommunityIcons name="account-circle-outline" size={24} color={this.state.currentMenu == 5 ? 'white' : '#a9afbb'} />
-                                <CmlText style={[styles.menuLabel, this.state.currentMenu === 5 && styles.selectedMenuText]}>Account</CmlText>
+                            <View
+                                style={[
+                                    styles.menuItem,
+                                    this.state.currentMenu === 5 &&
+                                        styles.selectedMenu,
+                                ]}>
+                                <MaterialCommunityIcons
+                                    name="account-circle-outline"
+                                    size={24}
+                                    color={
+                                        this.state.currentMenu == 5
+                                            ? 'white'
+                                            : '#a9afbb'
+                                    }
+                                />
+                                <CmlText
+                                    style={[
+                                        styles.menuLabel,
+                                        this.state.currentMenu === 5 &&
+                                            styles.selectedMenuText,
+                                    ]}>
+                                    Account
+                                </CmlText>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.onMenuItem(6)}>
-                            <View style={[styles.menuItem, this.state.currentMenu === 6 && styles.selectedMenu]}>
-                                <Feather name="help-circle" size={24} color={this.state.currentMenu == 6 ? 'white' : '#a9afbb'} />
-                                <CmlText style={[styles.menuLabel, this.state.currentMenu === 6 && styles.selectedMenuText]}>Support</CmlText>
+                            <View
+                                style={[
+                                    styles.menuItem,
+                                    this.state.currentMenu === 6 &&
+                                        styles.selectedMenu,
+                                ]}>
+                                <Feather
+                                    name="help-circle"
+                                    size={24}
+                                    color={
+                                        this.state.currentMenu == 6
+                                            ? 'white'
+                                            : '#a9afbb'
+                                    }
+                                />
+                                <CmlText
+                                    style={[
+                                        styles.menuLabel,
+                                        this.state.currentMenu === 6 &&
+                                            styles.selectedMenuText,
+                                    ]}>
+                                    Support
+                                </CmlText>
                             </View>
                         </TouchableOpacity>
-                        <View style={{ height: 50 }}></View>
+                        <View style={{height: 50}}></View>
                         <TouchableOpacity onPress={() => this.logout()}>
                             <View style={styles.menuItem}>
-                                <AntDesign name="logout" size={24} color='#a9afbb' />
-                                <CmlText style={styles.menuLabel}>Logout</CmlText>
+                                <AntDesign
+                                    name="logout"
+                                    size={24}
+                                    color="#a9afbb"
+                                />
+                                <CmlText style={styles.menuLabel}>
+                                    Logout
+                                </CmlText>
                             </View>
                         </TouchableOpacity>
                     </View>
-
                 </ScrollView>
 
                 <Modal
                     isVisible={this.state.addFunds}
                     backdropOpacity={0}
-                    onBackdropPress={() => this.setState({ addFunds: false })}
-                >
+                    onBackdropPress={() => this.setState({addFunds: false})}>
                     <View style={AppStyle.dialogContainer}>
                         <View>
-                            <CmlText style={AppStyle.dialogTitle}>Add Funds</CmlText>
-                            <CmlText style={AppStyle.dialogDescription}>Enter a value for the amount of credits you would like to add to the account.</CmlText>
+                            <CmlText style={AppStyle.dialogTitle}>
+                                Add Funds
+                            </CmlText>
+                            <CmlText style={AppStyle.dialogDescription}>
+                                Enter a value for the amount of credits you
+                                would like to add to the account.
+                            </CmlText>
 
                             <View style={AppStyle.dialogTimeContainer}>
-                                <FontAwesome name="dollar" size={20} color={'#ffa67a'} />
-                                <CmlTextInput style={AppStyle.dialogTimePlaceholder} style={{ flex: 1, fontSize: 14, color: 'white', marginLeft: 8 }}></CmlTextInput>
+                                <FontAwesome
+                                    name="dollar"
+                                    size={20}
+                                    color={'#ffa67a'}
+                                />
+                                <CmlTextInput
+                                    style={AppStyle.dialogTimePlaceholder}
+                                    style={{
+                                        flex: 1,
+                                        fontSize: 14,
+                                        color: 'white',
+                                        marginLeft: 8,
+                                    }}></CmlTextInput>
                             </View>
 
-                            <View style={{ flexDirection: 'row', width: '100%', height: 32, justifyContent: 'flex-end' }}>
-                                <CmlButton title="Add Funds" backgroundColor="#ffa67a" style={{ marginTop: 16 }} onPress={() => this.setState({ addFunds: false })} />
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    height: 32,
+                                    justifyContent: 'flex-end',
+                                }}>
+                                <CmlButton
+                                    title="Add Funds"
+                                    backgroundColor="#ffa67a"
+                                    style={{marginTop: 16}}
+                                    onPress={() =>
+                                        this.setState({addFunds: false})
+                                    }
+                                />
                             </View>
                         </View>
                     </View>
                 </Modal>
             </SafeAreaView>
-
-
         );
     }
 }

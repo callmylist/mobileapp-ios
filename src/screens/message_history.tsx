@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
     StyleSheet,
     FlatList,
@@ -7,19 +7,19 @@ import {
     SafeAreaView,
     KeyboardAvoidingView,
     Platform,
-    Keyboard
+    Keyboard,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Header from '../components/header';
-import { CmlText } from '../components/text';
-import { CmlTextInput } from '../components/textinput';
-import { KeyboardAvoidingScrollView } from 'react-native-keyboard-avoiding-scroll-view';
-import { MessageCenterService } from '../service/message-center.service'
-import moment from 'moment'
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import {CmlText} from '../components/text';
+import {CmlTextInput} from '../components/textinput';
+import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
+import {MessageCenterService} from '../service/message-center.service';
+import moment from 'moment';
+import {compose} from 'redux';
+import {connect} from 'react-redux';
 
 const styles = StyleSheet.create({
     container: {
@@ -34,77 +34,87 @@ const styles = StyleSheet.create({
     },
 });
 
-class MessageHistory extends Component<{
-    navigation: any,
-    loggedInContact: any
-}, {
-    contact: any,
-    messageList: any[],
-    message: string
-}> {
-
+class MessageHistory extends Component<
+    {
+        navigation: any;
+        loggedInContact: any;
+    },
+    {
+        contact: any;
+        messageList: any[];
+        message: string;
+    }
+> {
     flatList: any = null;
 
     constructor(props: any) {
-        super(props)
+        super(props);
         this.state = {
             contact: null,
             messageList: [],
-            message: ""
-        }
+            message: '',
+        };
     }
 
     componentDidMount() {
-        this.setState({
-            contact: this.props.navigation.state.params.contact,
-            messageList: []
-        }, () => {
-            this.loadMessages()
-        })
+        this.setState(
+            {
+                contact: this.props.navigation.state.params.contact,
+                messageList: [],
+            },
+            () => {
+                this.loadMessages();
+            },
+        );
     }
 
     loadMessages = () => {
-        MessageCenterService.getMessageList(this.state.contact.id).subscribe((response: any) => {
-            if (response.success) {
-                this.setState({
-                    messageList: response.data
-                })
-            }
-        })
-    }
+        MessageCenterService.getMessageList(this.state.contact.id).subscribe(
+            (response: any) => {
+                if (response.success) {
+                    this.setState({
+                        messageList: response.data,
+                    });
+                }
+            },
+        );
+    };
 
     onBack = () => {
         this.props.navigation.pop();
     };
 
     sendMessage = () => {
-
         if (this.state.message.trim().length == 0) {
-            return
+            return;
         }
 
-        Keyboard.dismiss()
+        Keyboard.dismiss();
 
-        MessageCenterService.sendNewMessage(this.state.message, this.state.contact.id).subscribe((response: any) => {
+        MessageCenterService.sendNewMessage(
+            this.state.message,
+            this.state.contact.id,
+        ).subscribe((response: any) => {
             this.setState({
-                message: ''
-            })
+                message: '',
+            });
 
-            this.loadMessages()
-
-        })
-    }
+            this.loadMessages();
+        });
+    };
 
     render() {
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{flex: 1}}>
                 <Header back={true} onBack={this.onBack} menu={false} />
 
                 <View style={styles.container}>
                     <CmlText style={styles.campaignLabel}>Contact List</CmlText>
                     <KeyboardAvoidingView
                         behavior="padding"
-                        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : -500}
+                        keyboardVerticalOffset={
+                            Platform.OS === 'ios' ? 100 : -500
+                        }
                         style={{
                             flex: 1,
                         }}>
@@ -112,81 +122,131 @@ class MessageHistory extends Component<{
                             inverted
                             data={this.state.messageList}
                             ref={(ref) => (this.flatList = ref)}
-                            renderItem={(item: any) => <>
-                                {
-                                    item.item.messageType == 2 && <View
-                                        style={{
-                                            marginVertical: 8,
-                                        }}>
+                            renderItem={(item: any) => (
+                                <>
+                                    {item.item.messageType == 2 && (
                                         <View
                                             style={{
-                                                backgroundColor: '#ffeadf',
-                                                borderRadius: 8,
-                                                borderWidth: 1,
-                                                borderColor: '#ffeadf',
-                                                padding: 16,
-                                                width: '80%',
+                                                marginVertical: 8,
                                             }}>
                                             <View
                                                 style={{
-                                                    flexDirection: 'row',
+                                                    backgroundColor: '#ffeadf',
+                                                    borderRadius: 8,
+                                                    borderWidth: 1,
+                                                    borderColor: '#ffeadf',
+                                                    padding: 16,
+                                                    width: '80%',
                                                 }}>
-                                                <CmlText style={{
-                                                    fontWeight: 'bold'
-                                                }}>{this.state.contact.firstName + " " + (this.state.contact.lastName ? this.state.contact.lastName : "")}</CmlText>
-                                                <View style={{ flex: 1 }} />
-                                                <CmlText style={{ fontWeight: '300' }}>
-                                                    {moment(item.item.createDate).format('MM/DD/YY, h:mm a')}
+                                                <View
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                    }}>
+                                                    <CmlText
+                                                        style={{
+                                                            fontWeight: 'bold',
+                                                        }}>
+                                                        {this.state.contact
+                                                            .firstName +
+                                                            ' ' +
+                                                            (this.state.contact
+                                                                .lastName
+                                                                ? this.state
+                                                                      .contact
+                                                                      .lastName
+                                                                : '')}
+                                                    </CmlText>
+                                                    <View style={{flex: 1}} />
+                                                    <CmlText
+                                                        style={{
+                                                            fontWeight: '300',
+                                                        }}>
+                                                        {moment(
+                                                            item.item
+                                                                .createDate,
+                                                        ).format(
+                                                            'MM/DD/YY, h:mm a',
+                                                        )}
+                                                    </CmlText>
+                                                </View>
+
+                                                <CmlText>
+                                                    {
+                                                        this.state.contact
+                                                            .companyName
+                                                    }
+                                                </CmlText>
+                                                <CmlText
+                                                    style={{marginTop: 16}}>
+                                                    {item.item.body}
                                                 </CmlText>
                                             </View>
-
-                                            <CmlText>{this.state.contact.companyName}</CmlText>
-                                            <CmlText style={{ marginTop: 16 }}>
-                                                {item.item.body}
-                                            </CmlText>
                                         </View>
-                                    </View>
-                                }
-                                {
-                                    item.item.messageType == 1 && < View
-                                        style={{
-                                            marginVertical: 8,
-                                        }}>
+                                    )}
+                                    {item.item.messageType == 1 && (
                                         <View
                                             style={{
-                                                backgroundColor: '#cdf4ff',
-                                                borderRadius: 8,
-                                                borderWidth: 1,
-                                                borderColor: '#ffeadf',
-                                                padding: 16,
-                                                width: '80%',
-                                                alignSelf: 'flex-end',
+                                                marginVertical: 8,
                                             }}>
                                             <View
                                                 style={{
-                                                    flexDirection: 'row',
+                                                    backgroundColor: '#cdf4ff',
+                                                    borderRadius: 8,
+                                                    borderWidth: 1,
+                                                    borderColor: '#ffeadf',
+                                                    padding: 16,
+                                                    width: '80%',
+                                                    alignSelf: 'flex-end',
                                                 }}>
-                                                <CmlText style={{
-                                                    fontWeight: 'bold'
-                                                }}>{this.props.loggedInContact.firstName} {this.props.loggedInContact.lastName}</CmlText>
-                                                <View style={{ flex: 1 }} />
-                                                <CmlText style={{ fontWeight: '300' }}>
-                                                    {moment(item.item.createDate).format('MM/DD/YY, h:mm a')}
+                                                <View
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                    }}>
+                                                    <CmlText
+                                                        style={{
+                                                            fontWeight: 'bold',
+                                                        }}>
+                                                        {
+                                                            this.props
+                                                                .loggedInContact
+                                                                .firstName
+                                                        }{' '}
+                                                        {
+                                                            this.props
+                                                                .loggedInContact
+                                                                .lastName
+                                                        }
+                                                    </CmlText>
+                                                    <View style={{flex: 1}} />
+                                                    <CmlText
+                                                        style={{
+                                                            fontWeight: '300',
+                                                        }}>
+                                                        {moment(
+                                                            item.item
+                                                                .createDate,
+                                                        ).format(
+                                                            'MM/DD/YY, h:mm a',
+                                                        )}
+                                                    </CmlText>
+                                                </View>
+
+                                                <CmlText>
+                                                    {
+                                                        this.props
+                                                            .loggedInContact
+                                                            .companyName
+                                                    }
+                                                </CmlText>
+                                                <CmlText
+                                                    style={{marginTop: 16}}>
+                                                    {item.item.body}
                                                 </CmlText>
                                             </View>
-
-                                            <CmlText>{this.props.loggedInContact.companyName}</CmlText>
-                                            <CmlText style={{ marginTop: 16 }}>
-                                                {item.item.body}
-                                            </CmlText>
                                         </View>
-                                    </View>
-                                }
-
-                            </>}
-                        >
-
-                        </FlatList>
+                                    )}
+                                </>
+                            )}></FlatList>
                         <View
                             style={{
                                 width: '100%',
@@ -206,7 +266,7 @@ class MessageHistory extends Component<{
                                 blurOnSubmit={true}
                                 value={this.state.message}
                                 onChangeText={(value: string) =>
-                                    this.setState({ message: value })
+                                    this.setState({message: value})
                                 }
                             />
                             <View
@@ -215,14 +275,19 @@ class MessageHistory extends Component<{
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 }}>
-                                <TouchableOpacity onPress={() => this.sendMessage()}>
-                                    <Feather name="send" size={24} color="#1fac75" />
+                                <TouchableOpacity
+                                    onPress={() => this.sendMessage()}>
+                                    <Feather
+                                        name="send"
+                                        size={24}
+                                        color="#1fac75"
+                                    />
                                 </TouchableOpacity>
                             </View>
                         </View>
                     </KeyboardAvoidingView>
                 </View>
-            </SafeAreaView >
+            </SafeAreaView>
         );
     }
 }

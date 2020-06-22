@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, {useState} from 'react';
+import PropTypes from 'prop-types';
 import TrackPlayer, {
     useTrackPlayerProgress,
     usePlaybackState,
-    useTrackPlayerEvents
-} from "react-native-track-player";
-import { Slider } from 'react-native-elements'
+    useTrackPlayerEvents,
+} from 'react-native-track-player';
+import {Slider} from 'react-native-elements';
 import {
     Image,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
-    ViewPropTypes
-} from "react-native";
+    ViewPropTypes,
+} from 'react-native';
 
 function ProgressBar() {
     const progress = useTrackPlayerProgress();
@@ -22,22 +22,25 @@ function ProgressBar() {
         <>
             <Text>{progress.duration}</Text>
             <View style={styles.progress}>
-                <View style={{ flex: progress.position, backgroundColor: "red" }} />
+                <View
+                    style={{flex: progress.position, backgroundColor: 'red'}}
+                />
                 <View
                     style={{
                         flex: progress.duration - progress.position,
-                        backgroundColor: "grey"
+                        backgroundColor: 'grey',
                     }}
                 />
-
             </View>
         </>
     );
 }
 
-function ControlButton({ title, onPress }) {
+function ControlButton({title, onPress}) {
     return (
-        <TouchableOpacity style={styles.controlButtonContainer} onPress={onPress}>
+        <TouchableOpacity
+            style={styles.controlButtonContainer}
+            onPress={onPress}>
             <Text style={styles.controlButtonText}>{title}</Text>
         </TouchableOpacity>
     );
@@ -45,28 +48,31 @@ function ControlButton({ title, onPress }) {
 
 ControlButton.propTypes = {
     title: PropTypes.string.isRequired,
-    onPress: PropTypes.func.isRequired
+    onPress: PropTypes.func.isRequired,
 };
 
 export default function Player(props) {
     const playbackState = usePlaybackState();
 
-    const { style, onNext, onPrevious, onTogglePlayback } = props;
+    const {style, onNext, onPrevious, onTogglePlayback} = props;
 
-    var middleButtonText = "Play";
+    var middleButtonText = 'Play';
 
     if (
         playbackState === TrackPlayer.STATE_PLAYING ||
         playbackState === TrackPlayer.STATE_BUFFERING
     ) {
-        middleButtonText = "Pause";
+        middleButtonText = 'Pause';
     }
 
     return (
         <View style={[styles.card, style]}>
             <ProgressBar />
             <View style={styles.controls}>
-                <ControlButton title={middleButtonText} onPress={onTogglePlayback} />
+                <ControlButton
+                    title={middleButtonText}
+                    onPress={onTogglePlayback}
+                />
             </View>
         </View>
     );
@@ -76,53 +82,53 @@ Player.propTypes = {
     style: ViewPropTypes.style,
     onNext: PropTypes.func.isRequired,
     onPrevious: PropTypes.func.isRequired,
-    onTogglePlayback: PropTypes.func.isRequired
+    onTogglePlayback: PropTypes.func.isRequired,
 };
 
 Player.defaultProps = {
-    style: {}
+    style: {},
 };
 
 const styles = StyleSheet.create({
     card: {
-        width: "100%",
+        width: '100%',
         elevation: 1,
         borderRadius: 4,
         shadowRadius: 2,
         shadowOpacity: 0.1,
-        alignItems: "center",
-        shadowColor: "black",
-        backgroundColor: "#00000000",
-        shadowOffset: { width: 0, height: 1 }
+        alignItems: 'center',
+        shadowColor: 'black',
+        backgroundColor: '#00000000',
+        shadowOffset: {width: 0, height: 1},
     },
     cover: {
         width: 140,
         height: 140,
         marginTop: 20,
-        backgroundColor: "grey"
+        backgroundColor: 'grey',
     },
     progress: {
         height: 6,
-        width: "90%",
+        width: '90%',
         marginTop: 10,
-        flexDirection: "row"
+        flexDirection: 'row',
     },
     title: {
-        marginTop: 10
+        marginTop: 10,
     },
     artist: {
-        fontWeight: "bold"
+        fontWeight: 'bold',
     },
     controls: {
         marginVertical: 20,
-        flexDirection: "row"
+        flexDirection: 'row',
     },
     controlButtonContainer: {
-        flex: 1
+        flex: 1,
     },
     controlButtonText: {
         fontSize: 18,
-        textAlign: "center",
-        color: 'white'
-    }
+        textAlign: 'center',
+        color: 'white',
+    },
 });

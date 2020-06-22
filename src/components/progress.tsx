@@ -1,9 +1,8 @@
-import React from 'react'
-import { Animated, View, StyleSheet, ViewPropTypes } from 'react-native'
-import PropTypes from 'prop-types'
+import React from 'react';
+import {Animated, View, StyleSheet, ViewPropTypes} from 'react-native';
+import PropTypes from 'prop-types';
 
 export default class SemiCircleProgress extends React.PureComponent {
-
     static propTypes = {
         progressShadowColor: PropTypes.string,
         progressColor: PropTypes.string,
@@ -17,8 +16,8 @@ export default class SemiCircleProgress extends React.PureComponent {
         initialPercentage: PropTypes.number,
         minValue: PropTypes.number,
         maxValue: PropTypes.number,
-        currentValue: PropTypes.number
-    }
+        currentValue: PropTypes.number,
+    };
 
     static defaultProps = {
         progressShadowColor: 'silver',
@@ -28,63 +27,69 @@ export default class SemiCircleProgress extends React.PureComponent {
         progressWidth: 10,
         animationSpeed: 2,
         initialPercentage: 0,
-    }
+    };
 
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
-            rotationAnimation: new Animated.Value(props.initialPercentage)
-        }
+            rotationAnimation: new Animated.Value(props.initialPercentage),
+        };
     }
 
     componentDidMount() {
-        this.animate()
+        this.animate();
     }
 
     componentDidUpdate() {
-        this.animate()
+        this.animate();
     }
 
     animate = () => {
-        const toValue = this.getPercentage()
-        const speed = this.props.animationSpeed
+        const toValue = this.getPercentage();
+        const speed = this.props.animationSpeed;
 
         Animated.spring(this.state.rotationAnimation, {
             toValue,
             speed,
-            useNativeDriver: true
+            useNativeDriver: true,
         }).start();
-    }
+    };
 
     getPercentage = () => {
-        const { percentage, minValue, maxValue, currentValue } = this.props
-        if (percentage)
-            return Math.max(Math.min(percentage, 100), 0)
+        const {percentage, minValue, maxValue, currentValue} = this.props;
+        if (percentage) return Math.max(Math.min(percentage, 100), 0);
 
         if (currentValue && minValue && maxValue) {
-            const newPercent = (currentValue - minValue) / (maxValue - minValue) * 100
-            return Math.max(Math.min(newPercent, 100), 0)
+            const newPercent =
+                ((currentValue - minValue) / (maxValue - minValue)) * 100;
+            return Math.max(Math.min(newPercent, 100), 0);
         }
 
-        return 0
-    }
+        return 0;
+    };
 
     getStyles = () => {
-        const { circleRadius, progressShadowColor, progressColor, progressWidth, interiorCircleColor } = this.props
-        const interiorCircleRadius = circleRadius - progressWidth
+        const {
+            circleRadius,
+            progressShadowColor,
+            progressColor,
+            progressWidth,
+            interiorCircleColor,
+        } = this.props;
+        const interiorCircleRadius = circleRadius - progressWidth;
 
         return StyleSheet.create({
             exteriorCircle: {
                 width: circleRadius * 2,
                 height: circleRadius,
                 borderRadius: circleRadius,
-                backgroundColor: progressShadowColor
+                backgroundColor: progressShadowColor,
             },
             rotatingCircleWrap: {
                 width: circleRadius * 2,
                 height: circleRadius,
-                top: circleRadius
+                top: circleRadius,
             },
             rotatingCircle: {
                 width: circleRadius * 2,
@@ -92,40 +97,58 @@ export default class SemiCircleProgress extends React.PureComponent {
                 borderRadius: circleRadius,
                 backgroundColor: progressColor,
                 transform: [
-                    { translateY: -circleRadius / 2 },
+                    {translateY: -circleRadius / 2},
                     {
                         rotate: this.state.rotationAnimation.interpolate({
                             inputRange: [0, 100],
-                            outputRange: ['0deg', '180deg']
-                        })
+                            outputRange: ['0deg', '180deg'],
+                        }),
                     },
-                    { translateY: circleRadius / 2 }
-                ]
+                    {translateY: circleRadius / 2},
+                ],
             },
             interiorCircle: {
                 width: interiorCircleRadius * 2,
                 height: interiorCircleRadius,
                 borderRadius: interiorCircleRadius,
                 backgroundColor: interiorCircleColor,
-                top: progressWidth
-            }
-        })
-    }
+                top: progressWidth,
+            },
+        });
+    };
 
     render() {
-
-        const styles = this.getStyles()
+        const styles = this.getStyles();
 
         return (
-            <View style={[defaultStyles.exteriorCircle, styles.exteriorCircle, this.props.exteriorCircleStyle]}>
-                <View style={[defaultStyles.rotatingCircleWrap, styles.rotatingCircleWrap]}>
-                    <Animated.View style={[defaultStyles.rotatingCircle, styles.rotatingCircle]} />
+            <View
+                style={[
+                    defaultStyles.exteriorCircle,
+                    styles.exteriorCircle,
+                    this.props.exteriorCircleStyle,
+                ]}>
+                <View
+                    style={[
+                        defaultStyles.rotatingCircleWrap,
+                        styles.rotatingCircleWrap,
+                    ]}>
+                    <Animated.View
+                        style={[
+                            defaultStyles.rotatingCircle,
+                            styles.rotatingCircle,
+                        ]}
+                    />
                 </View>
-                <View style={[defaultStyles.interiorCircle, styles.interiorCircle, this.props.interiorCircleStyle]}>
+                <View
+                    style={[
+                        defaultStyles.interiorCircle,
+                        styles.interiorCircle,
+                        this.props.interiorCircleStyle,
+                    ]}>
                     {this.props.children}
                 </View>
             </View>
-        )
+        );
     }
 }
 
@@ -134,11 +157,11 @@ const defaultStyles = StyleSheet.create({
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
         alignItems: 'center',
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     rotatingCircleWrap: {
         position: 'absolute',
-        left: 0
+        left: 0,
     },
     rotatingCircle: {
         position: 'absolute',
@@ -153,5 +176,5 @@ const defaultStyles = StyleSheet.create({
         alignItems: 'center',
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
-    }
-})
+    },
+});
