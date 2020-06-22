@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, TextInput} from 'react-native';
 
-export const CmlTextInput = (props) => (
+export const CmlTextInput = (props: any) => (
     <TextInput {...props} style={[props.style, styles.text]} />
 );
 

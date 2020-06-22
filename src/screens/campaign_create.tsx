@@ -353,9 +353,12 @@ class CampaignCreate extends Component<
                                                     title="CALL"
                                                     backgroundColor="#02b9db"
                                                     style={{marginTop: 16}}
+                                                    onPress={() =>
+                                                        this.continue()
+                                                    }
                                                 />
                                             </View>
-                                            <View
+                                            {/* <View
                                                 style={{
                                                     alignItems: 'center',
                                                     padding: 16,
@@ -371,7 +374,7 @@ class CampaignCreate extends Component<
                                                     backgroundColor="#ffa67a"
                                                     style={{marginTop: 16}}
                                                 />
-                                            </View>
+                                            </View> */}
                                         </View>
 
                                         <TouchableOpacity
@@ -404,6 +407,9 @@ class CampaignCreate extends Component<
                                             <CmlTextInput
                                                 placeholder="Please add campaign name here"
                                                 style={styles.input}
+                                                onChangeText={(val: string) => {
+                                                    console.log(val);
+                                                }}
                                             />
                                         </View>
 
