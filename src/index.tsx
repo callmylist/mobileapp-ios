@@ -27,6 +27,7 @@ import CampaignCreateScreen from './screens/campaign_create';
 import ScheduleScreen from './screens/popup/schedule';
 import CampaignDetailScreen from './screens/campaign_detail';
 import MessageHistoryScreen from './screens/message_history';
+import FilteredContactsScreen from './screens/filtered_contacts';
 
 import {persistor, store} from './redux/store';
 import {Provider} from 'react-redux';
@@ -87,6 +88,7 @@ const App = createStackNavigator(
         CampaignDetailScreen,
         MessageHistoryScreen,
         AddAccountScreen,
+        FilteredContactsScreen,
     },
     {
         initialRouteName: 'Dashboard',

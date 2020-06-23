@@ -16,6 +16,15 @@ export class MessageCenterService {
         );
     }
 
+    static GetAllContactsSearch(value: any, PageLimit: any, pageNumber: any) {
+        var url = constants.apiUrl.getContactListSe
+            .replace('{number}', pageNumber)
+            .replace('{limit}', PageLimit)
+            .replace('{search}', value);
+
+        return RestClient.get(url);
+    }
+
     static getMessageList(contactID: any) {
         return RestClient.get(
             constants.apiUrl.getMessageList.replace('{contactID}', contactID),
@@ -37,5 +46,13 @@ export class MessageCenterService {
 
     static savePhoneNumber(options: any) {
         return RestClient.post(constants.apiUrl.savePhoneNumber, options);
+    }
+
+    static MarkUnmarkFavourite(ID: any, flag: any) {
+        const url = constants.apiUrl.MarkUnmarkFav.replace(
+            '{contactID}',
+            ID,
+        ).replace('{status}', flag);
+        return RestClient.get(url);
     }
 }

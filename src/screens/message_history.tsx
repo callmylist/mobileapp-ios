@@ -81,7 +81,9 @@ class MessageHistory extends Component<
     };
 
     onBack = () => {
-        this.props.navigation.pop();
+        this.props.navigation.pop({
+            refresh: false,
+        });
     };
 
     sendMessage = () => {
