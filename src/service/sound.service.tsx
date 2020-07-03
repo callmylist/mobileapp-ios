@@ -93,4 +93,13 @@ export class SoundService {
             }
         });
     }
+
+    static getDefaultSound() {
+        const url = constants.apiUrl.getDefaultSound.replace(
+            '{userId}',
+            store.getState().authReducer.loggedInContact.userId,
+        );
+
+        return RestClient.get(url);
+    }
 }
