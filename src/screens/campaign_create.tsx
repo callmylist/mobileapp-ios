@@ -42,6 +42,10 @@ import {UserService} from '../service/user.service';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
 import {CampaignService} from '../service/campaign.service';
+import {store} from '../redux/store';
+import RNFetchBlob from 'rn-fetch-blob';
+import RNFS from 'react-native-fs';
+import FileViewer from 'react-native-file-viewer';
 
 const items = [
     {
@@ -1093,20 +1097,48 @@ class CampaignCreate extends Component<
         });
     };
 
-    items = [
-        {
-            itemKey: 1,
-            itemDescription: 'Item 1',
-        },
-        {
-            itemKey: 2,
-            itemDescription: 'Item 2',
-        },
-        {
-            itemKey: 3,
-            itemDescription: 'Item 3',
-        },
-    ];
+    download = (item: any) => {
+        let dirs = RNFetchBlob.fs.dirs;
+        this.setState({loading: true});
+        RNFetchBlob.config({
+            // response data will be saved to this path if it has access right.
+            path: dirs.DocumentDir + '/' + item.fileName,
+        })
+            .fetch(
+                'GET',
+                store.getState().authReducer.assets.assetsPath +
+                    item.wavFilePath,
+                {
+                    //some headers ..
+                },
+            )
+            .then((res: any) => {
+                // the path should be dirs.DocumentDir + 'path-to-file.anything'
+                Utils.presentToast('File downloaded to application folder.');
+                this.setState({loading: false});
+                RNFetchBlob.ios.previewDocument(res.data);
+            });
+    };
+
+    playSound = async (item: any) => {
+        const url =
+            store.getState().authReducer.assets.assetsPath + item.wavFilePath;
+
+        const localFile = `${RNFS.CachesDirectoryPath}/` + item.fileName;
+
+        this.setState({loading: true});
+        const options = {
+            fromUrl: url,
+            toFile: localFile,
+        };
+        RNFS.downloadFile(options).promise.then(() => {
+            this.setState({loading: false}, () => {
+                setTimeout(() => {
+                    FileViewer.open(localFile);
+                }, 500);
+            });
+        });
+    };
 
     render() {
         return (
@@ -1376,12 +1408,25 @@ class CampaignCreate extends Component<
                                                                     style={{
                                                                         marginRight: 8,
                                                                     }}
-                                                                    onPress={
-                                                                        () => {}
-                                                                        // this.playSound(
-                                                                        //     item.item,
-                                                                        // )
-                                                                    }>
+                                                                    onPress={() => {
+                                                                        this.playSound(
+                                                                            this.state.soundFiles.filter(
+                                                                                (
+                                                                                    file: any,
+                                                                                ) => {
+                                                                                    return (
+                                                                                        file.id ==
+                                                                                        this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call
+                                                                                            .liveanswer
+                                                                                            .soundFileId
+                                                                                    );
+                                                                                },
+                                                                            )[0],
+                                                                        );
+                                                                    }}>
                                                                     <AntDesign
                                                                         name="playcircleo"
                                                                         size={
@@ -1393,12 +1438,25 @@ class CampaignCreate extends Component<
                                                                     style={{
                                                                         marginRight: 8,
                                                                     }}
-                                                                    onPress={
-                                                                        () => {}
-                                                                        // this.download(
-                                                                        //     item.item,
-                                                                        // )
-                                                                    }>
+                                                                    onPress={() => {
+                                                                        this.download(
+                                                                            this.state.soundFiles.filter(
+                                                                                (
+                                                                                    file: any,
+                                                                                ) => {
+                                                                                    return (
+                                                                                        file.id ==
+                                                                                        this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call
+                                                                                            .liveanswer
+                                                                                            .soundFileId
+                                                                                    );
+                                                                                },
+                                                                            )[0],
+                                                                        );
+                                                                    }}>
                                                                     <View
                                                                         style={
                                                                             styles.itemIcon
