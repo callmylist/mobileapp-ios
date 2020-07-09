@@ -10,6 +10,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     Platform,
+    Text,
 } from 'react-native';
 import {NavigationActions} from 'react-navigation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -23,11 +24,55 @@ import {CmlTextInput} from '../components/textinput';
 import {ScrollView} from 'react-native-gesture-handler';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import moment from 'moment';
+import * as momenttz from 'moment-timezone';
 import {SoundService} from '../service/sound.service';
 import RNPickerSelect from 'react-native-picker-select';
 import DocumentPicker from 'react-native-document-picker';
 import Utils from '../utils';
 import {CmlSpinner} from '../components/loading';
+import {ContactService} from '../service/contact.service';
+
+import Modal from 'react-native-modal';
+import AppStyle from '../shared/styles';
+
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import PickerCheckBox from '../components/check-select/PickerCheckbox';
+import {UserService} from '../service/user.service';
+
+import {compose} from 'redux';
+import {connect} from 'react-redux';
+import {CampaignService} from '../service/campaign.service';
+
+const items = [
+    {
+        itemKey: 1,
+        itemDescription: 'Sunday',
+    },
+    {
+        itemKey: 2,
+        itemDescription: 'Monday',
+    },
+    {
+        itemKey: 3,
+        itemDescription: 'Tuesday',
+    },
+    {
+        itemKey: 4,
+        itemDescription: 'Wednesday',
+    },
+    {
+        itemKey: 5,
+        itemDescription: 'Thursday',
+    },
+    {
+        itemKey: 6,
+        itemDescription: 'Friday',
+    },
+    {
+        itemKey: 7,
+        itemDescription: 'Saturday',
+    },
+];
 
 const styles = StyleSheet.create({
     container: {
@@ -215,6 +260,36 @@ const styles = StyleSheet.create({
     },
 });
 
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        fontSize: 12,
+        color: 'white',
+        width: 1000,
+    },
+    inputAndroid: {
+        fontSize: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        color: 'white',
+        width: '100%',
+    },
+});
+
+const bigPickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        fontSize: 14,
+        color: 'white',
+        width: 1000,
+    },
+    inputAndroid: {
+        fontSize: 18,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        color: 'white',
+        width: '100%',
+    },
+});
+
 class CampaignCreate extends Component<
     {
         navigation: any;
@@ -227,6 +302,7 @@ class CampaignCreate extends Component<
         isTransfer: boolean;
         isDNC: boolean;
         soundFiles: any[];
+        contactList: any[];
         loading: boolean;
         liveAnswerSelected: boolean;
         voiceMailSelected: boolean;
@@ -240,6 +316,27 @@ class CampaignCreate extends Component<
         SoundPathUrlVoicemail: any;
         SoundPathUrlTransfer: any;
         SoundPathUrlDnc: any;
+        uploadList: boolean;
+        containHeader: boolean;
+        headerColumn: any;
+        currentItem: any;
+        startFuture: boolean;
+
+        startDatePicker: boolean;
+        startTimepicker: boolean;
+
+        startRestrictionTimepicker: boolean;
+        endRestrictionTimepicker: boolean;
+
+        WEEKDAYS: any;
+        isScheduleForMultipleDays: boolean;
+
+        scheduleStartTimePicker: boolean;
+        scheduleStartDatePicker: boolean;
+
+        scheduleType: number;
+        maxCPM: number;
+        finishStep: number;
     }
 > {
     ALPHABETS: Array<string> = [
@@ -299,11 +396,24 @@ class CampaignCreate extends Component<
         },
     });
 
+    timezones = [
+        {label: 'US/Pacific Time (PST)', value: 'US/Pacific'},
+        {label: 'US/Mountain Time (MST)', value: 'US/Mountain'},
+        {label: 'US/Central Time (CST)', value: 'US/Central'},
+        {label: 'US/Eastern Time (EST)', value: 'US/Eastern'},
+        {label: 'US/Hawaii Time (HST)', value: 'US/Hawaii'},
+        {label: 'Europe/London (GMT)', value: 'Europe/London'},
+        {label: 'Europe/Paris (CET)', value: 'Europe/Paris'},
+        {label: 'Europe/Istanbul (TRT)', value: 'Europe/Istanbul'},
+        {label: 'Asia/Shanghai (CST)', value: 'Asia/Shanghai'},
+        {label: 'Asia/Tokyo (JST)', value: 'Asia/Tokyo'},
+    ];
     constructor(props: any) {
         super(props);
 
         this.state = {
             step: 0,
+            finishStep: 0,
             startNow: false,
             campaign: {
                 type: 1,
@@ -366,6 +476,7 @@ class CampaignCreate extends Component<
                 },
             },
             soundFiles: [],
+            contactList: [],
             isLiveAnswer: true,
             isTransfer: false,
             isDNC: false,
@@ -383,12 +494,103 @@ class CampaignCreate extends Component<
             SoundPathUrlVoicemail: null,
             SoundPathUrlTransfer: null,
             SoundPathUrlDnc: null,
+
+            uploadList: false,
+            currentItem: null,
+            containHeader: false,
+            headerColumn: 'A',
+            startFuture: false,
+
+            startDatePicker: false,
+            startTimepicker: false,
+
+            startRestrictionTimepicker: false,
+            endRestrictionTimepicker: false,
+
+            WEEKDAYS: {
+                Sunday: false,
+                Monday: false,
+                Tuesday: false,
+                Wednesday: false,
+                Thursday: false,
+                Friday: false,
+                Saturday: false,
+            },
+            isScheduleForMultipleDays: false,
+
+            scheduleStartTimePicker: false,
+            scheduleStartDatePicker: false,
+            scheduleType: 0,
+            maxCPM: 50,
         };
     }
 
     componentDidMount() {
         this.loadSoundFiles();
+        this.loadContactLists();
+        UserService.getUserById().subscribe((data: any) => {
+            let user = data.data;
+            this.setState({
+                maxCPM:
+                    user.limits.callLimit !== 0 ? user.limits.callLimit : 50,
+                campaign: {
+                    ...this.state.campaign,
+                    call: {
+                        ...this.state.campaign.call,
+                        settings: {
+                            ...this.state.campaign.call.settings,
+                            restrictions: {
+                                ...this.state.campaign.call.settings
+                                    .restrictions,
+                                startTime: this.convertTime12to24(
+                                    user.restrictions.startTime,
+                                ),
+                                EndTime: this.convertTime12to24(
+                                    user.restrictions.endTime,
+                                ),
+                                timeZone: user.restrictions.timeZone,
+                            },
+                        },
+                    },
+                },
+            });
+        });
     }
+
+    convertTime12to24(time12h: any) {
+        let [hours, minutes] = time12h;
+
+        if (hours === 12) {
+            hours = '00';
+        }
+
+        if (hours < 10) {
+            hours = '0' + hours;
+        }
+
+        if (minutes < 10) {
+            minutes = '0' + minutes;
+        }
+
+        return `${hours}:${minutes}`;
+    }
+
+    loadContactLists = (loading = false) => {
+        if (loading) {
+            this.setState({
+                loading: true,
+            });
+        }
+        ContactService.getContactList({
+            currentPage: 0,
+            pageSize: 0,
+        }).subscribe((response: any) => {
+            this.setState({
+                loading: false,
+                contactList: response.data,
+            });
+        });
+    };
 
     loadSoundFiles = () => {
         this.setState({loading: true});
@@ -415,20 +617,464 @@ class CampaignCreate extends Component<
     onStart = () => {
         this.setState({
             startNow: true,
+            scheduleType: 1,
         });
     };
 
+    validatePhoneNumber(value: any) {
+        const usaNumRegexp = new RegExp(
+            '^(?:(?:\\+?1\\s*(?:[.-]\\s*)?)?(?:\\(\\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\\s*\\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\\s*(?:[.-]\\s*)?)([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\\s*(?:[.-]\\s*)?([0-9]{4})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$',
+        );
+        return usaNumRegexp.test(value);
+    }
+
     continue = () => {
-        this.setState({
-            step: this.state.step + 1,
-        });
+        if (this.state.step >= 1) {
+            if (this.state.campaign.name.trim() == '') {
+                Utils.presentToast('Please enter a valid campaign name above.');
+
+                return;
+            }
+        }
+        if (this.state.step >= 2) {
+            if (
+                !this.state.campaign.call.callerId ||
+                !this.validatePhoneNumber(this.state.campaign.call.callerId)
+            ) {
+                Utils.presentToast('Please enter a valid number.');
+                return;
+            }
+        }
+        if (this.state.step == 3) {
+            if (
+                this.state.isLiveAnswer &&
+                this.state.campaign.call.liveanswer.soundFileId == ''
+            ) {
+                Utils.presentToast('Please Select an audio for liveanswer.');
+                return;
+            }
+            if (this.state.campaign.call.voicemail.soundFileId == '') {
+                Utils.presentToast('Please Select an audio for voicemail.');
+                return;
+            }
+
+            if (
+                this.state.isTransfer &&
+                !this.state.campaign.call.transfer.defaultAudio
+            ) {
+                if (this.state.campaign.call.transfer.soundFileId == '') {
+                    Utils.presentToast(
+                        'Please Select an audio for call transfer.',
+                    );
+                    return;
+                }
+            }
+            if (
+                this.state.isDNC &&
+                !this.state.campaign.call.dnc.defaultAudio
+            ) {
+                if (this.state.campaign.call.dnc.soundFileId === '') {
+                    Utils.presentToast(
+                        'Please Select an audio for Do Not Call.',
+                    );
+                    return;
+                }
+            }
+
+            if (this.state.isTransfer) {
+                if (
+                    this.state.campaign.call.transfer.ctlimit < 1 ||
+                    this.state.campaign.call.transfer.ctlimit > 99
+                ) {
+                    Utils.presentToast(
+                        'Please Enter correct Concurrent Transfers.',
+                    );
+                    return;
+                } else if (
+                    !this.state.campaign.call.transfer.number ||
+                    !this.validatePhoneNumber(
+                        this.state.campaign.call.transfer.number,
+                    )
+                ) {
+                    Utils.presentToast(
+                        'Please Enter correct phone number to transfer call.',
+                    );
+                    return;
+                }
+            }
+
+            this.setState({
+                step: this.state.step + 1,
+                finishStep: Math.max(
+                    this.state.finishStep,
+                    this.state.step + 1,
+                ),
+            });
+        } else if (this.state.step === 4) {
+            if (this.state.campaign.contactlistId == '') {
+                Utils.presentToast('Please Select or upload contact list.');
+                return;
+            }
+            this.setState({
+                step: this.state.step + 1,
+                finishStep: Math.max(
+                    this.state.finishStep,
+                    this.state.step + 1,
+                ),
+            });
+        } else if (this.state.step === 5) {
+            if (
+                isNaN(this.state.campaign.call.settings.cpm) ||
+                this.state.campaign.call.settings.cpm < 1 ||
+                this.state.campaign.call.settings.cpm > this.state.maxCPM
+            ) {
+                Utils.presentToast('Please enter a valid cpm value.');
+                return;
+            }
+            this.setState({
+                step: this.state.step + 1,
+                finishStep: Math.max(
+                    this.state.finishStep,
+                    this.state.step + 1,
+                ),
+            });
+        } else {
+            this.setState({
+                step: this.state.step + 1,
+                finishStep: Math.max(
+                    this.state.finishStep,
+                    this.state.step + 1,
+                ),
+            });
+        }
     };
 
     start = () => {
         this.setState({
             startNow: false,
+            startFuture: false,
         });
-        this.props.navigation.pop();
+
+        if (this.state.scheduleType === 0) {
+            Utils.presentToast('Please provide schedule details.');
+
+            return;
+        }
+
+        if (this.state.campaign.name.length == 0) {
+            Utils.presentToast('Please enter campaign name.');
+
+            return;
+        }
+
+        if (this.state.campaign.call.callerId.length == 0) {
+            Utils.presentToast('Please enter Caller ID.');
+
+            return;
+        }
+
+        if (this.state.campaign.name.length == 0) {
+            Utils.presentToast('Please enter campaign name');
+
+            return;
+        }
+
+        if (this.state.campaign.name.length == 0) {
+            Utils.presentToast('Please enter campaign name');
+
+            return;
+        }
+
+        if (this.state.campaign.name.length == 0) {
+            Utils.presentToast('Please enter campaign name');
+
+            return;
+        }
+
+        if (
+            this.state.scheduleType === 1 &&
+            !this.state.isScheduleForMultipleDays &&
+            !this.state.campaign.call.schedule.resumeNextDay
+        ) {
+            const nowDateInSelectedTimeZone = momenttz.tz(
+                moment(),
+                this.state.campaign.call.settings.restrictions.timeZone,
+            );
+
+            const date =
+                nowDateInSelectedTimeZone._d.getFullYear() +
+                '-' +
+                (nowDateInSelectedTimeZone._d.getMonth() + 1) +
+                '-' +
+                nowDateInSelectedTimeZone._d.getDate();
+
+            const selectedStartTimeAndDate =
+                date +
+                ' ' +
+                this.state.campaign.call.settings.restrictions.startTime;
+
+            const currentTimeInSelectedTimeZone = moment
+                .tz(
+                    moment(),
+                    this.state.campaign.call.settings.restrictions.timeZone,
+                )
+                .format('YYYY-MM-DD HH:mm');
+
+            const isAfter = moment(selectedStartTimeAndDate).isAfter(
+                currentTimeInSelectedTimeZone,
+            );
+
+            if (isAfter) {
+                Utils.presentToast(
+                    'Entered Start Time could not be after current time in the selected time zone.',
+                );
+
+                return;
+            }
+        }
+
+        if (this.state.scheduleType === 2) {
+            if (this.state.campaign.call.schedule.startDateUI === '') {
+                Utils.presentToast('Please select start date for schedule.');
+
+                return;
+            } else if (this.state.campaign.call.schedule.startTime === '') {
+                Utils.presentToast('Please enter start date.');
+
+                return;
+            }
+        }
+
+        if (
+            this.state.campaign.call.settings.restrictions.startTime.length == 0
+        ) {
+            Utils.presentToast('Please enter start time for restrictions.');
+            return;
+        }
+
+        if (
+            this.state.campaign.call.settings.restrictions.EndTime.length == 0
+        ) {
+            Utils.presentToast('Please enter start time for restrictions.');
+            return;
+        }
+
+        const payload: any = {
+            type: this.state.campaign.type,
+
+            name: this.state.campaign.name,
+
+            contactlistId: this.state.campaign.contactlistId,
+
+            call: {
+                callerId: this.state.campaign.call.callerId,
+
+                resumeNextDay: this.state.campaign.call.schedule.resumeNextDay,
+
+                voicemail: {
+                    soundFileId: this.state.campaign.call.voicemail.soundFileId,
+
+                    isRingless: this.state.campaign.call.voicemail.isRingless,
+                },
+
+                settings: {
+                    cpm: Number(this.state.campaign.call.settings.cpm),
+
+                    callbackOptions: {
+                        vm: this.state.campaign.call.settings.callbackOptions
+                            .vm,
+
+                        busy: this.state.campaign.call.settings.callbackOptions
+                            .busy,
+
+                        na: this.state.campaign.call.settings.callbackOptions
+                            .na,
+
+                        attempts: this.state.campaign.call.settings
+                            .callbackOptions.attempts,
+
+                        attemptTime: this.state.campaign.call.settings
+                            .callbackOptions.attemptTime,
+                    },
+
+                    restrictions: {
+                        startTime: Utils.convertTime12toString(
+                            this.state.campaign.call.settings.restrictions
+                                .startTime,
+                        ),
+
+                        EndTime: Utils.convertTime12toString(
+                            this.state.campaign.call.settings.restrictions
+                                .EndTime,
+                        ),
+
+                        timeZone: this.state.campaign.call.settings.restrictions
+                            .timeZone,
+                    },
+                },
+            },
+        };
+
+        if (this.state.isLiveAnswer) {
+            payload.call['liveanswer'] = {
+                soundFileId: this.state.campaign.call.liveanswer.soundFileId,
+
+                optOutIncluded: this.state.campaign.call.liveanswer
+                    .optOutIncluded,
+
+                includeOptOut: this.state.campaign.call.liveanswer
+                    .includeOptOut,
+            };
+        }
+
+        if (this.state.isTransfer) {
+            payload.call['transfer'] = {
+                soundFileId: this.state.campaign.call.transfer.soundFileId,
+
+                defaultAudio: this.state.campaign.call.transfer.defaultAudio,
+
+                number: this.state.campaign.call.transfer.number,
+
+                digit: this.state.campaign.call.transfer.digit,
+
+                ctlimit: this.state.campaign.call.transfer.ctlimit,
+            };
+        }
+
+        if (this.state.isDNC) {
+            payload.call['dnc'] = {
+                soundFileId: this.state.campaign.call.dnc.soundFileId,
+
+                defaultAudio: this.state.campaign.call.dnc.defaultAudio,
+
+                digit: this.state.campaign.call.dnc.digit,
+            };
+        }
+
+        payload.call['schedule'] = {
+            startDateUI: '',
+
+            startTime: [],
+
+            includeDays: [],
+
+            resumeNextDay: this.state.campaign.call.schedule.resumeNextDay,
+        };
+
+        if (this.state.scheduleType === 2) {
+            payload.call.schedule.startDateUI = moment(
+                this.state.campaign.call.schedule.startDateUI,
+            ).format('YYYY-MM-DD');
+
+            payload.call.schedule.startTime = Utils.convertTime12toString(
+                this.state.campaign.call.schedule.startTime,
+            );
+
+            payload.call.schedule.untilComplete = this.state.campaign.call.schedule.untilComplete;
+
+            payload.call.schedule.endDateUI = moment(
+                this.state.campaign.call.schedule.endDateUI,
+            ).format('YYYY-MM-DD');
+
+            payload.call.schedule.endTime = Utils.convertTime12toString(
+                this.state.campaign.call.schedule.endTime,
+            );
+
+            payload.call.schedule.includeDays = [];
+
+            payload.call.schedule.rangeStartTime = Utils.convertTime12toString(
+                this.state.campaign.call.schedule.rangeStartTime,
+            );
+
+            payload.call.schedule.rangeEndTime = Utils.convertTime12toString(
+                this.state.campaign.call.schedule.rangeEndTime,
+            );
+        }
+
+        if (this.state.isScheduleForMultipleDays) {
+            if (this.state.WEEKDAYS.Sunday) {
+                payload.call['schedule'].includeDays.push(1);
+            }
+
+            if (this.state.WEEKDAYS.Monday) {
+                payload.call['schedule'].includeDays.push(2);
+            }
+
+            if (this.state.WEEKDAYS.Tuesday) {
+                payload.call['schedule'].includeDays.push(3);
+            }
+
+            if (this.state.WEEKDAYS.Wednesday) {
+                payload.call['schedule'].includeDays.push(4);
+            }
+
+            if (this.state.WEEKDAYS.Thursday) {
+                payload.call['schedule'].includeDays.push(5);
+            }
+
+            if (this.state.WEEKDAYS.Friday) {
+                payload.call['schedule'].includeDays.push(6);
+            }
+
+            if (this.state.WEEKDAYS.Saturday) {
+                payload.call['schedule'].includeDays.push(7);
+            }
+        }
+
+        CampaignService.createCampaign(payload).subscribe((response: any) => {
+            if (response.success) this.props.navigation.pop();
+            else {
+                Utils.presentToast(
+                    response.message + '. ' + response.submessage,
+                );
+            }
+        });
+    };
+
+    upload = async () => {
+        if (this.state.headerColumn == null) {
+            Utils.presentToast('Please select valid column header');
+            return;
+        }
+
+        this.setState(
+            {
+                uploadList: false,
+            },
+            () => {
+                setTimeout(() => {
+                    this.setState({
+                        loading: true,
+                    });
+                    ContactService.uploadContactList(
+                        this.state.currentItem,
+                        this.state.containHeader,
+                        this.state.headerColumn,
+                        (response: any) => {
+                            this.setState({
+                                loading: false,
+                            });
+                            if (response.success == true) {
+                                this.loadContactLists(true);
+                            } else {
+                                Utils.presentToast(response.message);
+                            }
+                        },
+                    );
+                }, 1000);
+            },
+        );
+    };
+
+    uploadList = async () => {
+        const res = await DocumentPicker.pick({
+            type: [DocumentPicker.types.csv],
+        });
+
+        this.setState({
+            uploadList: true,
+            currentItem: res,
+        });
     };
 
     uploadAudio = async () => {
@@ -446,6 +1092,21 @@ class CampaignCreate extends Component<
             }
         });
     };
+
+    items = [
+        {
+            itemKey: 1,
+            itemDescription: 'Item 1',
+        },
+        {
+            itemKey: 2,
+            itemDescription: 'Item 2',
+        },
+        {
+            itemKey: 3,
+            itemDescription: 'Item 3',
+        },
+    ];
 
     render() {
         return (
@@ -557,7 +1218,7 @@ class CampaignCreate extends Component<
                                                         campaign: {
                                                             ...this.state
                                                                 .campaign,
-                                                            title: val,
+                                                            name: val,
                                                         },
                                                     });
                                                 }}
@@ -1824,10 +2485,7 @@ class CampaignCreate extends Component<
                                                                                     };
                                                                                 },
                                                                             )}
-                                                                            placeholder={{
-                                                                                label:
-                                                                                    'Select Transfer Digit',
-                                                                            }}
+                                                                            placeholder={{}}
                                                                             style={
                                                                                 this
                                                                                     .pickerSelectStyles
@@ -2637,12 +3295,43 @@ class CampaignCreate extends Component<
                                                             styles.panelUploadContainer,
                                                             {marginTop: 8},
                                                         ]}>
-                                                        <CmlText
+                                                        <RNPickerSelect
+                                                            value={
+                                                                this.state
+                                                                    .campaign
+                                                                    .contactlistId
+                                                            }
+                                                            onValueChange={(
+                                                                value,
+                                                            ) => {
+                                                                this.setState({
+                                                                    campaign: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign,
+                                                                        contactlistId: value,
+                                                                    },
+                                                                });
+                                                            }}
+                                                            items={this.state.contactList.map(
+                                                                (file: any) => {
+                                                                    return {
+                                                                        label:
+                                                                            file.name,
+                                                                        value:
+                                                                            file.id,
+                                                                    };
+                                                                },
+                                                            )}
+                                                            placeholder={{
+                                                                label:
+                                                                    'Select Contact List',
+                                                            }}
                                                             style={
-                                                                styles.panelUploadLabel
-                                                            }>
-                                                            Select Contact List
-                                                        </CmlText>
+                                                                this
+                                                                    .pickerSelectStyles
+                                                            }
+                                                        />
                                                         <Ionicons
                                                             name="md-arrow-dropdown"
                                                             size={18}
@@ -2651,48 +3340,6 @@ class CampaignCreate extends Component<
                                                                 marginLeft: 8,
                                                             }}
                                                         />
-                                                    </View>
-                                                    <CmlText
-                                                        style={{
-                                                            width: '100%',
-                                                            marginTop: 24,
-                                                        }}>
-                                                        Upload New Contact List
-                                                    </CmlText>
-                                                    <View
-                                                        style={[
-                                                            styles.panelUploadContainer,
-                                                            {marginTop: 8},
-                                                        ]}>
-                                                        <CmlText
-                                                            style={
-                                                                styles.panelUploadLabel
-                                                            }>
-                                                            Select Phone Number
-                                                            Column
-                                                        </CmlText>
-                                                        <Ionicons
-                                                            name="md-arrow-dropdown"
-                                                            size={18}
-                                                            color="#c1c1c1"
-                                                            style={{
-                                                                marginLeft: 8,
-                                                            }}
-                                                        />
-                                                    </View>
-                                                    <View
-                                                        style={[
-                                                            styles.panelSwitchContainer,
-                                                            {marginTop: 24},
-                                                        ]}>
-                                                        <Switch />
-                                                        <CmlText
-                                                            style={
-                                                                styles.panelOptionText
-                                                            }>
-                                                            Does your file
-                                                            contain headers?
-                                                        </CmlText>
                                                     </View>
 
                                                     <CmlButton
@@ -2701,6 +3348,9 @@ class CampaignCreate extends Component<
                                                         style={{
                                                             marginTop: 16,
                                                             width: 180,
+                                                        }}
+                                                        onPress={() => {
+                                                            this.uploadList();
                                                         }}
                                                     />
                                                 </View>
@@ -2751,8 +3401,86 @@ class CampaignCreate extends Component<
                                                             style={
                                                                 styles.panelUploadLabel
                                                             }
-                                                            placeholder="Calls Per Minute"></CmlTextInput>
+                                                            placeholder="Calls Per Minute"
+                                                            keyboardType="numeric"
+                                                            value={this.state.campaign.call.settings.cpm.toString()}
+                                                            onChangeText={(
+                                                                value: string,
+                                                            ) => {
+                                                                if (
+                                                                    Number(
+                                                                        value,
+                                                                    ) == NaN
+                                                                ) {
+                                                                    this.setState(
+                                                                        {
+                                                                            campaign: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign,
+                                                                                call: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call,
+                                                                                    settings: {
+                                                                                        ...this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call
+                                                                                            .settings,
+                                                                                        cpm: 1,
+                                                                                    },
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    );
+                                                                } else {
+                                                                    this.setState(
+                                                                        {
+                                                                            campaign: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign,
+                                                                                call: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call,
+                                                                                    settings: {
+                                                                                        ...this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call
+                                                                                            .settings,
+                                                                                        cpm: Number(
+                                                                                            value,
+                                                                                        ),
+                                                                                    },
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    );
+                                                                }
+                                                            }}></CmlTextInput>
                                                     </View>
+                                                    {(this.state.campaign.call
+                                                        .settings.cpm < 1 ||
+                                                        this.state.campaign.call
+                                                            .settings.cpm >
+                                                            50) && (
+                                                        <CmlText
+                                                            style={{
+                                                                width: '100%',
+                                                                fontSize: 12,
+                                                                color: 'red',
+                                                                marginTop: 8,
+                                                            }}>
+                                                            Please enter a value
+                                                            between 1 and 50
+                                                        </CmlText>
+                                                    )}
+
                                                     <CmlText
                                                         style={{
                                                             width: '100%',
@@ -2774,7 +3502,49 @@ class CampaignCreate extends Component<
                                                             styles.panelSwitchContainer,
                                                             {marginTop: 16},
                                                         ]}>
-                                                        <Switch />
+                                                        <Switch
+                                                            onValueChange={(
+                                                                value,
+                                                            ) =>
+                                                                this.setState({
+                                                                    campaign: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign,
+                                                                        call: {
+                                                                            ...this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call,
+                                                                            settings: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .settings,
+                                                                                callbackOptions: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call
+                                                                                        .settings
+                                                                                        .callbackOptions,
+                                                                                    vm: value,
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                })
+                                                            }
+                                                            value={
+                                                                this.state
+                                                                    .campaign
+                                                                    .call
+                                                                    .settings
+                                                                    .callbackOptions
+                                                                    .vm
+                                                            }
+                                                        />
                                                         <CmlText
                                                             style={
                                                                 styles.panelOptionText
@@ -2787,7 +3557,49 @@ class CampaignCreate extends Component<
                                                             styles.panelSwitchContainer,
                                                             {marginTop: 8},
                                                         ]}>
-                                                        <Switch />
+                                                        <Switch
+                                                            onValueChange={(
+                                                                value,
+                                                            ) =>
+                                                                this.setState({
+                                                                    campaign: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign,
+                                                                        call: {
+                                                                            ...this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call,
+                                                                            settings: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .settings,
+                                                                                callbackOptions: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call
+                                                                                        .settings
+                                                                                        .callbackOptions,
+                                                                                    busy: value,
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                })
+                                                            }
+                                                            value={
+                                                                this.state
+                                                                    .campaign
+                                                                    .call
+                                                                    .settings
+                                                                    .callbackOptions
+                                                                    .busy
+                                                            }
+                                                        />
                                                         <CmlText
                                                             style={
                                                                 styles.panelOptionText
@@ -2800,7 +3612,49 @@ class CampaignCreate extends Component<
                                                             styles.panelSwitchContainer,
                                                             {marginTop: 8},
                                                         ]}>
-                                                        <Switch />
+                                                        <Switch
+                                                            onValueChange={(
+                                                                value,
+                                                            ) =>
+                                                                this.setState({
+                                                                    campaign: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign,
+                                                                        call: {
+                                                                            ...this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call,
+                                                                            settings: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .settings,
+                                                                                callbackOptions: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call
+                                                                                        .settings
+                                                                                        .callbackOptions,
+                                                                                    na: value,
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                })
+                                                            }
+                                                            value={
+                                                                this.state
+                                                                    .campaign
+                                                                    .call
+                                                                    .settings
+                                                                    .callbackOptions
+                                                                    .na
+                                                            }
+                                                        />
                                                         <CmlText
                                                             style={
                                                                 styles.panelOptionText
@@ -2809,14 +3663,213 @@ class CampaignCreate extends Component<
                                                         </CmlText>
                                                     </View>
 
-                                                    <CmlButton
-                                                        title="Upload Contact List"
-                                                        backgroundColor="#02b9db"
-                                                        style={{
-                                                            marginTop: 16,
-                                                            width: 180,
-                                                        }}
-                                                    />
+                                                    {(this.state.campaign.call
+                                                        .settings
+                                                        .callbackOptions.busy ||
+                                                        this.state.campaign.call
+                                                            .settings
+                                                            .callbackOptions
+                                                            .vm ||
+                                                        this.state.campaign.call
+                                                            .settings
+                                                            .callbackOptions
+                                                            .na) && (
+                                                        <>
+                                                            <CmlText
+                                                                style={{
+                                                                    width:
+                                                                        '100%',
+                                                                    marginTop: 16,
+                                                                }}>
+                                                                Number of
+                                                                Attempts (1-5)
+                                                            </CmlText>
+
+                                                            <View
+                                                                style={[
+                                                                    styles.panelUploadContainer,
+                                                                    {
+                                                                        marginTop: 8,
+                                                                    },
+                                                                ]}>
+                                                                <RNPickerSelect
+                                                                    value={
+                                                                        this
+                                                                            .state
+                                                                            .campaign
+                                                                            .call
+                                                                            .settings
+                                                                            .callbackOptions
+                                                                            .attempts
+                                                                    }
+                                                                    onValueChange={(
+                                                                        value,
+                                                                    ) => {
+                                                                        this.setState(
+                                                                            {
+                                                                                campaign: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign,
+                                                                                    call: {
+                                                                                        ...this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call,
+                                                                                        settings: {
+                                                                                            ...this
+                                                                                                .state
+                                                                                                .campaign
+                                                                                                .call
+                                                                                                .settings,
+                                                                                            callbackOptions: {
+                                                                                                ...this
+                                                                                                    .state
+                                                                                                    .campaign
+                                                                                                    .call
+                                                                                                    .settings
+                                                                                                    .callbackOptions,
+                                                                                                attempts: value,
+                                                                                            },
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                            },
+                                                                        );
+                                                                    }}
+                                                                    items={[
+                                                                        1,
+                                                                        2,
+                                                                        3,
+                                                                        4,
+                                                                        5,
+                                                                    ].map(
+                                                                        (
+                                                                            digit: any,
+                                                                        ) => {
+                                                                            return {
+                                                                                label:
+                                                                                    digit +
+                                                                                    '',
+                                                                                value: digit,
+                                                                            };
+                                                                        },
+                                                                    )}
+                                                                    placeholder={{}}
+                                                                    style={
+                                                                        this
+                                                                            .pickerSelectStyles
+                                                                    }
+                                                                />
+                                                                <Ionicons
+                                                                    name="md-arrow-dropdown"
+                                                                    size={18}
+                                                                    color="#7b7b7b"
+                                                                    style={{
+                                                                        marginLeft: 8,
+                                                                    }}
+                                                                />
+                                                            </View>
+                                                            <CmlText
+                                                                style={{
+                                                                    width:
+                                                                        '100%',
+                                                                    marginTop: 16,
+                                                                }}>
+                                                                Minutes between
+                                                                Attepmts
+                                                            </CmlText>
+
+                                                            <View
+                                                                style={[
+                                                                    styles.panelUploadContainer,
+                                                                    {
+                                                                        marginTop: 8,
+                                                                    },
+                                                                ]}>
+                                                                <RNPickerSelect
+                                                                    value={
+                                                                        this
+                                                                            .state
+                                                                            .campaign
+                                                                            .call
+                                                                            .settings
+                                                                            .callbackOptions
+                                                                            .attemptTime
+                                                                    }
+                                                                    onValueChange={(
+                                                                        value,
+                                                                    ) => {
+                                                                        this.setState(
+                                                                            {
+                                                                                campaign: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign,
+                                                                                    call: {
+                                                                                        ...this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call,
+                                                                                        settings: {
+                                                                                            ...this
+                                                                                                .state
+                                                                                                .campaign
+                                                                                                .call
+                                                                                                .settings,
+                                                                                            callbackOptions: {
+                                                                                                ...this
+                                                                                                    .state
+                                                                                                    .campaign
+                                                                                                    .call
+                                                                                                    .settings
+                                                                                                    .callbackOptions,
+                                                                                                attemptTime: value,
+                                                                                            },
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                            },
+                                                                        );
+                                                                    }}
+                                                                    items={[
+                                                                        15,
+                                                                        30,
+                                                                        45,
+                                                                        60,
+                                                                        75,
+                                                                        90,
+                                                                        105,
+                                                                        120,
+                                                                    ].map(
+                                                                        (
+                                                                            digit: any,
+                                                                        ) => {
+                                                                            return {
+                                                                                label:
+                                                                                    digit +
+                                                                                    '',
+                                                                                value: digit,
+                                                                            };
+                                                                        },
+                                                                    )}
+                                                                    placeholder={{}}
+                                                                    style={
+                                                                        this
+                                                                            .pickerSelectStyles
+                                                                    }
+                                                                />
+                                                                <Ionicons
+                                                                    name="md-arrow-dropdown"
+                                                                    size={18}
+                                                                    color="#7b7b7b"
+                                                                    style={{
+                                                                        marginLeft: 8,
+                                                                    }}
+                                                                />
+                                                            </View>
+                                                        </>
+                                                    )}
                                                 </View>
                                             </View>
                                             <TouchableOpacity
@@ -2874,7 +3927,9 @@ class CampaignCreate extends Component<
                                                         title="Start Now"
                                                         backgroundColor="#02b9db"
                                                         style={{marginTop: 8}}
-                                                        onPress={this.onStart}
+                                                        onPress={() => {
+                                                            this.onStart();
+                                                        }}
                                                     />
                                                 </View>
                                             </View>
@@ -2904,6 +3959,12 @@ class CampaignCreate extends Component<
                                                         title="In The Future"
                                                         backgroundColor="#ffa67a"
                                                         style={{marginTop: 8}}
+                                                        onPress={() => {
+                                                            this.setState({
+                                                                startFuture: true,
+                                                                scheduleType: 2,
+                                                            });
+                                                        }}
                                                     />
                                                 </View>
                                             </View>
@@ -2949,7 +4010,10 @@ class CampaignCreate extends Component<
                                     resizeMode="contain"
                                 />
                                 <TouchableOpacity
-                                    onPress={() => this.setState({step: 1})}>
+                                    onPress={() => {
+                                        if (this.state.finishStep >= 1)
+                                            this.setState({step: 1});
+                                    }}>
                                     <View
                                         style={
                                             this.state.step == 1
@@ -2979,7 +4043,10 @@ class CampaignCreate extends Component<
                                     resizeMode="contain"
                                 />
                                 <TouchableOpacity
-                                    onPress={() => this.setState({step: 2})}>
+                                    onPress={() => {
+                                        if (this.state.finishStep >= 2)
+                                            this.setState({step: 2});
+                                    }}>
                                     <View
                                         style={
                                             this.state.step == 2
@@ -3009,7 +4076,10 @@ class CampaignCreate extends Component<
                                     resizeMode="contain"
                                 />
                                 <TouchableOpacity
-                                    onPress={() => this.setState({step: 3})}>
+                                    onPress={() => {
+                                        if (this.state.finishStep >= 3)
+                                            this.setState({step: 3});
+                                    }}>
                                     <View
                                         style={
                                             this.state.step == 3
@@ -3039,7 +4109,10 @@ class CampaignCreate extends Component<
                                     resizeMode="contain"
                                 />
                                 <TouchableOpacity
-                                    onPress={() => this.setState({step: 4})}>
+                                    onPress={() => {
+                                        if (this.state.finishStep >= 4)
+                                            this.setState({step: 4});
+                                    }}>
                                     <View
                                         style={
                                             this.state.step == 4
@@ -3069,7 +4142,10 @@ class CampaignCreate extends Component<
                                     resizeMode="contain"
                                 />
                                 <TouchableOpacity
-                                    onPress={() => this.setState({step: 5})}>
+                                    onPress={() => {
+                                        if (this.state.finishStep >= 5)
+                                            this.setState({step: 5});
+                                    }}>
                                     <View
                                         style={
                                             this.state.step == 5
@@ -3099,7 +4175,10 @@ class CampaignCreate extends Component<
                                     resizeMode="contain"
                                 />
                                 <TouchableOpacity
-                                    onPress={() => this.setState({step: 6})}>
+                                    onPress={() => {
+                                        if (this.state.finishStep >= 6)
+                                            this.setState({step: 6});
+                                    }}>
                                     <View
                                         style={
                                             this.state.step == 6
@@ -3124,55 +4203,43 @@ class CampaignCreate extends Component<
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
-                <Dialog
-                    visible={true}
-                    onTouchOutside={() => {
-                        this.setState({startNow: false});
-                    }}
-                    dialogStyle={styles.dialogContainer}
-                    overlayOpacity={0}>
-                    <DialogContent>
-                        <View style={{paddingVertical: 16}}>
-                            <View>
-                                <CmlText style={styles.dialogTitle}>
-                                    Start Now
-                                </CmlText>
-                                <View style={styles.dialogSwitchContainer}>
-                                    <Switch ios_backgroundColor="#9e9e9e" />
-                                    <View
-                                        style={{
-                                            flex: 1,
-                                        }}>
-                                        <CmlText
-                                            style={[
-                                                styles.panelOptionText,
-                                                {color: 'white'},
-                                            ]}>
-                                            Resume campaign the following day if
-                                            campaign isn't completed by 10 pm
-                                        </CmlText>
-                                        <View style={styles.borderBottom}>
-                                            <CmlText
-                                                style={[
-                                                    styles.panelOptionText,
-                                                    {
-                                                        color: 'white',
-                                                        fontSize: 10,
-                                                        marginTop: 8,
+                <Modal
+                    isVisible={this.state.startNow}
+                    backdropOpacity={0}
+                    onBackdropPress={() => this.setState({startNow: false})}>
+                    <View style={AppStyle.dialogContainer}>
+                        <View>
+                            <CmlText style={styles.dialogTitle}>
+                                Start Now
+                            </CmlText>
+                            <View style={styles.dialogSwitchContainer}>
+                                <Switch
+                                    ios_backgroundColor="#9e9e9e"
+                                    value={
+                                        this.state.campaign.call.schedule
+                                            .resumeNextDay
+                                    }
+                                    onValueChange={(value: boolean) => {
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    schedule: {
+                                                        ...this.state.campaign
+                                                            .call.schedule,
+                                                        resumeNextDay: value,
                                                     },
-                                                ]}>
-                                                (Call My List will stop all
-                                                campaigns if not complete)
-                                            </CmlText>
-                                        </View>
-                                    </View>
-                                </View>
+                                                },
+                                            },
+                                            isScheduleForMultipleDays: false,
+                                        });
+                                    }}
+                                />
                                 <View
-                                    style={[
-                                        styles.panelSwitchContainer,
-                                        {marginTop: 16},
-                                    ]}>
-                                    <Switch ios_backgroundColor="#9e9e9e" />
+                                    style={{
+                                        flex: 1,
+                                    }}>
                                     <CmlText
                                         style={[
                                             styles.panelOptionText,
@@ -3181,69 +4248,1016 @@ class CampaignCreate extends Component<
                                         Resume campaign the following day if
                                         campaign isn't completed by 10 pm
                                     </CmlText>
-                                </View>
-
-                                <CmlText style={styles.dialogSmallTitle}>
-                                    Campaign Time Restrictions
-                                </CmlText>
-                                <CmlText style={styles.dialogDescription}>
-                                    Contacts will not be dialed outside these
-                                    hours
-                                </CmlText>
-
-                                <View style={styles.dialogTimeContainer}>
-                                    <CmlText
-                                        style={styles.dialogTimePlaceholder}>
-                                        Start Time
-                                    </CmlText>
-                                </View>
-
-                                <View style={styles.dialogTimeContainer}>
-                                    <CmlText
-                                        style={styles.dialogTimePlaceholder}>
-                                        End Time
-                                    </CmlText>
-                                </View>
-
-                                <View style={styles.dialogTimeContainer}>
-                                    <CmlText
-                                        style={styles.dialogTimePlaceholder}>
-                                        Time Zone
-                                    </CmlText>
-                                </View>
-
-                                <TouchableOpacity
-                                    style={[styles.continueButton]}
-                                    onPress={() => this.start()}>
-                                    <View
-                                        style={[
-                                            styles.continueButtonContainer,
-                                            {borderColor: 'white', width: 140},
-                                        ]}>
+                                    <View style={styles.borderBottom}>
                                         <CmlText
                                             style={[
-                                                styles.continueButtonText,
+                                                styles.panelOptionText,
                                                 {
                                                     color: 'white',
-                                                    marginLeft: 8,
+                                                    fontSize: 10,
+                                                    marginTop: 8,
                                                 },
                                             ]}>
-                                            START
+                                            (Call My List will stop all
+                                            campaigns if not complete)
                                         </CmlText>
-                                        <MaterialIcons
-                                            name="navigate-next"
-                                            size={30}
-                                            color="#ffa67a"
-                                        />
                                     </View>
-                                </TouchableOpacity>
+                                </View>
                             </View>
+                            <View
+                                style={[
+                                    styles.panelSwitchContainer,
+                                    {marginTop: 16},
+                                ]}>
+                                <Switch
+                                    ios_backgroundColor="#9e9e9e"
+                                    value={this.state.isScheduleForMultipleDays}
+                                    onValueChange={(value: boolean) => {
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    schedule: {
+                                                        ...this.state.campaign
+                                                            .call.schedule,
+                                                        resumeNextDay: !value,
+                                                    },
+                                                },
+                                            },
+                                            isScheduleForMultipleDays: value,
+                                        });
+                                    }}
+                                />
+                                <CmlText
+                                    style={[
+                                        styles.panelOptionText,
+                                        {color: 'white'},
+                                    ]}>
+                                    Schedule for multiple days
+                                </CmlText>
+                            </View>
+                            {this.state.isScheduleForMultipleDays && (
+                                <View
+                                    style={[
+                                        styles.dialogTimeContainer,
+                                        {marginTop: 8},
+                                    ]}>
+                                    <PickerCheckBox
+                                        data={items}
+                                        headerComponent={
+                                            <Text style={{fontSize: 16}}>
+                                                Select the days for your
+                                                campaign to run.
+                                            </Text>
+                                        }
+                                        OnConfirm={(pItems: any) => {
+                                            let WEEKDAYS = {
+                                                Sunday: false,
+                                                Monday: false,
+                                                Tuesday: false,
+                                                Wednesday: false,
+                                                Thursday: false,
+                                                Friday: false,
+                                                Saturday: false,
+                                            };
+                                            pItems.forEach((item: any) => {
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Sunday'
+                                                ) {
+                                                    WEEKDAYS.Sunday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Monday'
+                                                ) {
+                                                    WEEKDAYS.Monday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Tuesday'
+                                                ) {
+                                                    WEEKDAYS.Tuesday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Wednesday'
+                                                ) {
+                                                    WEEKDAYS.Wednesday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Thursday'
+                                                ) {
+                                                    WEEKDAYS.Thursday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Friday'
+                                                ) {
+                                                    WEEKDAYS.Friday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Saturday'
+                                                ) {
+                                                    WEEKDAYS.Saturday = true;
+                                                }
+                                            });
+
+                                            this.setState({WEEKDAYS: WEEKDAYS});
+                                        }}
+                                        ConfirmButtonTitle="OK"
+                                        DescriptionField="itemDescription"
+                                        KeyField="itemKey"
+                                        placeholder="Please select days"
+                                        arrowColor="#FFD740"
+                                        arrowSize={10}
+                                        placeholderSelectedItems="$count selected item(s)"
+                                    />
+                                </View>
+                            )}
+
+                            <CmlText style={styles.dialogSmallTitle}>
+                                Campaign Time Restrictions
+                            </CmlText>
+                            <CmlText style={styles.dialogDescription}>
+                                Contacts will not be dialed outside these hours
+                            </CmlText>
+
+                            <View style={styles.dialogTimeContainer}>
+                                <CmlText style={styles.dialogTimePlaceholder}>
+                                    Start Time
+                                </CmlText>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.setState({
+                                            startRestrictionTimepicker: true,
+                                        });
+                                    }}>
+                                    <CmlText
+                                        style={[
+                                            styles.dialogTimePlaceholder,
+                                            {fontSize: 14},
+                                        ]}>
+                                        {
+                                            this.state.campaign.call.settings
+                                                .restrictions.startTime
+                                        }
+                                    </CmlText>
+                                </TouchableOpacity>
+                                <DateTimePickerModal
+                                    isVisible={
+                                        this.state.startRestrictionTimepicker
+                                    }
+                                    mode="time"
+                                    date={
+                                        new Date(
+                                            '2019-01-01T' +
+                                                this.state.campaign.call
+                                                    .settings.restrictions
+                                                    .startTime,
+                                        )
+                                    }
+                                    onConfirm={(value: any) => {
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    settings: {
+                                                        ...this.state.campaign
+                                                            .call.settings,
+                                                        restrictions: {
+                                                            ...this.state
+                                                                .campaign.call
+                                                                .settings
+                                                                .restrictions,
+                                                            startTime:
+                                                                (value.getHours() <
+                                                                10
+                                                                    ? '0'
+                                                                    : '') +
+                                                                value.getHours() +
+                                                                ':' +
+                                                                ((value.getMinutes() <
+                                                                10
+                                                                    ? '0'
+                                                                    : '') +
+                                                                    value.getMinutes()),
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                            startRestrictionTimepicker: false,
+                                        });
+                                    }}
+                                    onCancel={() =>
+                                        this.setState({
+                                            startRestrictionTimepicker: false,
+                                        })
+                                    }
+                                />
+                            </View>
+
+                            <View style={styles.dialogTimeContainer}>
+                                <CmlText style={styles.dialogTimePlaceholder}>
+                                    End Time
+                                </CmlText>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.setState({
+                                            endRestrictionTimepicker: true,
+                                        });
+                                    }}>
+                                    <CmlText
+                                        style={[
+                                            styles.dialogTimePlaceholder,
+                                            {fontSize: 14},
+                                        ]}>
+                                        {
+                                            this.state.campaign.call.settings
+                                                .restrictions.EndTime
+                                        }
+                                    </CmlText>
+                                </TouchableOpacity>
+                                <DateTimePickerModal
+                                    isVisible={
+                                        this.state.endRestrictionTimepicker
+                                    }
+                                    mode="time"
+                                    date={
+                                        new Date(
+                                            '2019-01-01T' +
+                                                this.state.campaign.call
+                                                    .settings.restrictions
+                                                    .EndTime,
+                                        )
+                                    }
+                                    onConfirm={(value: any) => {
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    settings: {
+                                                        ...this.state.campaign
+                                                            .call.settings,
+                                                        restrictions: {
+                                                            ...this.state
+                                                                .campaign.call
+                                                                .settings
+                                                                .restrictions,
+                                                            EndTime:
+                                                                (value.getHours() <
+                                                                10
+                                                                    ? '0'
+                                                                    : '') +
+                                                                value.getHours() +
+                                                                ':' +
+                                                                ((value.getMinutes() <
+                                                                10
+                                                                    ? '0'
+                                                                    : '') +
+                                                                    value.getMinutes()),
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                            endRestrictionTimepicker: false,
+                                        });
+                                    }}
+                                    onCancel={() =>
+                                        this.setState({
+                                            endRestrictionTimepicker: false,
+                                        })
+                                    }
+                                />
+                            </View>
+
+                            <View style={styles.dialogTimeContainer}>
+                                <CmlText
+                                    style={[
+                                        styles.dialogTimePlaceholder,
+                                        {
+                                            marginBottom: 16,
+                                        },
+                                    ]}>
+                                    Time Zone
+                                </CmlText>
+
+                                <RNPickerSelect
+                                    style={bigPickerSelectStyles}
+                                    value={
+                                        this.state.campaign.call.settings
+                                            .restrictions.timeZone
+                                    }
+                                    onValueChange={(value) =>
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    settings: {
+                                                        ...this.state.campaign
+                                                            .call.settings,
+                                                        restrictions: {
+                                                            ...this.state
+                                                                .campaign.call
+                                                                .settings
+                                                                .restrictions,
+                                                            timeZone: value,
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        })
+                                    }
+                                    items={this.timezones}
+                                />
+                            </View>
+
+                            <TouchableOpacity
+                                style={[styles.continueButton]}
+                                onPress={() => this.start()}>
+                                <View
+                                    style={[
+                                        styles.continueButtonContainer,
+                                        {borderColor: 'white', width: 140},
+                                    ]}>
+                                    <CmlText
+                                        style={[
+                                            styles.continueButtonText,
+                                            {
+                                                color: 'white',
+                                                marginLeft: 8,
+                                            },
+                                        ]}>
+                                        COMPLETE
+                                    </CmlText>
+                                    <MaterialIcons
+                                        name="navigate-next"
+                                        size={30}
+                                        color="#ffa67a"
+                                    />
+                                </View>
+                            </TouchableOpacity>
                         </View>
-                    </DialogContent>
-                </Dialog>
+                    </View>
+                </Modal>
+                <Modal
+                    isVisible={this.state.startFuture}
+                    backdropOpacity={0}
+                    onBackdropPress={() => this.setState({startNow: false})}>
+                    <View style={AppStyle.dialogContainer}>
+                        <View>
+                            <CmlText style={styles.dialogTitle}>
+                                Start In The Future
+                            </CmlText>
+
+                            <View style={styles.dialogTimeContainer}>
+                                <CmlText style={styles.dialogTimePlaceholder}>
+                                    Start Date
+                                </CmlText>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.setState({
+                                            scheduleStartDatePicker: true,
+                                        });
+                                    }}>
+                                    <CmlText
+                                        style={[
+                                            styles.dialogTimePlaceholder,
+                                            {fontSize: 14},
+                                        ]}>
+                                        {
+                                            this.state.campaign.call.schedule
+                                                .startDateUI
+                                        }
+                                    </CmlText>
+                                </TouchableOpacity>
+                                <DateTimePickerModal
+                                    isVisible={
+                                        this.state.scheduleStartDatePicker
+                                    }
+                                    mode="date"
+                                    minimumDate={new Date()}
+                                    date={
+                                        new Date(
+                                            this.state.campaign.call.schedule.startDateUI,
+                                        )
+                                    }
+                                    onConfirm={(value: any) => {
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    schedule: {
+                                                        ...this.state.campaign
+                                                            .call.schedule,
+                                                        startDateUI: moment(
+                                                            value,
+                                                        ).format('YYYY-MM-DD'),
+                                                    },
+                                                },
+                                            },
+                                            scheduleStartDatePicker: false,
+                                        });
+                                    }}
+                                    onCancel={() =>
+                                        this.setState({
+                                            scheduleStartDatePicker: false,
+                                        })
+                                    }
+                                />
+                            </View>
+                            <View style={styles.dialogTimeContainer}>
+                                <CmlText style={styles.dialogTimePlaceholder}>
+                                    Start Time
+                                </CmlText>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.setState({
+                                            scheduleStartTimePicker: true,
+                                        });
+                                    }}>
+                                    <CmlText
+                                        style={[
+                                            styles.dialogTimePlaceholder,
+                                            {fontSize: 14},
+                                        ]}>
+                                        {
+                                            this.state.campaign.call.schedule
+                                                .startTime
+                                        }
+                                    </CmlText>
+                                </TouchableOpacity>
+                                <DateTimePickerModal
+                                    isVisible={
+                                        this.state.scheduleStartTimePicker
+                                    }
+                                    mode="time"
+                                    date={
+                                        new Date(
+                                            '2019-01-01T' +
+                                                this.state.campaign.call
+                                                    .schedule.startTime,
+                                        )
+                                    }
+                                    onConfirm={(value: any) => {
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    schedule: {
+                                                        ...this.state.campaign
+                                                            .call.schedule,
+                                                        startTime:
+                                                            (value.getHours() <
+                                                            10
+                                                                ? '0'
+                                                                : '') +
+                                                            value.getHours() +
+                                                            ':' +
+                                                            ((value.getMinutes() <
+                                                            10
+                                                                ? '0'
+                                                                : '') +
+                                                                value.getMinutes()),
+                                                    },
+                                                },
+                                            },
+                                            scheduleStartTimePicker: false,
+                                        });
+                                    }}
+                                    onCancel={() =>
+                                        this.setState({
+                                            scheduleStartTimePicker: false,
+                                        })
+                                    }
+                                />
+                            </View>
+                            <View style={styles.dialogSwitchContainer}>
+                                <Switch
+                                    ios_backgroundColor="#9e9e9e"
+                                    value={
+                                        this.state.campaign.call.schedule
+                                            .resumeNextDay
+                                    }
+                                    onValueChange={(value: boolean) => {
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    schedule: {
+                                                        ...this.state.campaign
+                                                            .call.schedule,
+                                                        resumeNextDay: value,
+                                                    },
+                                                },
+                                            },
+                                            isScheduleForMultipleDays: false,
+                                        });
+                                    }}
+                                />
+                                <View
+                                    style={{
+                                        flex: 1,
+                                    }}>
+                                    <CmlText
+                                        style={[
+                                            styles.panelOptionText,
+                                            {color: 'white'},
+                                        ]}>
+                                        Resume campaign the following day if
+                                        campaign isn't completed by 10 pm
+                                    </CmlText>
+                                    <View style={styles.borderBottom}>
+                                        <CmlText
+                                            style={[
+                                                styles.panelOptionText,
+                                                {
+                                                    color: 'white',
+                                                    fontSize: 10,
+                                                    marginTop: 8,
+                                                },
+                                            ]}>
+                                            (Call My List will stop all
+                                            campaigns if not complete)
+                                        </CmlText>
+                                    </View>
+                                </View>
+                            </View>
+                            <View
+                                style={[
+                                    styles.panelSwitchContainer,
+                                    {marginTop: 16},
+                                ]}>
+                                <Switch
+                                    ios_backgroundColor="#9e9e9e"
+                                    value={this.state.isScheduleForMultipleDays}
+                                    onValueChange={(value: boolean) => {
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    schedule: {
+                                                        ...this.state.campaign
+                                                            .call.schedule,
+                                                        resumeNextDay: !value,
+                                                    },
+                                                },
+                                            },
+                                            isScheduleForMultipleDays: value,
+                                        });
+                                    }}
+                                />
+                                <CmlText
+                                    style={[
+                                        styles.panelOptionText,
+                                        {color: 'white'},
+                                    ]}>
+                                    Schedule for multiple days
+                                </CmlText>
+                            </View>
+                            {this.state.isScheduleForMultipleDays && (
+                                <View
+                                    style={[
+                                        styles.dialogTimeContainer,
+                                        {marginTop: 8},
+                                    ]}>
+                                    <PickerCheckBox
+                                        data={items}
+                                        headerComponent={
+                                            <Text style={{fontSize: 16}}>
+                                                Select the days for your
+                                                campaign to run.
+                                            </Text>
+                                        }
+                                        OnConfirm={(pItems: any) => {
+                                            let WEEKDAYS = {
+                                                Sunday: false,
+                                                Monday: false,
+                                                Tuesday: false,
+                                                Wednesday: false,
+                                                Thursday: false,
+                                                Friday: false,
+                                                Saturday: false,
+                                            };
+                                            pItems.forEach((item: any) => {
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Sunday'
+                                                ) {
+                                                    WEEKDAYS.Sunday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Monday'
+                                                ) {
+                                                    WEEKDAYS.Monday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Tuesday'
+                                                ) {
+                                                    WEEKDAYS.Tuesday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Wednesday'
+                                                ) {
+                                                    WEEKDAYS.Wednesday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Thursday'
+                                                ) {
+                                                    WEEKDAYS.Thursday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Friday'
+                                                ) {
+                                                    WEEKDAYS.Friday = true;
+                                                }
+                                                if (
+                                                    item.itemDescription ==
+                                                    'Saturday'
+                                                ) {
+                                                    WEEKDAYS.Saturday = true;
+                                                }
+                                            });
+
+                                            this.setState({WEEKDAYS: WEEKDAYS});
+                                        }}
+                                        ConfirmButtonTitle="OK"
+                                        DescriptionField="itemDescription"
+                                        KeyField="itemKey"
+                                        placeholder="Please select days"
+                                        arrowColor="#FFD740"
+                                        arrowSize={10}
+                                        placeholderSelectedItems="$count selected item(s)"
+                                    />
+                                </View>
+                            )}
+
+                            <CmlText style={styles.dialogSmallTitle}>
+                                Campaign Time Restrictions
+                            </CmlText>
+                            <CmlText style={styles.dialogDescription}>
+                                Contacts will not be dialed outside these hours
+                            </CmlText>
+
+                            <View style={styles.dialogTimeContainer}>
+                                <CmlText style={styles.dialogTimePlaceholder}>
+                                    Start Time
+                                </CmlText>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.setState({
+                                            startRestrictionTimepicker: true,
+                                        });
+                                    }}>
+                                    <CmlText
+                                        style={[
+                                            styles.dialogTimePlaceholder,
+                                            {fontSize: 14},
+                                        ]}>
+                                        {
+                                            this.state.campaign.call.settings
+                                                .restrictions.startTime
+                                        }
+                                    </CmlText>
+                                </TouchableOpacity>
+                                <DateTimePickerModal
+                                    isVisible={
+                                        this.state.startRestrictionTimepicker
+                                    }
+                                    mode="time"
+                                    date={
+                                        new Date(
+                                            '2019-01-01T' +
+                                                this.state.campaign.call
+                                                    .settings.restrictions
+                                                    .startTime,
+                                        )
+                                    }
+                                    onConfirm={(value: any) => {
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    settings: {
+                                                        ...this.state.campaign
+                                                            .call.settings,
+                                                        restrictions: {
+                                                            ...this.state
+                                                                .campaign.call
+                                                                .settings
+                                                                .restrictions,
+                                                            startTime:
+                                                                (value.getHours() <
+                                                                10
+                                                                    ? '0'
+                                                                    : '') +
+                                                                value.getHours() +
+                                                                ':' +
+                                                                ((value.getMinutes() <
+                                                                10
+                                                                    ? '0'
+                                                                    : '') +
+                                                                    value.getMinutes()),
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                            startRestrictionTimepicker: false,
+                                        });
+                                    }}
+                                    onCancel={() =>
+                                        this.setState({
+                                            startRestrictionTimepicker: false,
+                                        })
+                                    }
+                                />
+                            </View>
+
+                            <View style={styles.dialogTimeContainer}>
+                                <CmlText style={styles.dialogTimePlaceholder}>
+                                    End Time
+                                </CmlText>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.setState({
+                                            endRestrictionTimepicker: true,
+                                        });
+                                    }}>
+                                    <CmlText
+                                        style={[
+                                            styles.dialogTimePlaceholder,
+                                            {fontSize: 14},
+                                        ]}>
+                                        {
+                                            this.state.campaign.call.settings
+                                                .restrictions.EndTime
+                                        }
+                                    </CmlText>
+                                </TouchableOpacity>
+                                <DateTimePickerModal
+                                    isVisible={
+                                        this.state.endRestrictionTimepicker
+                                    }
+                                    mode="time"
+                                    date={
+                                        new Date(
+                                            '2019-01-01T' +
+                                                this.state.campaign.call
+                                                    .settings.restrictions
+                                                    .EndTime,
+                                        )
+                                    }
+                                    onConfirm={(value: any) => {
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    settings: {
+                                                        ...this.state.campaign
+                                                            .call.settings,
+                                                        restrictions: {
+                                                            ...this.state
+                                                                .campaign.call
+                                                                .settings
+                                                                .restrictions,
+                                                            EndTime:
+                                                                (value.getHours() <
+                                                                10
+                                                                    ? '0'
+                                                                    : '') +
+                                                                value.getHours() +
+                                                                ':' +
+                                                                ((value.getMinutes() <
+                                                                10
+                                                                    ? '0'
+                                                                    : '') +
+                                                                    value.getMinutes()),
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                            endRestrictionTimepicker: false,
+                                        });
+                                    }}
+                                    onCancel={() =>
+                                        this.setState({
+                                            endRestrictionTimepicker: false,
+                                        })
+                                    }
+                                />
+                            </View>
+
+                            <View style={styles.dialogTimeContainer}>
+                                <CmlText
+                                    style={[
+                                        styles.dialogTimePlaceholder,
+                                        {
+                                            marginBottom: 16,
+                                        },
+                                    ]}>
+                                    Time Zone
+                                </CmlText>
+
+                                <RNPickerSelect
+                                    style={bigPickerSelectStyles}
+                                    value={
+                                        this.state.campaign.call.settings
+                                            .restrictions.timeZone
+                                    }
+                                    onValueChange={(value) =>
+                                        this.setState({
+                                            campaign: {
+                                                ...this.state.campaign,
+                                                call: {
+                                                    ...this.state.campaign.call,
+                                                    settings: {
+                                                        ...this.state.campaign
+                                                            .call.settings,
+                                                        restrictions: {
+                                                            ...this.state
+                                                                .campaign.call
+                                                                .settings
+                                                                .restrictions,
+                                                            timeZone: value,
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        })
+                                    }
+                                    items={this.timezones}
+                                />
+                            </View>
+
+                            <TouchableOpacity
+                                style={[styles.continueButton]}
+                                onPress={() => this.start()}>
+                                <View
+                                    style={[
+                                        styles.continueButtonContainer,
+                                        {borderColor: 'white', width: 140},
+                                    ]}>
+                                    <CmlText
+                                        style={[
+                                            styles.continueButtonText,
+                                            {
+                                                color: 'white',
+                                                marginLeft: 8,
+                                            },
+                                        ]}>
+                                        COMPLETE
+                                    </CmlText>
+                                    <MaterialIcons
+                                        name="navigate-next"
+                                        size={30}
+                                        color="#ffa67a"
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+                <Modal
+                    isVisible={this.state.uploadList}
+                    backdropOpacity={0}
+                    onBackdropPress={() => this.setState({uploadList: false})}>
+                    <View style={AppStyle.dialogContainer}>
+                        <CmlText style={AppStyle.dialogSmallTitle}>
+                            Upload New List
+                        </CmlText>
+
+                        <View
+                            style={[
+                                AppStyle.panelSwitchContainer,
+                                {marginTop: 16},
+                            ]}>
+                            <Switch
+                                ios_backgroundColor="#9e9e9e"
+                                onValueChange={(value) =>
+                                    this.setState({containHeader: value})
+                                }
+                                value={this.state.containHeader}
+                            />
+                            <CmlText
+                                style={[
+                                    AppStyle.panelOptionText,
+                                    {color: 'white'},
+                                ]}>
+                                Does your file contain headers?
+                            </CmlText>
+                        </View>
+
+                        <CmlText style={AppStyle.dialogDescription}>
+                            Select Phone Number Column
+                        </CmlText>
+                        <View
+                            style={[
+                                AppStyle.dialogTimeContainer,
+                                {
+                                    padding: 0,
+                                },
+                            ]}>
+                            <RNPickerSelect
+                                style={pickerSelectStyles}
+                                value={this.state.headerColumn}
+                                onValueChange={(value) =>
+                                    this.setState({
+                                        headerColumn: value,
+                                    })
+                                }
+                                items={[
+                                    {label: 'A', value: 'A'},
+                                    {label: 'B', value: 'B'},
+                                    {label: 'C', value: 'C'},
+                                    {label: 'D', value: 'D'},
+                                    {label: 'E', value: 'E'},
+                                    {label: 'F', value: 'F'},
+                                    {label: 'G', value: 'G'},
+                                    {label: 'H', value: 'H'},
+                                    {label: 'I', value: 'I'},
+                                    {label: 'J', value: 'J'},
+                                    {label: 'K', value: 'K'},
+                                    {label: 'L', value: 'L'},
+                                    {label: 'M', value: 'M'},
+                                    {label: 'N', value: 'N'},
+                                    {label: 'O', value: 'O'},
+                                    {label: 'P', value: 'P'},
+                                    {label: 'Q', value: 'Q'},
+                                    {label: 'R', value: 'R'},
+                                    {label: 'S', value: 'S'},
+                                    {label: 'T', value: 'T'},
+                                    {label: 'U', value: 'U'},
+                                    {label: 'V', value: 'V'},
+                                    {label: 'W', value: 'W'},
+                                    {label: 'X', value: 'X'},
+                                    {label: 'Y', value: 'Y'},
+                                    {label: 'Z', value: 'Z'},
+                                ]}
+                            />
+                        </View>
+
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                marginTop: 16,
+                            }}>
+                            <CmlButton
+                                title="Upload"
+                                backgroundColor="#02b9db"
+                                style={{width: 100, marginTop: 16}}
+                                onPress={() => this.upload()}
+                            />
+                            <View style={{flex: 1}} />
+                            <CmlButton
+                                title="Cancel"
+                                backgroundColor="#ffa67a"
+                                onPress={() =>
+                                    this.setState({
+                                        uploadList: false,
+                                        headerColumn: 'A',
+                                        containHeader: false,
+                                        currentItem: null,
+                                    })
+                                }
+                                style={{
+                                    width: 100,
+                                    marginTop: 16,
+                                    marginLeft: 16,
+                                }}
+                            />
+                        </View>
+                    </View>
+                </Modal>
             </SafeAreaView>
         );
     }
 }
 
-export default CampaignCreate;
+const mapStateToProps = (state: any) => {
+    return {};
+};
+
+export default compose(connect(mapStateToProps))(CampaignCreate);

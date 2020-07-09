@@ -105,7 +105,6 @@ export default class MultiSelect extends Component {
 
     _getSelectLabel = (props) => {
         const {selectText, single, items, selectedItems} = props;
-        console.log('Here ....');
         if (!selectedItems || selectedItems.length === 0) {
             return selectText;
         } else if (single) {
@@ -445,6 +444,7 @@ export default class MultiSelect extends Component {
                             <View
                                 style={{
                                     flexDirection: 'row',
+                                    height: 40,
                                 }}>
                                 <Text
                                     style={{
@@ -456,7 +456,13 @@ export default class MultiSelect extends Component {
                                 </Text>
                                 <Text style={{flex: 1, padding: 8}}>Phone</Text>
                             </View>
-                            <View>{this._renderItems()}</View>
+                            <View
+                                style={{
+                                    backgroundColor: 'white',
+                                    height: 350,
+                                }}>
+                                {this._renderItems()}
+                            </View>
                             {!single && !hideSubmitButton && (
                                 <TouchableOpacity
                                     onPress={this._submitSelection}

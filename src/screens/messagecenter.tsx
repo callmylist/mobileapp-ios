@@ -189,7 +189,6 @@ class MessageCenter extends Component<
 
         MessageCenterService.GetAllContactsSearch('', 500, 1).subscribe(
             (response: any) => {
-                console.log(response.data);
                 this.setState({
                     contacts: response.data,
                 });
@@ -300,7 +299,6 @@ class MessageCenter extends Component<
     };
 
     filter = () => {
-        console.log(this.state.keyword);
         MessageCenterService.GetAllContactsSearch(
             this.state.keyword,
             500,
@@ -322,7 +320,6 @@ class MessageCenter extends Component<
     };
 
     markAsFavorite = (item: any) => {
-        console.log(item);
         MessageCenterService.MarkUnmarkFavourite(item.id, 1).subscribe(
             (response: any) => {
                 if (response.status) {
@@ -339,7 +336,6 @@ class MessageCenter extends Component<
                 {/* <CmlSpinner visible={this.state.loading} /> */}
                 <TouchableWithoutFeedback
                     onPress={() => {
-                        console.log('here');
                         Keyboard.dismiss();
                     }}>
                     <>

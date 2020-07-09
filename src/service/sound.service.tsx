@@ -53,7 +53,6 @@ export class SoundService {
         const name = split.pop();
         const inbox = split.pop();
         const realPath = `${RNFS.TemporaryDirectoryPath}${inbox}/${name}`;
-        console.log(realPath);
         var headers = {};
         var loggedInContact = store.getState().authReducer.loggedInContact;
         if (loggedInContact != null) {

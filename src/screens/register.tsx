@@ -109,9 +109,7 @@ class RegisterScreen extends Component<
         };
     }
 
-    componentDidMount() {
-        console.log('domain user: ', this.props.assets.domainUser);
-    }
+    componentDidMount() {}
 
     onLogin = () => {
         this.props.navigation.navigate('LoginScreen');

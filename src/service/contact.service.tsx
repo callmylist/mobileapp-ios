@@ -22,12 +22,6 @@ export class ContactService {
     }
 
     static getContactList(options: any) {
-        console.log(
-            constants.apiUrl.getContactList
-                .replace('{isDoNotContactList}', 'false')
-                .replace('{number}', options.currentPage)
-                .replace('{limit}', options.pageSize),
-        );
         return RestClient.get(
             constants.apiUrl.getContactList
                 .replace('{isDoNotContactList}', 'false')
@@ -57,7 +51,6 @@ export class ContactService {
         const name = split.pop();
         const inbox = split.pop();
         const realPath = `${RNFS.TemporaryDirectoryPath}${inbox}/${name}`;
-        console.log(realPath);
         var headers = {};
         var loggedInContact = store.getState().authReducer.loggedInContact;
         if (loggedInContact != null) {

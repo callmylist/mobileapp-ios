@@ -38,6 +38,21 @@ class Utils {
             (date.getHours() > 12 ? 'PM' : 'AM')
         );
     }
+
+    static convertTime12toString(time: any) {
+        if (time.includes('AM') || time.includes('PM')) {
+            let components = time.split(' ');
+            let value = components[0].split(':').map((digit) => Number(digit));
+
+            if (components[1] == 'PM') {
+                value[0] += 12;
+            }
+
+            return value;
+        } else {
+            return time.split(':').map((value) => Number(value));
+        }
+    }
 }
 
 export default Utils;

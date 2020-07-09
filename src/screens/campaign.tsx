@@ -89,8 +89,7 @@ class Campaign extends Component<
     }
 
     loadCampaignList = () => {
-        CampaignService.getCampaignList(0, 500).subscribe((response: any) => {
-            console.log(response.data);
+        CampaignService.getCampaignList(1, 500).subscribe((response: any) => {
             this.setState({
                 campaigns: response.data,
             });

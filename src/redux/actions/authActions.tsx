@@ -73,7 +73,6 @@ export const signIn = (params: any) => {
                     response.data.customize,
                 );
 
-                console.log('login : ', loginUser);
                 dispatch({
                     type: USER_LOGIN_SUCCESS,
                     payload: {

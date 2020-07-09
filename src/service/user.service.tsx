@@ -74,14 +74,6 @@ export class UserService {
     }
 
     static updateLogo(fileInfo: any, callback: any) {
-        // const name = fileInfo.name;
-        // const realPath = fileInfo.uri;
-
-        // const split = fileInfo.uri.split('/');
-        // const name = split.pop();
-        // const inbox = split.pop();
-        // const realPath = `${RNFS.TemporaryDirectoryPath}${inbox}/${name}`;
-        // console.log(realPath)
         var headers = {};
         var loggedInContact = store.getState().authReducer.loggedInContact;
         if (loggedInContact != null) {
@@ -104,9 +96,7 @@ export class UserService {
             method: 'POST',
             headers: headers,
         }).promise.then((response: any) => {
-            // console.log(response)
             let parsedBody = JSON.parse(response.body);
-            console.log(parsedBody);
             if (response.statusCode == 201) {
                 loggedInContact.token = response.headers.x_auth_token;
                 store.dispatch({
@@ -117,12 +107,17 @@ export class UserService {
                 });
                 callback({...parsedBody, success: true});
             } else {
-                console.log(response);
                 callback({
                     message: parsedBody.message + '.' + parsedBody.submessage,
                     success: false,
                 });
             }
         });
+    }
+
+    static getUserById() {
+        const url = constants.apiUrl.getUserById;
+
+        return RestClient.get(url);
     }
 }

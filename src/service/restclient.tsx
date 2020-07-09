@@ -39,11 +39,7 @@ class RestClient {
                 return {...response.data, success: true};
             }),
             catchError((error: any) => {
-                console.log('error : url -> ', url);
-                console.log(error.response.data);
-
                 if (error.response.status == 401) {
-                    console.log(headers);
                     store.dispatch({
                         type: RESET_TOKEN,
                         payload: null,
@@ -87,11 +83,7 @@ class RestClient {
                 return {...response.data, success: true};
             }),
             catchError((error: any) => {
-                console.log('error : url -> ', url);
-                console.log(error.response.data);
-
                 if (error.response.status == 401) {
-                    console.log(headers);
                     store.dispatch({
                         type: RESET_TOKEN,
                         payload: null,
@@ -139,10 +131,7 @@ class RestClient {
                 };
             }),
             catchError((error: any) => {
-                console.log('error : url -> ', url);
-                console.log(error.response.data);
                 if (error.response.status == 401) {
-                    console.log(headers);
                     store.dispatch({
                         type: RESET_TOKEN,
                         payload: null,
@@ -190,10 +179,7 @@ class RestClient {
                 };
             }),
             catchError((error: any) => {
-                console.log('error : url -> ', url);
-                console.log(error.response.data);
                 if (error.response.status == 401) {
-                    console.log(headers);
                     store.dispatch({
                         type: RESET_TOKEN,
                         payload: null,
@@ -241,10 +227,7 @@ class RestClient {
                 };
             }),
             catchError((error: any) => {
-                console.log('error : url -> ', url);
-                console.log(error.response.data);
                 if (error.response.status == 401) {
-                    console.log(headers);
                     store.dispatch({
                         type: RESET_TOKEN,
                         payload: null,

@@ -16,7 +16,6 @@ import {CmlTextInput} from '../components/textinput';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import {CmlButton} from '../components/button';
 import {SoundService} from '../service/sound.service';
-import TrackPlayer from 'react-native-track-player';
 import AppConstants from '../utils/app_constants';
 
 import Modal from 'react-native-modal';
@@ -140,7 +139,6 @@ class SoundScreen extends Component<
     {
         sounds: any[];
         textToSpeech: boolean;
-        playSound: boolean;
         loading: boolean;
         deleteConfirm: boolean;
         currentItem: any;
@@ -154,7 +152,6 @@ class SoundScreen extends Component<
         this.state = {
             sounds: [],
             textToSpeech: false,
-            playSound: false,
             loading: false,
             deleteConfirm: false,
             currentItem: null,
@@ -199,20 +196,6 @@ class SoundScreen extends Component<
                 }, 500);
             });
         });
-    };
-
-    togglePlayback = async () => {
-        let playbackState = await TrackPlayer.getState();
-        if (playbackState === TrackPlayer.STATE_PAUSED) {
-            await TrackPlayer.play();
-        } else {
-            await TrackPlayer.pause();
-        }
-    };
-
-    resetPlayer = async () => {
-        this.setState({playSound: false});
-        await TrackPlayer.reset();
     };
 
     uploadAudio = async () => {
@@ -614,15 +597,6 @@ class SoundScreen extends Component<
                         </View>
                     </DialogContent>
                 </Dialog>
-
-                <Modal
-                    isVisible={this.state.playSound}
-                    backdropOpacity={0}
-                    onBackdropPress={() => this.resetPlayer()}>
-                    <View style={AppStyle.dialogContainer}>
-                        <Player onTogglePlayback={this.togglePlayback} />
-                    </View>
-                </Modal>
 
                 <Modal
                     isVisible={this.state.deleteConfirm}

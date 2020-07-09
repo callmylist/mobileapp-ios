@@ -62,4 +62,12 @@ export class CampaignService {
                 .replace('{campaignId}', campaignId),
         );
     }
+
+    static createCampaign(payload: any) {
+        const url = constants.apiUrl.createCompaign.replace(
+            '{userId}',
+            store.getState().authReducer.loggedInContact.id,
+        );
+        return RestClient.post(url, payload);
+    }
 }

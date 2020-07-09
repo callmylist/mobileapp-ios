@@ -111,9 +111,7 @@ class AddAccountScreen extends Component<
         };
     }
 
-    componentDidMount() {
-        console.log('domain user: ', this.props.assets.domainUser);
-    }
+    componentDidMount() {}
 
     onBack = () => {
         this.props.navigation.pop();

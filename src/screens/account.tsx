@@ -201,8 +201,6 @@ class AccountScreen extends Component<
         startDate.setHours(9);
         startDate.setMinutes(0);
 
-        console.log(startDate.toISOString());
-
         let endDate = new Date();
         endDate.setHours(16);
         endDate.setMinutes(0);
@@ -427,7 +425,6 @@ class AccountScreen extends Component<
                 loading: true,
             });
             UserService.updateLogo(fileInfo, (response: any) => {
-                console.log(response);
                 this.setState({
                     loading: false,
                 });

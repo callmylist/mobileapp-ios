@@ -202,7 +202,6 @@ class ContactList extends Component<
 
     download = (item: any) => {
         let dirs = RNFetchBlob.fs.dirs;
-        console.log(dirs.DocumentDir);
         this.setState({loading: true});
         RNFetchBlob.config({
             // response data will be saved to this path if it has access right.
@@ -218,7 +217,6 @@ class ContactList extends Component<
             )
             .then((res) => {
                 // the path should be dirs.DocumentDir + 'path-to-file.anything'
-                console.log(res);
                 Utils.presentToast('File downloaded to application folder.');
                 this.setState({loading: false});
             });
@@ -240,26 +238,32 @@ class ContactList extends Component<
             Utils.presentToast('Please select valid column header');
             return;
         }
+        this.setState(
+            {
+                uploadList: false,
+            },
+            () => {
+                setTimeout(() => {
+                    this.setState({
+                        loading: true,
+                    });
 
-        this.setState({
-            loading: true,
-            uploadList: false,
-        });
-
-        ContactService.uploadContactList(
-            this.state.currentItem,
-            this.state.containHeader,
-            this.state.headerColumn,
-            (response: any) => {
-                console.log(response);
-                this.setState({
-                    loading: false,
-                });
-                if (response.success == true) {
-                    this.loadData();
-                } else {
-                    Utils.presentToast(response.message);
-                }
+                    ContactService.uploadContactList(
+                        this.state.currentItem,
+                        this.state.containHeader,
+                        this.state.headerColumn,
+                        (response: any) => {
+                            this.setState({
+                                loading: false,
+                            });
+                            if (response.success == true) {
+                                this.loadData();
+                            } else {
+                                Utils.presentToast(response.message);
+                            }
+                        },
+                    );
+                }, 1000);
             },
         );
     };
