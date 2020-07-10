@@ -723,9 +723,7 @@ class MessageCenter extends Component<
                                                                         }}
                                                                     />
                                                                     <MenuOption text="Create Follow Up Task" />
-                                                                    <MenuOption text="Edit" />
                                                                     <MenuOption text="Delete" />
-                                                                    <MenuOption text="Archive" />
                                                                 </MenuOptions>
                                                             </Menu>
                                                         </View>

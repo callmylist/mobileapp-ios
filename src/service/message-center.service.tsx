@@ -53,6 +53,13 @@ export class MessageCenterService {
             '{contactID}',
             ID,
         ).replace('{status}', flag);
+
         return RestClient.get(url);
+    }
+
+    static saveMessageSettings(data: any) {
+        return RestClient.post(constants.apiUrl.saveMessageSettings, {
+            schedule: data,
+        });
     }
 }

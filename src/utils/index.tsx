@@ -42,7 +42,9 @@ class Utils {
     static convertTime12toString(time: any) {
         if (time.includes('AM') || time.includes('PM')) {
             let components = time.split(' ');
-            let value = components[0].split(':').map((digit) => Number(digit));
+            let value = components[0]
+                .split(':')
+                .map((digit: any) => Number(digit));
 
             if (components[1] == 'PM') {
                 value[0] += 12;
@@ -50,8 +52,22 @@ class Utils {
 
             return value;
         } else {
-            return time.split(':').map((value) => Number(value));
+            return time.split(':').map((value: any) => Number(value));
         }
+    }
+
+    static SetTime(hours: any, minutes: any) {
+        if (hours < 10) {
+            hours = '0' + hours;
+        }
+
+        if (minutes < 10) {
+            minutes = '0' + minutes;
+        }
+
+        let time = hours + ':' + minutes;
+
+        return time;
     }
 }
 

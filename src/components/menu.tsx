@@ -106,6 +106,7 @@ class Menu extends Component {
         'ContactList',
         'Account',
         'Support',
+        'Settings',
     ];
     constructor(props: any) {
         super(props);
@@ -238,6 +239,32 @@ class Menu extends Component {
                                             styles.selectedMenuText,
                                     ]}>
                                     Message Center
+                                </CmlText>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.onMenuItem(7)}>
+                            <View
+                                style={[
+                                    styles.menuItem,
+                                    this.state.currentMenu === 7 &&
+                                        styles.selectedMenu,
+                                ]}>
+                                <Feather
+                                    name="settings"
+                                    size={24}
+                                    color={
+                                        this.state.currentMenu == 7
+                                            ? 'white'
+                                            : '#a9afbb'
+                                    }
+                                />
+                                <CmlText
+                                    style={[
+                                        styles.menuLabel,
+                                        this.state.currentMenu === 7 &&
+                                            styles.selectedMenuText,
+                                    ]}>
+                                    Settings
                                 </CmlText>
                             </View>
                         </TouchableOpacity>

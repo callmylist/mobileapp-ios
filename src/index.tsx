@@ -16,6 +16,7 @@ import DashboardScreen from './screens/dashboard';
 import MessageCenterScreen from './screens/messagecenter';
 import CampaignScreen from './screens/campaign';
 import SoundScreen from './screens/sound';
+import SettingsScreen from './screens/settings';
 import AccountScreen from './screens/account';
 import SupportScreen from './screens/support';
 import AddAccountScreen from './screens/add_account';
@@ -52,6 +53,7 @@ const Dashboard = createDrawerNavigator(
         MessageCenter: {
             screen: MessageCenterScreen,
         },
+        Settings: {screen: SettingsScreen},
         Sound: {
             screen: SoundScreen,
         },

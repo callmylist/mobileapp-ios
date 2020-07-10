@@ -191,9 +191,7 @@ class FilteredContactsScreen extends Component<
                                                         <MenuOption text="View Contact" />
                                                         <MenuOption text="Mark As Favorite" />
                                                         <MenuOption text="Create Follow Up Task" />
-                                                        <MenuOption text="Edit" />
                                                         <MenuOption text="Delete" />
-                                                        <MenuOption text="Archive" />
                                                     </MenuOptions>
                                                 </Menu>
                                             </View>
