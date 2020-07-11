@@ -120,4 +120,13 @@ export class UserService {
 
         return RestClient.get(url);
     }
+
+    static getParentBillingInfoByUserId() {
+        const url = constants.apiUrl.getParentBillingInfo.replace(
+            '{userId}',
+            store.getState().authReducer.loggedInContact.id,
+        );
+
+        return RestClient.get(url);
+    }
 }

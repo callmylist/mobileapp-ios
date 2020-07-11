@@ -19,6 +19,8 @@ import {CmlButton} from '../components/button';
 import Modal from 'react-native-modal';
 import AppStyle from '../shared/styles';
 import {store} from '../redux/store';
+import stripe from 'tipsi-stripe';
+import {UserService} from '../service/user.service';
 
 const styles = StyleSheet.create({
     container: {
@@ -118,7 +120,13 @@ class Menu extends Component {
         };
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        UserService.getParentBillingInfoByUserId().subscribe(
+            (response: any) => {
+                this.setState({billingInfo: response.data});
+            },
+        );
+    }
 
     onMenuItem = (index: number) => {
         this.setState({
@@ -137,6 +145,16 @@ class Menu extends Component {
     logout = () => {
         this.props.navigation.closeDrawer();
         this.props.navigation.navigate('AuthNavigator');
+    };
+
+    addFund = async () => {
+        console.log(this.state.billingInfo.payments.StripePublishableKey);
+        stripe.setOptions({
+            publishableKey: this.state.billingInfo.payments
+                .StripePublishableKey,
+        });
+
+        const token = await stripe.paymentRequestWithCardForm();
     };
 
     render() {
@@ -495,9 +513,10 @@ class Menu extends Component {
                                     title="Add Funds"
                                     backgroundColor="#ffa67a"
                                     style={{marginTop: 16}}
-                                    onPress={() =>
-                                        this.setState({addFunds: false})
-                                    }
+                                    onPress={() => {
+                                        this.addFund();
+                                        this.setState({addFunds: false});
+                                    }}
                                 />
                             </View>
                         </View>

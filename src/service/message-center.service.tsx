@@ -66,4 +66,20 @@ export class MessageCenterService {
     static saveContact(data: any) {
         return RestClient.post(constants.apiUrl.saveContact, data);
     }
+
+    static markfollowup(contactID: any, flag: number) {
+        let url = constants.apiUrl.makFollowUp.replace(
+            '{contactID}',
+            contactID,
+        );
+        url = url.replace('{status}', flag + '');
+
+        return RestClient.get(url);
+    }
+
+    static onDelete(userId: string) {
+        let url = constants.apiUrl.deleteContact.replace('{userID}', userId);
+
+        return RestClient.delete(url);
+    }
 }

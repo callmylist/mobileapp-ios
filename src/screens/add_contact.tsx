@@ -151,6 +151,8 @@ class AddContactScreen extends Component<
         //     }
         // })
 
+        console.log(data);
+
         MessageCenterService.saveContact(data).subscribe((response: any) => {
             this.setState({loading: false});
             if (response.success) {

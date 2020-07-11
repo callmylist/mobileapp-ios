@@ -163,6 +163,9 @@ class ContactsScreen extends Component<
         selectedContact: string;
         message: string;
         keyword: string;
+        followUpDialog: boolean;
+        temp: any;
+        deleteDialog: boolean;
     }
 > {
     constructor(props: any) {
@@ -182,6 +185,9 @@ class ContactsScreen extends Component<
             selectedContact: '',
             message: '',
             keyword: '',
+            followUpDialog: false,
+            temp: null,
+            deleteDialog: false,
         };
     }
 
@@ -284,6 +290,57 @@ class ContactsScreen extends Component<
                 console.log(response);
                 if (response.success) {
                     this.filter();
+                }
+            },
+        );
+    };
+
+    onFollow = (item: any) => {
+        this.setState({
+            followUpDialog: true,
+            temp: item,
+        });
+    };
+
+    createFollowUp = () => {
+        this.setState({
+            followUpDialog: false,
+        });
+
+        let param = 1;
+        if (this.state.temp.sendFollowUp == true) param = 2;
+
+        MessageCenterService.markfollowup(this.state.temp.id, param).subscribe(
+            (response: any) => {
+                if (response.success) {
+                    Utils.presentToast('Follow Up successfully');
+                } else {
+                    Utils.presentToast(
+                        response.message + '. ' + response.submessage,
+                    );
+                }
+            },
+        );
+    };
+    onDelete = (item: any) => {
+        this.setState({
+            deleteDialog: true,
+            temp: item,
+        });
+    };
+    deleteContact = () => {
+        this.setState({
+            deleteDialog: false,
+        });
+        MessageCenterService.onDelete(this.state.temp.id).subscribe(
+            (response: any) => {
+                if (response.success) {
+                    Utils.presentToast('Contact deleted successfully');
+                    this.filter();
+                } else {
+                    Utils.presentToast(
+                        response.message + '. ' + response.submessage,
+                    );
                 }
             },
         );
@@ -472,8 +529,22 @@ class ContactsScreen extends Component<
                                                                         );
                                                                     }}
                                                                 />
-                                                                <MenuOption text="Create Follow Up Task" />
-                                                                <MenuOption text="Delete" />
+                                                                <MenuOption
+                                                                    text="Create Follow Up Task"
+                                                                    onSelect={() => {
+                                                                        this.onFollow(
+                                                                            item.item,
+                                                                        );
+                                                                    }}
+                                                                />
+                                                                <MenuOption
+                                                                    text="Delete"
+                                                                    onSelect={() => {
+                                                                        this.onDelete(
+                                                                            item.item,
+                                                                        );
+                                                                    }}
+                                                                />
                                                             </MenuOptions>
                                                         </Menu>
                                                     </View>
@@ -608,6 +679,110 @@ class ContactsScreen extends Component<
                                 </View>
                             </View>
                         </TouchableWithoutFeedback>
+                    </View>
+                </Modal>
+
+                <Modal
+                    isVisible={this.state.followUpDialog}
+                    backdropOpacity={0}
+                    onBackdropPress={() =>
+                        this.setState({followUpDialog: false})
+                    }>
+                    <View style={AppStyle.dialogContainer}>
+                        <View>
+                            <CmlText
+                                style={[
+                                    AppStyle.dialogTitle,
+                                    {
+                                        textAlign: 'center',
+                                        fontSize: 16,
+                                    },
+                                ]}>
+                                Confirmation
+                            </CmlText>
+                            <CmlText style={AppStyle.dialogDescription}>
+                                Are you sure you want delete this campaign?
+                            </CmlText>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    height: 32,
+                                    justifyContent: 'flex-end',
+                                }}>
+                                <CmlButton
+                                    title="Yes"
+                                    backgroundColor="#ffa67a"
+                                    style={{
+                                        marginTop: 16,
+                                        marginRight: 16,
+                                    }}
+                                    onPress={() => this.createFollowUp()}
+                                />
+                                <CmlButton
+                                    title="No"
+                                    backgroundColor="#02b9db"
+                                    style={{marginTop: 16}}
+                                    onPress={() =>
+                                        this.setState({
+                                            followUpDialog: false,
+                                        })
+                                    }
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+
+                <Modal
+                    isVisible={this.state.deleteDialog}
+                    backdropOpacity={0}
+                    onBackdropPress={() =>
+                        this.setState({deleteDialog: false})
+                    }>
+                    <View style={AppStyle.dialogContainer}>
+                        <View>
+                            <CmlText
+                                style={[
+                                    AppStyle.dialogTitle,
+                                    {
+                                        textAlign: 'center',
+                                        fontSize: 16,
+                                    },
+                                ]}>
+                                Confirmation
+                            </CmlText>
+                            <CmlText style={AppStyle.dialogDescription}>
+                                Are you sure you would like to delete this?
+                            </CmlText>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    height: 32,
+                                    justifyContent: 'flex-end',
+                                }}>
+                                <CmlButton
+                                    title="Yes"
+                                    backgroundColor="#ffa67a"
+                                    style={{
+                                        marginTop: 16,
+                                        marginRight: 16,
+                                    }}
+                                    onPress={() => this.deleteContact()}
+                                />
+                                <CmlButton
+                                    title="No"
+                                    backgroundColor="#02b9db"
+                                    style={{marginTop: 16}}
+                                    onPress={() =>
+                                        this.setState({
+                                            deleteDialog: false,
+                                        })
+                                    }
+                                />
+                            </View>
+                        </View>
                     </View>
                 </Modal>
             </SafeAreaView>
