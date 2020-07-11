@@ -20,7 +20,9 @@ import SettingsScreen from './screens/settings';
 import AccountScreen from './screens/account';
 import SupportScreen from './screens/support';
 import AddAccountScreen from './screens/add_account';
+import AddContactScreen from './screens/add_contact';
 import ContactListScreen from './screens/contact_list';
+import ContactsScreen from './screens/contacts';
 import Menu from './components/menu';
 import {View, StatusBar, Platform} from 'react-native';
 
@@ -54,6 +56,7 @@ const Dashboard = createDrawerNavigator(
             screen: MessageCenterScreen,
         },
         Settings: {screen: SettingsScreen},
+        Contacts: {screen: ContactsScreen},
         Sound: {
             screen: SoundScreen,
         },
@@ -91,6 +94,7 @@ const App = createStackNavigator(
         MessageHistoryScreen,
         AddAccountScreen,
         FilteredContactsScreen,
+        AddContactScreen,
     },
     {
         initialRouteName: 'Dashboard',

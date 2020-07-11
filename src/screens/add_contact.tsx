@@ -25,6 +25,7 @@ import Constants from '../utils/constants';
 import {CommonService} from '../service/common.service';
 import {CmlSpinner} from '../components/loading';
 import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
+import {MessageCenterService} from '../service/message-center.service';
 
 const styles = StyleSheet.create({
     container: {
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
     },
 });
 
-class AddAccountScreen extends Component<
+class AddContactScreen extends Component<
     {
         assets: any;
         navigation: any;
@@ -89,7 +90,6 @@ class AddAccountScreen extends Component<
         email: string;
         phone: string;
         companyName: string;
-        password: string;
         note: string;
         showValidate: boolean;
         loading: boolean;
@@ -104,7 +104,6 @@ class AddAccountScreen extends Component<
             email: '',
             phone: '',
             companyName: '',
-            password: '',
             note: '',
             showValidate: false,
             loading: false,
@@ -124,8 +123,6 @@ class AddAccountScreen extends Component<
             !this.state.email ||
             !this.state.phone ||
             !this.state.companyName ||
-            !this.state.password ||
-            this.state.password.length < 8 ||
             !Utils.validatePhoneNumber(this.state.phone) ||
             !Utils.validateEmail(this.state.email)
         ) {
@@ -137,13 +134,11 @@ class AddAccountScreen extends Component<
         }
 
         let data = {
-            CompanyName: this.state.companyName,
-            Email: this.state.email,
-            FirstName: this.state.firstName,
-            LastName: this.state.lastName,
-            Notes: this.state.note,
-            Password: this.state.password,
-            Phone: this.state.phone,
+            company: this.state.companyName,
+            email: this.state.email,
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            phoneNumber: this.state.phone,
         };
 
         this.setState({loading: true});
@@ -155,7 +150,8 @@ class AddAccountScreen extends Component<
         //         this.onLogin()
         //     }
         // })
-        CommonService.postChildAccount(data).subscribe((response: any) => {
+
+        MessageCenterService.saveContact(data).subscribe((response: any) => {
             this.setState({loading: false});
             if (response.success) {
                 Utils.presentToast('Successfully added child account.');
@@ -225,6 +221,25 @@ class AddAccountScreen extends Component<
                                 }
                             />
                         </View>
+                        <View
+                            style={[
+                                styles.inputContainer,
+                                !this.state.companyName &&
+                                    this.state.showValidate &&
+                                    styles.highlight,
+                            ]}>
+                            <CmlTextInput
+                                style={styles.input}
+                                placeholder="Company name"
+                                value={this.state.companyName}
+                                onChangeText={(value: string) =>
+                                    this.setState({
+                                        companyName: value,
+                                        showValidate: false,
+                                    })
+                                }
+                            />
+                        </View>
 
                         <View
                             style={[
@@ -280,54 +295,7 @@ class AddAccountScreen extends Component<
                         <View
                             style={[
                                 styles.inputContainer,
-                                !this.state.companyName &&
-                                    this.state.showValidate &&
-                                    styles.highlight,
-                            ]}>
-                            <CmlTextInput
-                                style={styles.input}
-                                placeholder="Company name"
-                                value={this.state.companyName}
-                                onChangeText={(value: string) =>
-                                    this.setState({
-                                        companyName: value,
-                                        showValidate: false,
-                                    })
-                                }
-                            />
-                        </View>
-
-                        <View
-                            style={[
-                                styles.inputContainer,
-                                (this.state.password.length < 8 ||
-                                    !this.state.password) &&
-                                    this.state.showValidate &&
-                                    styles.highlight,
-                            ]}>
-                            <CmlTextInput
-                                style={styles.input}
-                                placeholder="Password"
-                                secureTextEntry={true}
-                                value={this.state.password}
-                                onChangeText={(value: string) =>
-                                    this.setState({
-                                        password: value,
-                                        showValidate: false,
-                                    })
-                                }
-                            />
-                        </View>
-                        {this.state.password.length < 8 &&
-                            this.state.showValidate && (
-                                <CmlText style={styles.errorLabel}>
-                                    Password minimum length should be 8
-                                </CmlText>
-                            )}
-                        <View
-                            style={[
-                                styles.inputContainer,
-                                !this.state.password &&
+                                !this.state.note &&
                                     this.state.showValidate &&
                                     styles.highlight,
                             ]}>
@@ -374,7 +342,7 @@ class AddAccountScreen extends Component<
                                         fontSize: 18,
                                         fontWeight: '600',
                                     }}>
-                                    Add Account
+                                    Add Contact
                                 </CmlText>
                             </TouchableOpacity>
                         </View>
@@ -396,4 +364,4 @@ const mapStateToProps = (state: any) => {
     };
 };
 
-export default compose(connect(mapStateToProps, {}))(AddAccountScreen);
+export default compose(connect(mapStateToProps, {}))(AddContactScreen);

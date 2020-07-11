@@ -62,4 +62,8 @@ export class MessageCenterService {
             schedule: data,
         });
     }
+
+    static saveContact(data: any) {
+        return RestClient.post(constants.apiUrl.saveContact, data);
+    }
 }

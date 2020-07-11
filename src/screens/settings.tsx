@@ -421,6 +421,12 @@ class SettingsScreen extends Component<
                                         onPress={() => {
                                             this.setState({
                                                 addResponder: true,
+                                                weekDay: 0,
+                                                responderMessage: '',
+                                                responderName: '',
+                                                startTime: '09:00',
+                                                endTime: '18:00',
+                                                editIndex: -1,
                                             });
                                         }}>
                                         <AntDesign
@@ -704,7 +710,11 @@ class SettingsScreen extends Component<
                                 <CmlTextInput
                                     style={{
                                         color: 'white',
+                                        height: 100,
+                                        textAlignVertical: 'top',
                                     }}
+                                    multiline={true}
+                                    blurOnSubmit={true}
                                     value={this.state.responderMessage}
                                     onChangeText={(value: string) => {
                                         this.setState({

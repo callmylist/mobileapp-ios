@@ -320,9 +320,13 @@ class MessageCenter extends Component<
     };
 
     markAsFavorite = (item: any) => {
-        MessageCenterService.MarkUnmarkFavourite(item.id, 1).subscribe(
+        let param = 1;
+        if (item.isFavourite) {
+            param = 2;
+        }
+        MessageCenterService.MarkUnmarkFavourite(item.id, param).subscribe(
             (response: any) => {
-                if (response.status) {
+                if (response.success) {
                     this.onTab(this.state.contact_filter);
                 }
             },

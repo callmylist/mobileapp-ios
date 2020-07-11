@@ -18,6 +18,7 @@ import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import {CmlButton} from '../components/button';
 import Modal from 'react-native-modal';
 import AppStyle from '../shared/styles';
+import {store} from '../redux/store';
 
 const styles = StyleSheet.create({
     container: {
@@ -107,6 +108,7 @@ class Menu extends Component {
         'Account',
         'Support',
         'Settings',
+        'Contacts',
     ];
     constructor(props: any) {
         super(props);
@@ -154,7 +156,13 @@ class Menu extends Component {
                         />
                         <View style={styles.nameContainer}>
                             <CmlText style={styles.welcome}>Welcome,</CmlText>
-                            <CmlText style={styles.name}>Mr. Wang</CmlText>
+                            <CmlText style={styles.name}>
+                                Mr.{' '}
+                                {
+                                    store.getState().authReducer.loggedInContact
+                                        .firstName
+                                }
+                            </CmlText>
                             <TouchableOpacity
                                 style={{
                                     marginTop: 16,
@@ -248,6 +256,9 @@ class Menu extends Component {
                                     styles.menuItem,
                                     this.state.currentMenu === 7 &&
                                         styles.selectedMenu,
+                                    {
+                                        marginLeft: 24,
+                                    },
                                 ]}>
                                 <Feather
                                     name="settings"
@@ -265,6 +276,35 @@ class Menu extends Component {
                                             styles.selectedMenuText,
                                     ]}>
                                     Settings
+                                </CmlText>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.onMenuItem(8)}>
+                            <View
+                                style={[
+                                    styles.menuItem,
+                                    this.state.currentMenu === 8 &&
+                                        styles.selectedMenu,
+                                    {
+                                        marginLeft: 24,
+                                    },
+                                ]}>
+                                <FontAwesome
+                                    name="list-alt"
+                                    size={24}
+                                    color={
+                                        this.state.currentMenu == 8
+                                            ? 'white'
+                                            : '#a9afbb'
+                                    }
+                                />
+                                <CmlText
+                                    style={[
+                                        styles.menuLabel,
+                                        this.state.currentMenu === 8 &&
+                                            styles.selectedMenuText,
+                                    ]}>
+                                    Contacts
                                 </CmlText>
                             </View>
                         </TouchableOpacity>
