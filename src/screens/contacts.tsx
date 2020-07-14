@@ -254,6 +254,14 @@ class ContactsScreen extends Component<
             if (response.success) {
                 this.setState({
                     loading: false,
+                    message: '',
+                    selectedContact: '',
+                });
+
+                this.props.navigation.push('MessageHistoryScreen', {
+                    contact: this.state.contacts.filter(
+                        (contact) => contact.id == this.state.selectedContact,
+                    )[0],
                 });
             }
         });
@@ -560,7 +568,13 @@ class ContactsScreen extends Component<
                 <Modal
                     isVisible={this.state.newMessage}
                     backdropOpacity={0}
-                    onBackdropPress={() => this.setState({newMessage: false})}>
+                    onBackdropPress={() =>
+                        this.setState({
+                            newMessage: false,
+                            message: '',
+                            selectedContact: '',
+                        })
+                    }>
                     <View style={AppStyle.dialogContainer}>
                         <TouchableWithoutFeedback
                             onPress={() => {

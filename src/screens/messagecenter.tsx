@@ -300,6 +300,8 @@ class MessageCenter extends Component<
             if (response.success) {
                 this.setState({
                     loading: false,
+                    message: '',
+                    selectedContact: '',
                 });
                 this.onTab(this.state.contact_filter);
             }
@@ -817,7 +819,13 @@ class MessageCenter extends Component<
                 <Modal
                     isVisible={this.state.newMessage}
                     backdropOpacity={0}
-                    onBackdropPress={() => this.setState({newMessage: false})}>
+                    onBackdropPress={() =>
+                        this.setState({
+                            newMessage: false,
+                            message: '',
+                            selectedContact: '',
+                        })
+                    }>
                     <View style={AppStyle.dialogContainer}>
                         <TouchableWithoutFeedback
                             onPress={() => {

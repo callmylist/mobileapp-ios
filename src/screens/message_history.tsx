@@ -109,7 +109,6 @@ class MessageHistory extends Component<
                 <Header back={true} onBack={this.onBack} menu={false} />
 
                 <View style={styles.container}>
-                    <CmlText style={styles.campaignLabel}>Contact List</CmlText>
                     <KeyboardAvoidingView
                         behavior="padding"
                         keyboardVerticalOffset={
