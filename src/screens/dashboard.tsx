@@ -6,6 +6,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Header from '../components/header';
 import SemiCircleProgress from '../components/progress';
 import {CmlText} from '../components/text';
+import {CmlButton} from '../components/button';
+
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import Utils from '../utils';
 import {compose} from 'redux';
@@ -115,9 +117,28 @@ class Dashboard extends Component<
             <SafeAreaView style={{flex: 1}}>
                 <Header onMenu={this.onMenu} menu={true} />
                 <View style={styles.container}>
-                    <CmlText style={styles.campaignLabel}>
-                        Recent campaigns
-                    </CmlText>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                        }}>
+                        <CmlText
+                            style={[
+                                styles.campaignLabel,
+                                {flex: 1, marginTop: 18},
+                            ]}>
+                            Recent campaigns
+                        </CmlText>
+                        <CmlButton
+                            title="Create Campaign"
+                            backgroundColor="#ffa67a"
+                            style={{marginTop: 16, alignSelf: 'flex-end'}}
+                            onPress={() => {
+                                this.props.navigation.push(
+                                    'CreatCampaignNavigator',
+                                );
+                            }}
+                        />
+                    </View>
                     {this.props.account && (
                         <View
                             style={[
@@ -133,7 +154,9 @@ class Dashboard extends Component<
                                     paddingTop: 12,
                                 }}>
                                 <SemiCircleProgress
-                                    percentage={35}
+                                    percentage={
+                                        this.state.averageDurationPercent
+                                    }
                                     progressColor={'#cd5917'}
                                     progressWidth={20}
                                     progressShadowColor={'#f0f0f0'}
@@ -170,8 +193,9 @@ class Dashboard extends Component<
                                         color: '#a3aec8',
                                     }}>
                                     {parseInt(
-                                        this.state.averageDurationPercent / 60 +
-                                            '',
+                                        Math.floor(
+                                            this.state.averageDurationTime / 60,
+                                        ) + '',
                                     )}
                                     m{' '}
                                     {parseFloat(

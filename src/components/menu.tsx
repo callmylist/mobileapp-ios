@@ -21,7 +21,9 @@ import AppStyle from '../shared/styles';
 import {store} from '../redux/store';
 import stripe from 'tipsi-stripe';
 import {UserService} from '../service/user.service';
-
+import {compose} from 'redux';
+import {connect} from 'react-redux';
+import {SCREEN_INDEX_SET} from '../redux/actionTypes/dashboard';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -100,7 +102,14 @@ const styles = StyleSheet.create({
     },
 });
 
-class Menu extends Component {
+class Menu extends Component<
+    {navigation: any; screenIndex: number},
+    {
+        currentMenu: number;
+        addFunds: boolean;
+        billingInfo: any;
+    }
+> {
     routes = [
         'Dashboard',
         'MessageCenter',
@@ -117,6 +126,7 @@ class Menu extends Component {
         this.state = {
             currentMenu: 0,
             addFunds: false,
+            billingInfo: null,
         };
     }
 
@@ -129,10 +139,12 @@ class Menu extends Component {
     }
 
     onMenuItem = (index: number) => {
-        this.setState({
-            currentMenu: index,
+        store.dispatch({
+            type: SCREEN_INDEX_SET,
+            payload: {
+                screenIndex: index,
+            },
         });
-
         this.props.navigation.closeDrawer();
         this.props.navigation.navigate(this.routes[index]);
     };
@@ -175,7 +187,7 @@ class Menu extends Component {
                         <View style={styles.nameContainer}>
                             <CmlText style={styles.welcome}>Welcome,</CmlText>
                             <CmlText style={styles.name}>
-                                Mr.{' '}
+                                Mr.
                                 {
                                     store.getState().authReducer.loggedInContact
                                         .firstName
@@ -220,14 +232,14 @@ class Menu extends Component {
                             <View
                                 style={[
                                     styles.menuItem,
-                                    this.state.currentMenu === 0 &&
+                                    this.props.screenIndex === 0 &&
                                         styles.selectedMenu,
                                 ]}>
                                 <Feather
                                     name="grid"
                                     size={24}
                                     color={
-                                        this.state.currentMenu == 0
+                                        this.props.screenIndex == 0
                                             ? 'white'
                                             : '#a9afbb'
                                     }
@@ -235,10 +247,10 @@ class Menu extends Component {
                                 <CmlText
                                     style={[
                                         styles.menuLabel,
-                                        this.state.currentMenu === 0 &&
+                                        this.props.screenIndex === 0 &&
                                             styles.selectedMenuText,
                                     ]}>
-                                    Dashboard
+                                    Galaxy
                                 </CmlText>
                             </View>
                         </TouchableOpacity>
@@ -246,14 +258,14 @@ class Menu extends Component {
                             <View
                                 style={[
                                     styles.menuItem,
-                                    this.state.currentMenu === 1 &&
+                                    this.props.screenIndex === 1 &&
                                         styles.selectedMenu,
                                 ]}>
                                 <Feather
                                     name="mail"
                                     size={24}
                                     color={
-                                        this.state.currentMenu == 1
+                                        this.props.screenIndex == 1
                                             ? 'white'
                                             : '#a9afbb'
                                     }
@@ -261,10 +273,10 @@ class Menu extends Component {
                                 <CmlText
                                     style={[
                                         styles.menuLabel,
-                                        this.state.currentMenu === 1 &&
+                                        this.props.screenIndex === 1 &&
                                             styles.selectedMenuText,
                                     ]}>
-                                    Message Center
+                                    Titan
                                 </CmlText>
                             </View>
                         </TouchableOpacity>
@@ -272,7 +284,7 @@ class Menu extends Component {
                             <View
                                 style={[
                                     styles.menuItem,
-                                    this.state.currentMenu === 7 &&
+                                    this.props.screenIndex === 7 &&
                                         styles.selectedMenu,
                                     {
                                         marginLeft: 24,
@@ -282,7 +294,7 @@ class Menu extends Component {
                                     name="settings"
                                     size={24}
                                     color={
-                                        this.state.currentMenu == 7
+                                        this.props.screenIndex == 7
                                             ? 'white'
                                             : '#a9afbb'
                                     }
@@ -290,7 +302,7 @@ class Menu extends Component {
                                 <CmlText
                                     style={[
                                         styles.menuLabel,
-                                        this.state.currentMenu === 7 &&
+                                        this.props.screenIndex === 7 &&
                                             styles.selectedMenuText,
                                     ]}>
                                     Settings
@@ -301,7 +313,7 @@ class Menu extends Component {
                             <View
                                 style={[
                                     styles.menuItem,
-                                    this.state.currentMenu === 8 &&
+                                    this.props.screenIndex === 8 &&
                                         styles.selectedMenu,
                                     {
                                         marginLeft: 24,
@@ -311,7 +323,7 @@ class Menu extends Component {
                                     name="list-alt"
                                     size={24}
                                     color={
-                                        this.state.currentMenu == 8
+                                        this.props.screenIndex == 8
                                             ? 'white'
                                             : '#a9afbb'
                                     }
@@ -319,7 +331,7 @@ class Menu extends Component {
                                 <CmlText
                                     style={[
                                         styles.menuLabel,
-                                        this.state.currentMenu === 8 &&
+                                        this.props.screenIndex === 8 &&
                                             styles.selectedMenuText,
                                     ]}>
                                     Contacts
@@ -330,14 +342,14 @@ class Menu extends Component {
                             <View
                                 style={[
                                     styles.menuItem,
-                                    this.state.currentMenu === 2 &&
+                                    this.props.screenIndex === 2 &&
                                         styles.selectedMenu,
                                 ]}>
                                 <Feather
                                     name="server"
                                     size={24}
                                     color={
-                                        this.state.currentMenu == 2
+                                        this.props.screenIndex == 2
                                             ? 'white'
                                             : '#a9afbb'
                                     }
@@ -345,7 +357,7 @@ class Menu extends Component {
                                 <CmlText
                                     style={[
                                         styles.menuLabel,
-                                        this.state.currentMenu === 2 &&
+                                        this.props.screenIndex === 2 &&
                                             styles.selectedMenuText,
                                     ]}>
                                     My Campaigns
@@ -356,14 +368,14 @@ class Menu extends Component {
                             <View
                                 style={[
                                     styles.menuItem,
-                                    this.state.currentMenu === 3 &&
+                                    this.props.screenIndex === 3 &&
                                         styles.selectedMenu,
                                 ]}>
                                 <AntDesign
                                     name="sound"
                                     size={24}
                                     color={
-                                        this.state.currentMenu == 3
+                                        this.props.screenIndex == 3
                                             ? 'white'
                                             : '#a9afbb'
                                     }
@@ -371,7 +383,7 @@ class Menu extends Component {
                                 <CmlText
                                     style={[
                                         styles.menuLabel,
-                                        this.state.currentMenu === 3 &&
+                                        this.props.screenIndex === 3 &&
                                             styles.selectedMenuText,
                                     ]}>
                                     Sound
@@ -382,14 +394,14 @@ class Menu extends Component {
                             <View
                                 style={[
                                     styles.menuItem,
-                                    this.state.currentMenu === 4 &&
+                                    this.props.screenIndex === 4 &&
                                         styles.selectedMenu,
                                 ]}>
                                 <AntDesign
                                     name="contacts"
                                     size={24}
                                     color={
-                                        this.state.currentMenu == 4
+                                        this.props.screenIndex == 4
                                             ? 'white'
                                             : '#a9afbb'
                                     }
@@ -397,7 +409,7 @@ class Menu extends Component {
                                 <CmlText
                                     style={[
                                         styles.menuLabel,
-                                        this.state.currentMenu === 4 &&
+                                        this.props.screenIndex === 4 &&
                                             styles.selectedMenuText,
                                     ]}>
                                     Contact List
@@ -408,14 +420,14 @@ class Menu extends Component {
                             <View
                                 style={[
                                     styles.menuItem,
-                                    this.state.currentMenu === 5 &&
+                                    this.props.screenIndex === 5 &&
                                         styles.selectedMenu,
                                 ]}>
                                 <MaterialCommunityIcons
                                     name="account-circle-outline"
                                     size={24}
                                     color={
-                                        this.state.currentMenu == 5
+                                        this.props.screenIndex == 5
                                             ? 'white'
                                             : '#a9afbb'
                                     }
@@ -423,7 +435,7 @@ class Menu extends Component {
                                 <CmlText
                                     style={[
                                         styles.menuLabel,
-                                        this.state.currentMenu === 5 &&
+                                        this.props.screenIndex === 5 &&
                                             styles.selectedMenuText,
                                     ]}>
                                     Account
@@ -434,14 +446,14 @@ class Menu extends Component {
                             <View
                                 style={[
                                     styles.menuItem,
-                                    this.state.currentMenu === 6 &&
+                                    this.props.screenIndex === 6 &&
                                         styles.selectedMenu,
                                 ]}>
                                 <Feather
                                     name="help-circle"
                                     size={24}
                                     color={
-                                        this.state.currentMenu == 6
+                                        this.props.screenIndex == 6
                                             ? 'white'
                                             : '#a9afbb'
                                     }
@@ -449,7 +461,7 @@ class Menu extends Component {
                                 <CmlText
                                     style={[
                                         styles.menuLabel,
-                                        this.state.currentMenu === 6 &&
+                                        this.props.screenIndex === 6 &&
                                             styles.selectedMenuText,
                                     ]}>
                                     Support
@@ -493,13 +505,15 @@ class Menu extends Component {
                                     color={'#ffa67a'}
                                 />
                                 <CmlTextInput
-                                    style={AppStyle.dialogTimePlaceholder}
-                                    style={{
-                                        flex: 1,
-                                        fontSize: 14,
-                                        color: 'white',
-                                        marginLeft: 8,
-                                    }}></CmlTextInput>
+                                    style={[
+                                        AppStyle.dialogTimePlaceholder,
+                                        {
+                                            flex: 1,
+                                            fontSize: 14,
+                                            color: 'white',
+                                            marginLeft: 8,
+                                        },
+                                    ]}></CmlTextInput>
                             </View>
 
                             <View
@@ -526,5 +540,10 @@ class Menu extends Component {
         );
     }
 }
+const mapStateToProps = (state: any) => {
+    return {
+        screenIndex: state.dashboardReducer.screenIndex,
+    };
+};
 
-export default Menu;
+export default compose(connect(mapStateToProps))(Menu);

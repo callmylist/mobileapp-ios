@@ -26,6 +26,7 @@ import {CommonService} from '../service/common.service';
 import {CmlSpinner} from '../components/loading';
 import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 import {MessageCenterService} from '../service/message-center.service';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const styles = StyleSheet.create({
     container: {
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     },
 });
 
-class AddContactScreen extends Component<
+class ViewContactScreen extends Component<
     {
         assets: any;
         navigation: any;
@@ -93,6 +94,9 @@ class AddContactScreen extends Component<
         note: string;
         showValidate: boolean;
         loading: boolean;
+        edit: boolean;
+        id: string;
+        contact: any;
     }
 > {
     constructor(props: any) {
@@ -107,53 +111,74 @@ class AddContactScreen extends Component<
             note: '',
             showValidate: false,
             loading: false,
+            edit: false,
+            id: '',
+            contact: null,
         };
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        let contact = this.props.navigation.state.params.contact;
+        console.log(contact);
+        this.setState({
+            firstName: contact.firstName ? contact.firstName : '',
+            lastName: contact.lastName ? contact.lastName : '',
+            email: contact.email ? contact.email : '',
+            phone: contact.phone ? contact.phone : '',
+            companyName: contact.companyName ? contact.companyName : '',
+            note: contact.note ? contact.note : '',
+            id: contact.id,
+            contact: contact,
+        });
+    }
 
     onBack = () => {
         this.props.navigation.pop();
     };
 
-    signUp = () => {
+    update = () => {
         if (
-            !this.state.firstName ||
-            !this.state.lastName ||
-            !this.state.email ||
-            !this.state.phone ||
-            !this.state.companyName ||
-            !Utils.validatePhoneNumber(this.state.phone) ||
-            !Utils.validateEmail(this.state.email)
+            this.state.firstName ||
+            this.state.lastName ||
+            this.state.email ||
+            this.state.phone ||
+            this.state.companyName ||
+            Utils.validatePhoneNumber(this.state.phone) ||
+            Utils.validateEmail(this.state.email)
         ) {
-            this.setState({
-                showValidate: true,
-            });
+            let data = {
+                ...this.state.contact,
+                company: this.state.companyName,
+                email: this.state.email,
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                phoneNumber: this.state.phone,
+            };
 
-            return;
+            this.setState({loading: true});
+            // UserService.signUp(newUser).subscribe((response: any) => {
+            //     this.setState({ loading: false })
+
+            //     Utils.presentToast(response.submessage)
+            //     if (response.success) {
+            //         this.onLogin()
+            //     }
+            // })
+            console.log(data);
+            MessageCenterService.updateContact(data, this.state.id).subscribe(
+                (response: any) => {
+                    this.setState({loading: false});
+                    if (response.success) {
+                        Utils.presentToast('Successfully updated contact');
+                        this.props.navigation.pop();
+                    } else {
+                        Utils.presentToast(
+                            response.message + '. ' + response.submessage,
+                        );
+                    }
+                },
+            );
         }
-
-        let data = {
-            company: this.state.companyName,
-            email: this.state.email,
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            phoneNumber: this.state.phone,
-        };
-
-        this.setState({loading: true});
-
-        MessageCenterService.saveContact(data).subscribe((response: any) => {
-            this.setState({loading: false});
-            if (response.success) {
-                Utils.presentToast('Successfully added contact.');
-                this.props.navigation.pop();
-            } else {
-                Utils.presentToast(
-                    response.message + '. ' + response.submessage,
-                );
-            }
-        });
     };
 
     render() {
@@ -161,6 +186,23 @@ class AddContactScreen extends Component<
             <SafeAreaView style={{flex: 1}}>
                 <Header back={true} onBack={this.onBack} />
                 <CmlSpinner visible={this.state.loading} />
+                <TouchableOpacity
+                    onPress={() => {
+                        this.setState({
+                            edit: true,
+                        });
+                    }}>
+                    <Entypo
+                        name="edit"
+                        size={20}
+                        color={'#7b7b7b'}
+                        style={{
+                            marginTop: 24,
+                            alignSelf: 'flex-end',
+                            marginRight: 32,
+                        }}
+                    />
+                </TouchableOpacity>
                 <KeyboardAvoidingScrollView
                     style={{
                         zIndex: 999,
@@ -170,10 +212,6 @@ class AddContactScreen extends Component<
                             alignItems: 'center',
                             flex: 1,
                         }}>
-                        <Image
-                            source={require('../assets/images/register_logo.png')}
-                            style={styles.logo}
-                        />
                         <View
                             style={[
                                 styles.inputContainer,
@@ -182,7 +220,13 @@ class AddContactScreen extends Component<
                                     styles.highlight,
                             ]}>
                             <CmlTextInput
-                                style={styles.input}
+                                style={[
+                                    styles.input,
+                                    !this.state.edit && {
+                                        color: 'grey',
+                                    },
+                                ]}
+                                editable={this.state.edit}
                                 placeholder="First name"
                                 value={this.state.firstName}
                                 onChangeText={(value: string) =>
@@ -202,7 +246,13 @@ class AddContactScreen extends Component<
                                     styles.highlight,
                             ]}>
                             <CmlTextInput
-                                style={styles.input}
+                                style={[
+                                    styles.input,
+                                    !this.state.edit && {
+                                        color: 'grey',
+                                    },
+                                ]}
+                                editable={this.state.edit}
                                 placeholder="Last name"
                                 value={this.state.lastName}
                                 onChangeText={(value: string) =>
@@ -221,7 +271,13 @@ class AddContactScreen extends Component<
                                     styles.highlight,
                             ]}>
                             <CmlTextInput
-                                style={styles.input}
+                                style={[
+                                    styles.input,
+                                    !this.state.edit && {
+                                        color: 'grey',
+                                    },
+                                ]}
+                                editable={this.state.edit}
                                 placeholder="Company name"
                                 value={this.state.companyName}
                                 onChangeText={(value: string) =>
@@ -242,7 +298,13 @@ class AddContactScreen extends Component<
                                     styles.highlight,
                             ]}>
                             <CmlTextInput
-                                style={styles.input}
+                                style={[
+                                    styles.input,
+                                    !this.state.edit && {
+                                        color: 'grey',
+                                    },
+                                ]}
+                                editable={this.state.edit}
                                 placeholder="Email address"
                                 keyboardType="email-address"
                                 autoCapitalize="none"
@@ -271,7 +333,13 @@ class AddContactScreen extends Component<
                                     styles.highlight,
                             ]}>
                             <CmlTextInput
-                                style={styles.input}
+                                style={[
+                                    styles.input,
+                                    !this.state.edit && {
+                                        color: 'grey',
+                                    },
+                                ]}
+                                editable={this.state.edit}
                                 placeholder="Phone no"
                                 keyboardType="phone-pad"
                                 value={this.state.phone}
@@ -299,7 +367,11 @@ class AddContactScreen extends Component<
                                         textAlignVertical: 'top',
                                         width: '100%',
                                     },
+                                    !this.state.edit && {
+                                        color: 'grey',
+                                    },
                                 ]}
+                                editable={this.state.edit}
                                 placeholder="Note"
                                 value={this.state.note}
                                 multiline={true}
@@ -312,32 +384,33 @@ class AddContactScreen extends Component<
                                 }
                             />
                         </View>
-
-                        <View
-                            style={{
-                                width: '80%',
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                marginTop: 16,
-                            }}>
-                            <TouchableOpacity
-                                style={[
-                                    styles.button,
-                                    {
-                                        backgroundColor: '#00b7d9',
-                                    },
-                                ]}
-                                onPress={() => this.signUp()}>
-                                <CmlText
-                                    style={{
-                                        color: 'white',
-                                        fontSize: 18,
-                                        fontWeight: '600',
-                                    }}>
-                                    Add Contact
-                                </CmlText>
-                            </TouchableOpacity>
-                        </View>
+                        {this.state.edit && (
+                            <View
+                                style={{
+                                    width: '80%',
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    marginTop: 16,
+                                }}>
+                                <TouchableOpacity
+                                    style={[
+                                        styles.button,
+                                        {
+                                            backgroundColor: '#00b7d9',
+                                        },
+                                    ]}
+                                    onPress={() => this.update()}>
+                                    <CmlText
+                                        style={{
+                                            color: 'white',
+                                            fontSize: 18,
+                                            fontWeight: '600',
+                                        }}>
+                                        Update Contact
+                                    </CmlText>
+                                </TouchableOpacity>
+                            </View>
+                        )}
                     </View>
                 </KeyboardAvoidingScrollView>
 
@@ -356,4 +429,4 @@ const mapStateToProps = (state: any) => {
     };
 };
 
-export default compose(connect(mapStateToProps, {}))(AddContactScreen);
+export default compose(connect(mapStateToProps, {}))(ViewContactScreen);

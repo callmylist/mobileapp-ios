@@ -190,6 +190,8 @@ class AccountScreen extends Component<
         lockAccount: boolean;
         currentAccount: any;
         deleteAccount: boolean;
+        currentFunds: any;
+        billingDetails: any;
     }
 > {
     timezones: any[] = [];
@@ -225,6 +227,8 @@ class AccountScreen extends Component<
             lockAccount: false,
             currentAccount: null,
             deleteAccount: false,
+            currentFunds: null,
+            billingDetails: null,
         };
     }
 
@@ -286,6 +290,7 @@ class AccountScreen extends Component<
         });
 
         this.loadChildAccounts();
+        this.loadAccountBillingInfo();
     }
 
     onMenu = () => {
@@ -375,6 +380,34 @@ class AccountScreen extends Component<
             } else {
                 Utils.presentToast('Error occured. Please try again.');
             }
+        });
+    };
+
+    loadAccountBillingInfo = () => {
+        UserService.getCurrentFundsByUserId().subscribe((response: any) => {
+            if (response.success)
+                this.setState({
+                    currentFunds: response.data,
+                });
+            UserService.getBillingDetailsByUserId().subscribe(
+                (response: any) => {
+                    if (response.success) {
+                        let billingDetails = response.data;
+
+                        console.log(billingDetails);
+                        billingDetails.contract.contractTypeName = Utils.getContractTypeById(
+                            billingDetails.contract.contractType,
+                        ).name;
+                        billingDetails.callsInfo.billingTypeName = Utils.getBillingTypeById(
+                            billingDetails.callsInfo.billingType,
+                        ).name;
+
+                        this.setState({
+                            billingDetails: billingDetails,
+                        });
+                    }
+                },
+            );
         });
     };
 
@@ -560,91 +593,108 @@ class AccountScreen extends Component<
                         <CmlText style={styles.campaignDesc}>
                             Billing Details
                         </CmlText>
+                        {this.state.billingDetails && (
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    marginTop: 16,
+                                    paddingHorizontal: 16,
+                                }}>
+                                <View style={styles.badgeContainer}>
+                                    <CmlText style={styles.badgeLabel}>
+                                        Plan
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        {
+                                            this.state.billingDetails.contract
+                                                .contractTypeName
+                                        }
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        Plan Renewal
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        {moment(
+                                            this.state.billingDetails.contract
+                                                .startDate,
+                                        ).format('MM/d/yyyy')}
+                                    </CmlText>
+                                </View>
+                                <View style={{flex: 1}} />
+                                <View
+                                    style={[
+                                        styles.badgeContainer,
+                                        {
+                                            borderColor: '#21bedf',
+                                        },
+                                    ]}>
+                                    <CmlText
+                                        style={[
+                                            styles.badgeLabel,
+                                            {
+                                                color: '#21bedf',
+                                            },
+                                        ]}>
+                                        Calls
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        Price / Call
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        $
+                                        {
+                                            this.state.billingDetails.callsInfo
+                                                .rate
+                                        }
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        Billing Increment:{' '}
+                                        {
+                                            this.state.billingDetails.callsInfo
+                                                .billingTypeName
+                                        }
+                                    </CmlText>
+                                </View>
+                                <View style={{flex: 1}} />
+                                <View
+                                    style={[
+                                        styles.badgeContainer,
+                                        {
+                                            borderColor: '#474747',
+                                        },
+                                    ]}>
+                                    <CmlText
+                                        style={[
+                                            styles.badgeLabel,
+                                            {
+                                                color: '#474747',
+                                            },
+                                        ]}>
+                                        Current Funds
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        Funds Available:
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        $
+                                        {this.state.currentFunds.fundsAvailable}
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        Estimated Calls Left:
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        {this.state.currentFunds.callsLeft}
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        Estimated Texts Left:
+                                    </CmlText>
+                                    <CmlText style={styles.badgeDesc}>
+                                        90,093
+                                    </CmlText>
+                                </View>
+                            </View>
+                        )}
 
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                marginTop: 16,
-                                paddingHorizontal: 16,
-                            }}>
-                            <View style={styles.badgeContainer}>
-                                <CmlText style={styles.badgeLabel}>
-                                    Plan
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    Pay As You Go
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    Plan Renewal
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    1/1/2020
-                                </CmlText>
-                            </View>
-                            <View style={{flex: 1}} />
-                            <View
-                                style={[
-                                    styles.badgeContainer,
-                                    {
-                                        borderColor: '#21bedf',
-                                    },
-                                ]}>
-                                <CmlText
-                                    style={[
-                                        styles.badgeLabel,
-                                        {
-                                            color: '#21bedf',
-                                        },
-                                    ]}>
-                                    Calls
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    Price / Call
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    $0.08
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    Billing Increment:
-                                </CmlText>
-                            </View>
-                            <View style={{flex: 1}} />
-                            <View
-                                style={[
-                                    styles.badgeContainer,
-                                    {
-                                        borderColor: '#474747',
-                                    },
-                                ]}>
-                                <CmlText
-                                    style={[
-                                        styles.badgeLabel,
-                                        {
-                                            color: '#474747',
-                                        },
-                                    ]}>
-                                    Current Funds
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    Funds Available:
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    $-397.60
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    Estimated Calls Left:
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    -4,970
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    Estimated Texts Left:
-                                </CmlText>
-                                <CmlText style={styles.badgeDesc}>
-                                    90,093
-                                </CmlText>
-                            </View>
-                        </View>
                         <CmlText style={styles.campaignLabel}>
                             Edit Contact
                         </CmlText>
@@ -795,7 +845,7 @@ class AccountScreen extends Component<
                                                 {moment(
                                                     this.state.restrictions
                                                         .startTime,
-                                                ).format('h:mm a')}
+                                                ).format('h:mm A')}
                                             </CmlText>
                                         </TouchableOpacity>
                                         <DateTimePickerModal
@@ -845,7 +895,7 @@ class AccountScreen extends Component<
                                                 {moment(
                                                     this.state.restrictions
                                                         .endTime,
-                                                ).format('h:mm a')}
+                                                ).format('h:mm A')}
                                             </CmlText>
                                         </TouchableOpacity>
                                         <DateTimePickerModal

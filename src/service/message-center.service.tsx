@@ -5,6 +5,7 @@ import {from, throwError as observableThrowError, Observable} from 'rxjs';
 import {map, catchError} from 'rxjs/operators';
 import RestClient from './restclient';
 import {store} from '../redux/store';
+import {RectButton} from 'react-native-gesture-handler';
 
 export class MessageCenterService {
     static GetAllContacts(options: string) {
@@ -81,5 +82,16 @@ export class MessageCenterService {
         let url = constants.apiUrl.deleteContact.replace('{userID}', userId);
 
         return RestClient.delete(url);
+    }
+
+    static updateContact(data: any, contactID: string) {
+        var url = constants.apiUrl.updateContact.replace(
+            '{conatctID}',
+            contactID,
+        );
+
+        console.log(url);
+
+        return RestClient.put(url, data);
     }
 }

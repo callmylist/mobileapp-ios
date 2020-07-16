@@ -28,6 +28,9 @@ import moment from 'moment';
 import {CmlSpinner} from '../components/loading';
 import MultiSelect from '../components/quick-select';
 import Utils from '../utils';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import {store} from '../redux/store';
+import {SCREEN_INDEX_SET} from '../redux/actionTypes/dashboard';
 
 const styles = StyleSheet.create({
     container: {
@@ -41,6 +44,12 @@ const styles = StyleSheet.create({
         // borderTopWidth: 0,
         borderRadius: 8,
         overflow: 'hidden',
+    },
+    campaignLabel: {
+        fontSize: 20,
+        textAlign: 'center',
+        color: '#515252',
+        marginTop: 12,
     },
     messageContainer: {
         flexDirection: 'row',
@@ -354,10 +363,43 @@ class ContactsScreen extends Component<
         );
     };
 
+    viewContact = (contact: any) => {
+        this.props.navigation.push('ViewContactScreen', {contact: contact});
+    };
+
     render() {
         return (
             <SafeAreaView style={{flex: 1}}>
                 <Header onMenu={this.onMenu} menu={true} />
+                <View
+                    style={{
+                        flexDirection: 'row',
+                    }}>
+                    <View style={{flex: 1}}>
+                        <TouchableOpacity
+                            style={{
+                                marginLeft: 8,
+                                marginTop: 10,
+                            }}
+                            onPress={() => {
+                                store.dispatch({
+                                    type: SCREEN_INDEX_SET,
+                                    payload: {
+                                        screenIndex: 1,
+                                    },
+                                });
+                                this.props.navigation.navigate('MessageCenter');
+                            }}>
+                            <FeatherIcon
+                                name="arrow-left"
+                                color="#535353"
+                                size={28}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <CmlText style={styles.campaignLabel}>Contacts</CmlText>
+                    <View style={{flex: 1}}></View>
+                </View>
                 {/* <CmlSpinner visible={this.state.loading} /> */}
                 <TouchableWithoutFeedback
                     onPress={() => {
@@ -372,7 +414,7 @@ class ContactsScreen extends Component<
                             <View
                                 style={{
                                     flexDirection: 'row',
-                                    height: 60,
+                                    height: 36,
                                     alignItems: 'flex-end',
                                     justifyContent: 'flex-end',
                                     marginBottom: 8,
@@ -524,6 +566,14 @@ class ContactsScreen extends Component<
                                                                     },
                                                                 }}>
                                                                 <MenuOption
+                                                                    text="View Contact"
+                                                                    onSelect={() => {
+                                                                        this.viewContact(
+                                                                            item.item,
+                                                                        );
+                                                                    }}
+                                                                />
+                                                                <MenuOption
                                                                     text={
                                                                         item
                                                                             .item
@@ -538,7 +588,13 @@ class ContactsScreen extends Component<
                                                                     }}
                                                                 />
                                                                 <MenuOption
-                                                                    text="Create Follow Up Task"
+                                                                    text={
+                                                                        item
+                                                                            .item
+                                                                            .sendFollowUp
+                                                                            ? 'Cancel Follow Up Task'
+                                                                            : 'Create Follow Up Task'
+                                                                    }
                                                                     onSelect={() => {
                                                                         this.onFollow(
                                                                             item.item,
@@ -564,7 +620,6 @@ class ContactsScreen extends Component<
                         </View>
                     </>
                 </TouchableWithoutFeedback>
-
                 <Modal
                     isVisible={this.state.newMessage}
                     backdropOpacity={0}
@@ -695,7 +750,6 @@ class ContactsScreen extends Component<
                         </TouchableWithoutFeedback>
                     </View>
                 </Modal>
-
                 <Modal
                     isVisible={this.state.followUpDialog}
                     backdropOpacity={0}
@@ -715,7 +769,9 @@ class ContactsScreen extends Component<
                                 Confirmation
                             </CmlText>
                             <CmlText style={AppStyle.dialogDescription}>
-                                Are you sure you want delete this campaign?
+                                {this.state.temp && this.state.temp.sendFollowUp
+                                    ? 'Are you sure you want to cancel Follow Up?'
+                                    : 'Are you sure you want to Follow Up?'}
                             </CmlText>
                             <View
                                 style={{
@@ -747,7 +803,6 @@ class ContactsScreen extends Component<
                         </View>
                     </View>
                 </Modal>
-
                 <Modal
                     isVisible={this.state.deleteDialog}
                     backdropOpacity={0}

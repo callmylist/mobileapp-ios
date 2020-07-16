@@ -20,6 +20,7 @@ import SettingsScreen from './screens/settings';
 import AccountScreen from './screens/account';
 import SupportScreen from './screens/support';
 import AddAccountScreen from './screens/add_account';
+import ViewContactScreen from './screens/view_contact';
 import AddContactScreen from './screens/add_contact';
 import ContactListScreen from './screens/contact_list';
 import ContactsScreen from './screens/contacts';
@@ -95,6 +96,7 @@ const App = createStackNavigator(
         AddAccountScreen,
         FilteredContactsScreen,
         AddContactScreen,
+        ViewContactScreen,
     },
     {
         initialRouteName: 'Dashboard',

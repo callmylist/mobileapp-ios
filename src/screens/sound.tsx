@@ -30,6 +30,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import FileViewer from 'react-native-file-viewer';
 import RNFS from 'react-native-fs';
 import RNPickerSelect from 'react-native-picker-select';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
     container: {
@@ -329,22 +330,29 @@ class SoundScreen extends Component<
                             </View>
                         </TouchableOpacity>
                     </View>
-                    <CmlText
-                        style={[
-                            styles.campaignLabel,
-                            {
-                                fontSize: 8,
-                                width: '80%',
-                                alignSelf: 'center',
-                                marginBottom: 24,
-                            },
-                        ]}>
-                        IT’s Simple. Add and review your audio files here. We
-                        have given you 3 easy ways to add sounds. You may record
-                        sound files using our recording interface. All sound
-                        files will be listed below. Please call 1-317-552-0035.
-                        When prompted enter Id: 92632# and Password: 9559#
-                    </CmlText>
+                    <TouchableWithoutFeedback
+                        onPress={() => {
+                            Linking.openURL('tel:1-317-552-0035');
+                        }}>
+                        <CmlText
+                            style={[
+                                styles.campaignLabel,
+                                {
+                                    fontSize: 12,
+                                    width: '90%',
+                                    alignSelf: 'center',
+                                    marginBottom: 24,
+                                },
+                            ]}>
+                            IT’s Simple. Add and review your audio files here.
+                            We have given you 3 easy ways to add sounds. You may
+                            record sound files using our recording interface.
+                            All sound files will be listed below. Please call
+                            1-317-552-0035. When prompted enter Id: 92632# and
+                            Password: 9559#
+                        </CmlText>
+                    </TouchableWithoutFeedback>
+
                     {this.state.noSounds && (
                         <View
                             style={{

@@ -1,4 +1,5 @@
 import Toast from 'react-native-root-toast';
+import constants from './constants';
 
 class Utils {
     static validateEmail(email: string) {
@@ -68,6 +69,56 @@ class Utils {
         let time = hours + ':' + minutes;
 
         return time;
+    }
+
+    public static getContractTypeById(contractTypeId: any): any {
+        const contractTypes = constants.contractTypes;
+
+        if (contractTypeId) {
+            for (let contractType of contractTypes) {
+                console.log(contractType);
+                if (contractType.id === contractTypeId) {
+                    return contractType;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static getBillingTypeById(billingTypeId: any): any {
+        const billingTypes = constants.billingTypes;
+
+        console.log(billingTypes);
+        if (billingTypeId) {
+            for (let billingType of billingTypes) {
+                console.log(billingType);
+                if (billingType.id === billingTypeId) {
+                    return billingType;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static convertTo12(time: string): string {
+        let components = time.split(':');
+        if (components.length == 2) {
+            let hours = +components[0];
+            let minutes = +components[1];
+
+            var AmOrPm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            var finalTime =
+                hours +
+                ':' +
+                (minutes < 10 ? '0' : '') +
+                minutes +
+                ' ' +
+                AmOrPm;
+            return finalTime; // final time Time - 22:10
+        } else {
+            return time;
+        }
     }
 }
 

@@ -427,6 +427,10 @@ class ContactList extends Component<
                                     this.setState({containHeader: value})
                                 }
                                 value={this.state.containHeader}
+                                trackColor={{
+                                    true: '#02b8da',
+                                    false: 'grey',
+                                }}
                             />
                             <CmlText
                                 style={[

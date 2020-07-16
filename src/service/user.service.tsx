@@ -129,4 +129,22 @@ export class UserService {
 
         return RestClient.get(url);
     }
+
+    static getCurrentFundsByUserId() {
+        const url = constants.apiUrl.getCurrentFunds.replace(
+            '{userId}',
+            store.getState().authReducer.loggedInContact.id,
+        );
+
+        return RestClient.get(url);
+    }
+
+    static getBillingDetailsByUserId() {
+        const url = constants.apiUrl.getBillingDetails.replace(
+            '{userId}',
+            store.getState().authReducer.loggedInContact.id,
+        );
+
+        return RestClient.get(url);
+    }
 }

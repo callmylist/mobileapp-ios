@@ -1,6 +1,7 @@
 import {
     LOAD_USER_INFO_SUCCESS,
     LOAD_CAMPAIGN_LIST_SUCCESS,
+    SCREEN_INDEX_SET,
 } from '../actionTypes/dashboard';
 import {defaultIfEmpty} from 'rxjs/operators';
 import {LoginUser} from '../../shared/models/loginuser.model';
@@ -8,6 +9,7 @@ import {LoginUser} from '../../shared/models/loginuser.model';
 const initialState = {
     account: null,
     campaignList: [],
+    screenIndex: 0,
 };
 
 const reducer = (state = initialState, action: any) => {
@@ -23,6 +25,13 @@ const reducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 campaignList: action.payload,
+            };
+        }
+
+        case SCREEN_INDEX_SET: {
+            return {
+                ...state,
+                screenIndex: action.payload.screenIndex,
             };
         }
 

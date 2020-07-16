@@ -361,7 +361,12 @@ class MessageCenter extends Component<
         MessageCenterService.markfollowup(this.state.temp.id, param).subscribe(
             (response: any) => {
                 if (response.success) {
-                    Utils.presentToast('Follow Up successfully');
+                    Utils.presentToast(
+                        param == 1
+                            ? 'Follow Up success'
+                            : 'Cancel Follow Up success',
+                    );
+                    this.onTab(this.state.contact_filter);
                 } else {
                     Utils.presentToast(
                         response.message + '. ' + response.submessage,
@@ -788,7 +793,13 @@ class MessageCenter extends Component<
                                                                         }}
                                                                     />
                                                                     <MenuOption
-                                                                        text="Create Follow Up Task"
+                                                                        text={
+                                                                            item
+                                                                                .item
+                                                                                .sendFollowUp
+                                                                                ? 'Cancel Follow Up Task'
+                                                                                : 'Create Follow Up Task'
+                                                                        }
                                                                         onSelect={() => {
                                                                             this.onFollow(
                                                                                 item.item,
@@ -966,7 +977,9 @@ class MessageCenter extends Component<
                                 Confirmation
                             </CmlText>
                             <CmlText style={AppStyle.dialogDescription}>
-                                Are you sure you want delete this campaign?
+                                {this.state.temp && this.state.temp.sendFollowUp
+                                    ? 'Are you sure you want to cancel Follow Up?'
+                                    : 'Are you sure you want to Follow Up?'}
                             </CmlText>
                             <View
                                 style={{

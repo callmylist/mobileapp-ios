@@ -633,6 +633,7 @@ class CampaignCreate extends Component<
     }
 
     continue = () => {
+        Keyboard.dismiss();
         if (this.state.step >= 1) {
             if (this.state.campaign.name.trim() == '') {
                 Utils.presentToast('Please enter a valid campaign name above.');
@@ -1345,14 +1346,21 @@ class CampaignCreate extends Component<
                                                         style={
                                                             styles.leftContainer
                                                         }>
-                                                        <AntDesign
-                                                            name="infocirlce"
-                                                            size={20}
-                                                            color="#7b7b7b"
-                                                            style={{
-                                                                marginLeft: 8,
-                                                            }}
-                                                        />
+                                                        <TouchableOpacity
+                                                            onPress={() => {
+                                                                Utils.presentToast(
+                                                                    'This audio file will be played when the recipient answers the phone live.',
+                                                                );
+                                                            }}>
+                                                            <AntDesign
+                                                                name="infocirlce"
+                                                                size={20}
+                                                                color="#7b7b7b"
+                                                                style={{
+                                                                    marginLeft: 8,
+                                                                }}
+                                                            />
+                                                        </TouchableOpacity>
                                                         <Image
                                                             source={require('../assets/images/live_answer.png')}
                                                             style={
@@ -1490,6 +1498,12 @@ class CampaignCreate extends Component<
                                                                         },
                                                                     );
                                                                 }}
+                                                                trackColor={{
+                                                                    true:
+                                                                        '#02b8da',
+                                                                    false:
+                                                                        'grey',
+                                                                }}
                                                             />
                                                             <CmlText
                                                                 style={
@@ -1516,6 +1530,12 @@ class CampaignCreate extends Component<
                                                                             isDNC: value,
                                                                         },
                                                                     );
+                                                                }}
+                                                                trackColor={{
+                                                                    true:
+                                                                        '#02b8da',
+                                                                    false:
+                                                                        'grey',
                                                                 }}
                                                             />
                                                             <CmlText
@@ -1606,11 +1626,22 @@ class CampaignCreate extends Component<
                                                                                 'Select Audio File',
                                                                         }}
                                                                         onDonePress={() => {
-                                                                            this.setState(
-                                                                                {
-                                                                                    liveAnswerSelected: true,
-                                                                                },
-                                                                            );
+                                                                            if (
+                                                                                this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .liveanswer
+                                                                                    .soundFileId
+                                                                                    .length >
+                                                                                0
+                                                                            ) {
+                                                                                this.setState(
+                                                                                    {
+                                                                                        liveAnswerSelected: true,
+                                                                                    },
+                                                                                );
+                                                                            }
                                                                         }}
                                                                         style={
                                                                             this
@@ -1698,14 +1729,21 @@ class CampaignCreate extends Component<
                                                         style={styles.leftLogo}
                                                         resizeMode="contain"
                                                     />
-                                                    <AntDesign
-                                                        name="infocirlce"
-                                                        size={20}
-                                                        color="#7b7b7b"
-                                                        style={{
-                                                            marginLeft: 8,
-                                                        }}
-                                                    />
+                                                    <TouchableOpacity
+                                                        onPress={() => {
+                                                            Utils.presentToast(
+                                                                "This audio file will be played when the recipient doesn't answer live.",
+                                                            );
+                                                        }}>
+                                                        <AntDesign
+                                                            name="infocirlce"
+                                                            size={20}
+                                                            color="#7b7b7b"
+                                                            style={{
+                                                                marginLeft: 8,
+                                                            }}
+                                                        />
+                                                    </TouchableOpacity>
                                                 </View>
 
                                                 <View style={styles.panelBody}>
@@ -1862,6 +1900,10 @@ class CampaignCreate extends Component<
                                                                     );
                                                                 }
                                                             }}
+                                                            trackColor={{
+                                                                true: '#02b8da',
+                                                                false: 'grey',
+                                                            }}
                                                         />
                                                         <CmlText
                                                             style={
@@ -1938,11 +1980,22 @@ class CampaignCreate extends Component<
                                                                         }
                                                                     }}
                                                                     onDonePress={() => {
-                                                                        this.setState(
-                                                                            {
-                                                                                voiceMailSelected: true,
-                                                                            },
-                                                                        );
+                                                                        if (
+                                                                            this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call
+                                                                                .voicemail
+                                                                                .soundFileId
+                                                                                .length >
+                                                                            0
+                                                                        ) {
+                                                                            this.setState(
+                                                                                {
+                                                                                    voiceMailSelected: true,
+                                                                                },
+                                                                            );
+                                                                        }
                                                                     }}
                                                                     items={this.state.soundFiles.map(
                                                                         (
@@ -2044,14 +2097,21 @@ class CampaignCreate extends Component<
                                                             }
                                                             resizeMode="contain"
                                                         />
-                                                        <AntDesign
-                                                            name="infocirlce"
-                                                            size={20}
-                                                            color="#7b7b7b"
-                                                            style={{
-                                                                marginLeft: 8,
-                                                            }}
-                                                        />
+                                                        <TouchableOpacity
+                                                            onPress={() => {
+                                                                Utils.presentToast(
+                                                                    "This audio file will be played if the recipient doens't answer live.",
+                                                                );
+                                                            }}>
+                                                            <AntDesign
+                                                                name="infocirlce"
+                                                                size={20}
+                                                                color="#7b7b7b"
+                                                                style={{
+                                                                    marginLeft: 8,
+                                                                }}
+                                                            />
+                                                        </TouchableOpacity>
                                                     </View>
 
                                                     <View
@@ -2348,6 +2408,12 @@ class CampaignCreate extends Component<
                                                                                 },
                                                                             );
                                                                         }}
+                                                                        trackColor={{
+                                                                            true:
+                                                                                '#02b8da',
+                                                                            false:
+                                                                                'grey',
+                                                                        }}
                                                                     />
                                                                     <CmlText
                                                                         style={
@@ -2421,11 +2487,22 @@ class CampaignCreate extends Component<
                                                                             }
                                                                         }}
                                                                         onDonePress={() => {
-                                                                            this.setState(
-                                                                                {
-                                                                                    transferFileSelected: true,
-                                                                                },
-                                                                            );
+                                                                            if (
+                                                                                this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .transfer
+                                                                                    .soundFileId
+                                                                                    .length >
+                                                                                0
+                                                                            ) {
+                                                                                this.setState(
+                                                                                    {
+                                                                                        transferFileSelected: true,
+                                                                                    },
+                                                                                );
+                                                                            }
                                                                         }}
                                                                         items={this.state.soundFiles.map(
                                                                             (
@@ -2749,14 +2826,21 @@ class CampaignCreate extends Component<
                                                             }
                                                             resizeMode="contain"
                                                         />
-                                                        <AntDesign
-                                                            name="infocirlce"
-                                                            size={20}
-                                                            color="#7b7b7b"
-                                                            style={{
-                                                                marginLeft: 8,
-                                                            }}
-                                                        />
+                                                        <TouchableOpacity
+                                                            onPress={() => {
+                                                                Utils.presentToast(
+                                                                    "This audio file will be played if the recipient chooses to opt out the future campaigns. Ex - 'You have now been placed on the do not call list and you will not receive any future automated calls from us.'",
+                                                                );
+                                                            }}>
+                                                            <AntDesign
+                                                                name="infocirlce"
+                                                                size={20}
+                                                                color="#7b7b7b"
+                                                                style={{
+                                                                    marginLeft: 8,
+                                                                }}
+                                                            />
+                                                        </TouchableOpacity>
                                                     </View>
 
                                                     <View
@@ -3051,6 +3135,12 @@ class CampaignCreate extends Component<
                                                                                 },
                                                                             );
                                                                         }}
+                                                                        trackColor={{
+                                                                            true:
+                                                                                '#02b8da',
+                                                                            false:
+                                                                                'grey',
+                                                                        }}
                                                                     />
                                                                     <CmlText
                                                                         style={
@@ -3124,11 +3214,22 @@ class CampaignCreate extends Component<
                                                                             }
                                                                         }}
                                                                         onDonePress={() => {
-                                                                            this.setState(
-                                                                                {
-                                                                                    doNotCallSelected: true,
-                                                                                },
-                                                                            );
+                                                                            if (
+                                                                                this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .dnc
+                                                                                    .soundFileId
+                                                                                    .length >
+                                                                                0
+                                                                            ) {
+                                                                                this.setState(
+                                                                                    {
+                                                                                        doNotCallSelected: true,
+                                                                                    },
+                                                                                );
+                                                                            }
                                                                         }}
                                                                         items={this.state.soundFiles.map(
                                                                             (
@@ -3342,12 +3443,6 @@ class CampaignCreate extends Component<
                                             style={styles.panelContainer}>
                                             <View style={styles.panel}>
                                                 <View style={styles.panelBody}>
-                                                    <CmlText
-                                                        style={{
-                                                            width: '100%',
-                                                        }}>
-                                                        Select Contact List
-                                                    </CmlText>
                                                     <View
                                                         style={[
                                                             styles.panelUploadContainer,
@@ -3602,6 +3697,10 @@ class CampaignCreate extends Component<
                                                                     .callbackOptions
                                                                     .vm
                                                             }
+                                                            trackColor={{
+                                                                true: '#02b8da',
+                                                                false: 'grey',
+                                                            }}
                                                         />
                                                         <CmlText
                                                             style={
@@ -3657,6 +3756,10 @@ class CampaignCreate extends Component<
                                                                     .callbackOptions
                                                                     .busy
                                                             }
+                                                            trackColor={{
+                                                                true: '#02b8da',
+                                                                false: 'grey',
+                                                            }}
                                                         />
                                                         <CmlText
                                                             style={
@@ -3712,6 +3815,10 @@ class CampaignCreate extends Component<
                                                                     .callbackOptions
                                                                     .na
                                                             }
+                                                            trackColor={{
+                                                                true: '#02b8da',
+                                                                false: 'grey',
+                                                            }}
                                                         />
                                                         <CmlText
                                                             style={
@@ -4293,6 +4400,10 @@ class CampaignCreate extends Component<
                                             isScheduleForMultipleDays: false,
                                         });
                                     }}
+                                    trackColor={{
+                                        true: '#02b8da',
+                                        false: 'grey',
+                                    }}
                                 />
                                 <View
                                     style={{
@@ -4316,7 +4427,7 @@ class CampaignCreate extends Component<
                                                     marginTop: 8,
                                                 },
                                             ]}>
-                                            (Call My List will stop all
+                                            (Trusted Messaging will stop all
                                             campaigns if not complete)
                                         </CmlText>
                                     </View>
@@ -4345,6 +4456,10 @@ class CampaignCreate extends Component<
                                             },
                                             isScheduleForMultipleDays: value,
                                         });
+                                    }}
+                                    trackColor={{
+                                        true: '#02b8da',
+                                        false: 'grey',
                                     }}
                                 />
                                 <CmlText
@@ -4460,10 +4575,10 @@ class CampaignCreate extends Component<
                                             styles.dialogTimePlaceholder,
                                             {fontSize: 14},
                                         ]}>
-                                        {
+                                        {Utils.convertTo12(
                                             this.state.campaign.call.settings
-                                                .restrictions.startTime
-                                        }
+                                                .restrictions.startTime,
+                                        )}
                                     </CmlText>
                                 </TouchableOpacity>
                                 <DateTimePickerModal
@@ -4536,10 +4651,10 @@ class CampaignCreate extends Component<
                                             styles.dialogTimePlaceholder,
                                             {fontSize: 14},
                                         ]}>
-                                        {
+                                        {Utils.convertTo12(
                                             this.state.campaign.call.settings
-                                                .restrictions.EndTime
-                                        }
+                                                .restrictions.EndTime,
+                                        )}
                                     </CmlText>
                                 </TouchableOpacity>
                                 <DateTimePickerModal
@@ -4669,7 +4784,7 @@ class CampaignCreate extends Component<
                 <Modal
                     isVisible={this.state.startFuture}
                     backdropOpacity={0}
-                    onBackdropPress={() => this.setState({startNow: false})}>
+                    onBackdropPress={() => this.setState({startFuture: false})}>
                     <View style={AppStyle.dialogContainer}>
                         <View>
                             <CmlText style={styles.dialogTitle}>
@@ -4692,10 +4807,10 @@ class CampaignCreate extends Component<
                                             styles.dialogTimePlaceholder,
                                             {fontSize: 14},
                                         ]}>
-                                        {
+                                        {moment(
                                             this.state.campaign.call.schedule
-                                                .startDateUI
-                                        }
+                                                .startDateUI,
+                                        ).format('MM/DD/yyyy ')}
                                     </CmlText>
                                 </TouchableOpacity>
                                 <DateTimePickerModal
@@ -4750,10 +4865,10 @@ class CampaignCreate extends Component<
                                             styles.dialogTimePlaceholder,
                                             {fontSize: 14},
                                         ]}>
-                                        {
+                                        {Utils.convertTo12(
                                             this.state.campaign.call.schedule
-                                                .startTime
-                                        }
+                                                .startTime,
+                                        )}
                                     </CmlText>
                                 </TouchableOpacity>
                                 <DateTimePickerModal
@@ -4825,6 +4940,10 @@ class CampaignCreate extends Component<
                                             isScheduleForMultipleDays: false,
                                         });
                                     }}
+                                    trackColor={{
+                                        true: '#02b8da',
+                                        false: 'grey',
+                                    }}
                                 />
                                 <View
                                     style={{
@@ -4848,7 +4967,7 @@ class CampaignCreate extends Component<
                                                     marginTop: 8,
                                                 },
                                             ]}>
-                                            (Call My List will stop all
+                                            (Trusted Messaging will stop all
                                             campaigns if not complete)
                                         </CmlText>
                                     </View>
@@ -4877,6 +4996,10 @@ class CampaignCreate extends Component<
                                             },
                                             isScheduleForMultipleDays: value,
                                         });
+                                    }}
+                                    trackColor={{
+                                        true: '#02b8da',
+                                        false: 'grey',
                                     }}
                                 />
                                 <CmlText
@@ -4992,10 +5115,10 @@ class CampaignCreate extends Component<
                                             styles.dialogTimePlaceholder,
                                             {fontSize: 14},
                                         ]}>
-                                        {
+                                        {Utils.convertTo12(
                                             this.state.campaign.call.settings
-                                                .restrictions.startTime
-                                        }
+                                                .restrictions.startTime,
+                                        )}
                                     </CmlText>
                                 </TouchableOpacity>
                                 <DateTimePickerModal
@@ -5068,10 +5191,10 @@ class CampaignCreate extends Component<
                                             styles.dialogTimePlaceholder,
                                             {fontSize: 14},
                                         ]}>
-                                        {
+                                        {Utils.convertTo12(
                                             this.state.campaign.call.settings
-                                                .restrictions.EndTime
-                                        }
+                                                .restrictions.EndTime,
+                                        )}
                                     </CmlText>
                                 </TouchableOpacity>
                                 <DateTimePickerModal
@@ -5218,6 +5341,10 @@ class CampaignCreate extends Component<
                                     this.setState({containHeader: value})
                                 }
                                 value={this.state.containHeader}
+                                trackColor={{
+                                    true: '#02b8da',
+                                    false: 'grey',
+                                }}
                             />
                             <CmlText
                                 style={[

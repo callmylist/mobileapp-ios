@@ -589,9 +589,9 @@ class SettingsScreen extends Component<
                                                                         'center',
                                                                     marginTop: 4,
                                                                 }}>
-                                                                {
-                                                                    schedule.startTime
-                                                                }
+                                                                {Utils.convertTo12(
+                                                                    schedule.startTime,
+                                                                )}
                                                             </CmlText>
                                                         </View>
                                                     </View>
@@ -626,9 +626,9 @@ class SettingsScreen extends Component<
                                                                         'center',
                                                                     marginTop: 4,
                                                                 }}>
-                                                                {
-                                                                    schedule.endTime
-                                                                }
+                                                                {Utils.convertTo12(
+                                                                    schedule.endTime,
+                                                                )}
                                                             </CmlText>
                                                         </View>
                                                     </View>
@@ -744,7 +744,9 @@ class SettingsScreen extends Component<
                                             styles.dialogTimePlaceholder,
                                             {fontSize: 14},
                                         ]}>
-                                        {this.state.startTime}
+                                        {Utils.convertTo12(
+                                            this.state.startTime,
+                                        )}
                                     </CmlText>
                                 </TouchableOpacity>
                                 <DateTimePickerModal
@@ -795,7 +797,7 @@ class SettingsScreen extends Component<
                                             styles.dialogTimePlaceholder,
                                             {fontSize: 14},
                                         ]}>
-                                        {this.state.endTime}
+                                        {Utils.convertTo12(this.state.endTime)}
                                     </CmlText>
                                 </TouchableOpacity>
                                 <DateTimePickerModal
