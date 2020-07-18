@@ -11,3 +11,4 @@ export const UPDATE_TOKEN = 'UPDATE_TOKEN';
 export const RESET_TOKEN = 'RESET_TOKEN';
 
 export const UPDATE_PROFILE = 'UPDATE_PROFILE';
+export const CLEAR_PROFILE = 'CLEAR_PROFILE';

@@ -56,7 +56,7 @@ class WelcomeScreen extends Component<
         return (
             <>
                 <View style={{flexDirection: 'column', flex: 1}}>
-                    <Image
+                    {/* <Image
                         source={require('../assets/images/splash_top.png')}
                         style={styles.pattern}
                     />
@@ -69,7 +69,7 @@ class WelcomeScreen extends Component<
                     <Image
                         source={require('../assets/images/splash_bottom.png')}
                         style={styles.pattern}
-                    />
+                    /> */}
                 </View>
             </>
         );

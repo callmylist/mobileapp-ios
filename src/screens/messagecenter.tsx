@@ -603,7 +603,7 @@ class MessageCenter extends Component<
                                                     fontSize: 14,
                                                     fontWeight: '600',
                                                 }}>
-                                                Favourite
+                                                Favorite
                                             </CmlText>
                                         </View>
                                     </TouchableOpacity>

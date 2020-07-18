@@ -10,8 +10,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'flex-end',
         padding: 8,
-        borderBottomColor: '#e3e5e6',
-        borderBottomWidth: 1,
+        // borderBottomColor: '#e3e5e6',
+        // borderBottomWidth: 1,
+        backgroundColor: '#242536',
     },
     logo: {
         width: '50%',
@@ -34,7 +35,7 @@ class Header extends Component<{
                         {this.props.back && (
                             <FeatherIcon
                                 name="arrow-left"
-                                color="#535353"
+                                color="white"
                                 size={28}
                             />
                         )}
@@ -48,11 +49,7 @@ class Header extends Component<{
                 <View style={{width: 30}}>
                     <TouchableOpacity onPress={this.props.onMenu}>
                         {this.props.menu && (
-                            <FeatherIcon
-                                name="menu"
-                                color="#535353"
-                                size={28}
-                            />
+                            <FeatherIcon name="menu" color="white" size={28} />
                         )}
                     </TouchableOpacity>
                 </View>

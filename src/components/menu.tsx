@@ -24,14 +24,17 @@ import {UserService} from '../service/user.service';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
 import {SCREEN_INDEX_SET} from '../redux/actionTypes/dashboard';
+import {CLEAR_PROFILE} from '../redux/actionTypes/auth';
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        borderRightWidth: 1,
-        borderRightColor: '#e6e6e6',
+        // borderRightWidth: 1,
+        // borderRightColor: '#e6e6e6',
+        borderTopColor: 'red',
         height: 300,
         marginTop: 56,
-        backgroundColor: 'white',
+        backgroundColor: '#313131',
     },
     avatarContainer: {
         flexDirection: 'row',
@@ -49,11 +52,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     welcome: {
-        color: '#a9afbb',
+        color: 'white',
         fontSize: 20,
     },
     name: {
-        color: '#3c4858',
+        color: 'white',
         fontSize: 20,
     },
     menuContainer: {
@@ -67,6 +70,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         marginRight: 12,
         marginLeft: 12,
+        marginBottom: 32,
     },
     menuItem: {
         flexDirection: 'row',
@@ -74,14 +78,14 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     menuLabel: {
-        color: '#3c4858',
+        color: '#fff',
         fontSize: 16,
         marginLeft: 16,
         letterSpacing: 1.5,
         fontWeight: '500',
     },
     selectedMenu: {
-        backgroundColor: '#00b7d9',
+        backgroundColor: '#777',
         borderRadius: 6,
     },
     selectedMenuText: {
@@ -108,6 +112,7 @@ class Menu extends Component<
         currentMenu: number;
         addFunds: boolean;
         billingInfo: any;
+        expanded: boolean;
     }
 > {
     routes = [
@@ -127,6 +132,7 @@ class Menu extends Component<
             currentMenu: 0,
             addFunds: false,
             billingInfo: null,
+            expanded: false,
         };
     }
 
@@ -155,6 +161,10 @@ class Menu extends Component<
     };
 
     logout = () => {
+        store.dispatch({
+            type: CLEAR_PROFILE,
+            payload: {},
+        });
         this.props.navigation.closeDrawer();
         this.props.navigation.navigate('AuthNavigator');
     };
@@ -171,7 +181,7 @@ class Menu extends Component<
 
     render() {
         return (
-            <SafeAreaView style={{flex: 1}}>
+            <View style={{flex: 1}}>
                 <ScrollView style={styles.container}>
                     <View style={styles.avatarContainer}>
                         {/* <FeatherIcon name="menu" color='#535353' size={28} style={{
@@ -196,6 +206,9 @@ class Menu extends Component<
                             <TouchableOpacity
                                 style={{
                                     marginTop: 16,
+                                    borderColor: 'white',
+                                    borderWidth: 1,
+                                    borderRadius: 100,
                                 }}
                                 onPress={() =>
                                     this.setState({
@@ -278,66 +291,90 @@ class Menu extends Component<
                                     ]}>
                                     Titan
                                 </CmlText>
+                                <View style={{flex: 1}} />
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.setState({
+                                            expanded: !this.state.expanded,
+                                        });
+                                    }}>
+                                    <Feather
+                                        name={
+                                            this.state.expanded
+                                                ? 'chevron-up'
+                                                : 'chevron-down'
+                                        }
+                                        size={24}
+                                        color="white"
+                                    />
+                                </TouchableOpacity>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.onMenuItem(7)}>
-                            <View
-                                style={[
-                                    styles.menuItem,
-                                    this.props.screenIndex === 7 &&
-                                        styles.selectedMenu,
-                                    {
-                                        marginLeft: 24,
-                                    },
-                                ]}>
-                                <Feather
-                                    name="settings"
-                                    size={24}
-                                    color={
-                                        this.props.screenIndex == 7
-                                            ? 'white'
-                                            : '#a9afbb'
-                                    }
-                                />
-                                <CmlText
-                                    style={[
-                                        styles.menuLabel,
-                                        this.props.screenIndex === 7 &&
-                                            styles.selectedMenuText,
-                                    ]}>
-                                    Settings
-                                </CmlText>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.onMenuItem(8)}>
-                            <View
-                                style={[
-                                    styles.menuItem,
-                                    this.props.screenIndex === 8 &&
-                                        styles.selectedMenu,
-                                    {
-                                        marginLeft: 24,
-                                    },
-                                ]}>
-                                <FontAwesome
-                                    name="list-alt"
-                                    size={24}
-                                    color={
-                                        this.props.screenIndex == 8
-                                            ? 'white'
-                                            : '#a9afbb'
-                                    }
-                                />
-                                <CmlText
-                                    style={[
-                                        styles.menuLabel,
-                                        this.props.screenIndex === 8 &&
-                                            styles.selectedMenuText,
-                                    ]}>
-                                    Contacts
-                                </CmlText>
-                            </View>
-                        </TouchableOpacity>
+                        {this.state.expanded && (
+                            <>
+                                <TouchableOpacity
+                                    onPress={() => this.onMenuItem(7)}>
+                                    <View
+                                        style={[
+                                            styles.menuItem,
+                                            this.props.screenIndex === 7 &&
+                                                styles.selectedMenu,
+                                            {
+                                                marginLeft: 24,
+                                            },
+                                        ]}>
+                                        <Feather
+                                            name="settings"
+                                            size={24}
+                                            color={
+                                                this.props.screenIndex == 7
+                                                    ? 'white'
+                                                    : '#a9afbb'
+                                            }
+                                        />
+                                        <CmlText
+                                            style={[
+                                                styles.menuLabel,
+                                                this.props.screenIndex === 7 &&
+                                                    styles.selectedMenuText,
+                                            ]}>
+                                            Settings
+                                        </CmlText>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => this.onMenuItem(8)}>
+                                    <View
+                                        style={[
+                                            styles.menuItem,
+                                            this.props.screenIndex === 8 &&
+                                                styles.selectedMenu,
+                                            {
+                                                marginLeft: 24,
+                                            },
+                                        ]}>
+                                        <FontAwesome
+                                            name="list-alt"
+                                            size={24}
+                                            color={
+                                                this.props.screenIndex == 8
+                                                    ? 'white'
+                                                    : '#a9afbb'
+                                            }
+                                        />
+                                        <CmlText
+                                            style={[
+                                                styles.menuLabel,
+                                                this.props.screenIndex === 8 &&
+                                                    styles.selectedMenuText,
+                                            ]}>
+                                            Contacts
+                                        </CmlText>
+                                    </View>
+                                </TouchableOpacity>
+                            </>
+                        )}
+
                         <TouchableOpacity onPress={() => this.onMenuItem(2)}>
                             <View
                                 style={[
@@ -536,7 +573,7 @@ class Menu extends Component<
                         </View>
                     </View>
                 </Modal>
-            </SafeAreaView>
+            </View>
         );
     }
 }

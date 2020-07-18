@@ -6,6 +6,7 @@ import {
     UPDATE_TOKEN,
     RESET_TOKEN,
     UPDATE_PROFILE,
+    CLEAR_PROFILE,
 } from '../actionTypes/auth';
 import {defaultIfEmpty} from 'rxjs/operators';
 import {LoginUser} from '../../shared/models/loginuser.model';
@@ -72,6 +73,12 @@ const reducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 loggedInContact: action.payload.loggedInContact,
+            };
+        }
+        case CLEAR_PROFILE: {
+            return {
+                ...state,
+                loggedInContact: null,
             };
         }
         default: {
