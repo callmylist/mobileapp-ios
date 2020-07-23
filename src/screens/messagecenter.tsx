@@ -289,23 +289,53 @@ class MessageCenter extends Component<
         }
 
         this.setState({
-            newMessage: false,
             loading: true,
         });
 
-        MessageCenterService.sendNewMessage(
-            this.state.message,
-            this.state.selectedContact,
-        ).subscribe((response: any) => {
-            if (response.success) {
-                this.setState({
-                    loading: false,
-                    message: '',
-                    selectedContact: '',
-                });
-                this.onTab(this.state.contact_filter);
-            }
-        });
+        if (
+            this.state.contacts.filter(
+                (contact) => contact.id == this.state.selectedContact,
+            ).length > 0
+        ) {
+            MessageCenterService.sendNewMessage(
+                this.state.message,
+                this.state.selectedContact,
+            ).subscribe((response: any) => {
+                if (response.success) {
+                    this.setState({
+                        newMessage: false,
+                        loading: false,
+                        message: '',
+                        selectedContact: '',
+                    });
+                    this.onTab(this.state.contact_filter);
+                } else {
+                    Utils.presentToast(
+                        response.message + '.' + response.submessage,
+                    );
+                }
+            });
+        } else {
+            MessageCenterService.sendNewMessageWithNumberOnly(
+                this.state.message,
+                this.state.selectedContact,
+            ).subscribe((response: any) => {
+                console.log(response);
+                if (response.success) {
+                    this.setState({
+                        newMessage: false,
+                        loading: false,
+                        message: '',
+                        selectedContact: '',
+                    });
+                    this.onTab(this.state.contact_filter);
+                } else {
+                    Utils.presentToast(
+                        response.message + '.' + response.submessage,
+                    );
+                }
+            });
+        }
     };
 
     filter = () => {
@@ -938,6 +968,9 @@ class MessageCenter extends Component<
                                                           this.state
                                                               .selectedContact,
                                                   )[0].firstName
+                                                : this.state.selectedContact
+                                                      .length > 0
+                                                ? this.state.selectedContact
                                                 : 'Select Contact'
                                         }
                                         searchInputPlaceholderText="Search Contacts..."

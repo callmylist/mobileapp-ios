@@ -146,8 +146,12 @@ class SoundScreen extends Component<
         noSounds: boolean;
         gender: number;
         text: string;
+        page: number;
+        pageLoading: boolean;
     }
 > {
+    PAGE_SIZE = 25;
+
     constructor(props: any) {
         super(props);
         this.state = {
@@ -159,6 +163,8 @@ class SoundScreen extends Component<
             noSounds: false,
             gender: 1,
             text: '',
+            page: 0,
+            pageLoading: false,
         };
     }
 
@@ -167,12 +173,42 @@ class SoundScreen extends Component<
     }
 
     loadAudios = () => {
-        SoundService.getSoundList().subscribe((response: any) => {
-            this.setState({
-                sounds: response.data,
-                noSounds: response.data.length == 0 ? true : false,
-            });
+        if (this.state.pageLoading) {
+            return;
+        }
+
+        this.setState({
+            page: 0,
+            sounds: [],
         });
+        this.loadPage();
+    };
+
+    loadPage = () => {
+        if (this.state.pageLoading) {
+            return;
+        }
+        this.setState(
+            {
+                pageLoading: true,
+                page: this.state.page + 1,
+            },
+            () => {
+                SoundService.getSoundList({
+                    currentPage: this.state.page,
+                    pageSize: this.PAGE_SIZE,
+                }).subscribe((response: any) => {
+                    this.setState({
+                        pageLoading: false,
+                        sounds: this.state.sounds.concat(response.data),
+                        noSounds:
+                            this.state.sounds.concat(response.data).length == 0
+                                ? true
+                                : false,
+                    });
+                });
+            },
+        );
     };
 
     onMenu = () => {
@@ -383,7 +419,7 @@ class SoundScreen extends Component<
                                     ]}>
                                     <CmlText
                                         style={{
-                                            width: 20,
+                                            width: 40,
                                         }}>
                                         {item.index + 1}.
                                     </CmlText>
@@ -391,14 +427,16 @@ class SoundScreen extends Component<
                                     <CmlText
                                         style={{
                                             fontSize: 16,
-                                        }}>
+                                            flex: 1,
+                                        }}
+                                        numberOfLines={1}>
                                         {item.item.name}
                                     </CmlText>
-                                    <View
+                                    {/* <View
                                         style={{
                                             flex: 1,
                                         }}
-                                    />
+                                    /> */}
                                     <TouchableOpacity
                                         style={{
                                             marginRight: 8,
@@ -452,7 +490,10 @@ class SoundScreen extends Component<
                                     </TouchableOpacity>
                                 </View>
                             );
-                        }}></FlatList>
+                        }}
+                        keyExtractor={(item, index) => String(index)}
+                        onEndReached={this.loadPage}
+                        onEndReachedThreshold={0.5}></FlatList>
                 </View>
 
                 <Modal

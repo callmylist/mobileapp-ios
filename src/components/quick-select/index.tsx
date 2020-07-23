@@ -185,6 +185,7 @@ export default class MultiSelect extends Component {
     }
 
     _handleSelectedItemsChange = (newItems, newText) => {
+        console.log(newItems);
         this.props.onSelectedItemsChange(newItems);
         const label = this._getSelectLabel(this.props);
         this.setState({
@@ -354,20 +355,29 @@ export default class MultiSelect extends Component {
             );
         } else {
             component = (
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text
-                        style={[
-                            {
-                                flex: 1,
-                                marginTop: 20,
-                                textAlign: 'center',
-                                color: colorPack.danger,
-                            },
-                            fontFamily ? {fontFamily} : {},
-                        ]}>
-                        No item to display.
-                    </Text>
-                </View>
+                <TouchableOpacity
+                    onPress={() => {
+                        this.props.onSelectedItemsChange(this.state.searchTerm);
+                        this.setState({
+                            itemSelectedText: this.state.searchTerm,
+                        });
+                        this._submitSelection();
+                    }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text
+                            style={[
+                                {
+                                    flex: 1,
+                                    marginTop: 20,
+                                    textAlign: 'center',
+                                    color: colorPack.danger,
+                                },
+                                fontFamily ? {fontFamily} : {},
+                            ]}>
+                            Use this number.
+                        </Text>
+                    </View>
+                </TouchableOpacity>
             );
         }
         return component;

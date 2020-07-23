@@ -26,6 +26,7 @@ import {CmlSpinner} from '../components/loading';
 import Utils from '../utils';
 import {store} from '../redux/store';
 import RNFetchBlob from 'rn-fetch-blob';
+import {LOAD_CAMPAIGN_LIST_REQUEST} from 'src/redux/actionTypes/dashboard';
 
 const styles = StyleSheet.create({
     container: {
@@ -149,8 +150,12 @@ class ContactList extends Component<
         headerColumn: string;
         loading: boolean;
         noList: boolean;
+        page: number;
+        pageLoading: boolean;
     }
 > {
+    PAGE_SIZE = 25;
+
     constructor(props: any) {
         super(props);
 
@@ -163,27 +168,54 @@ class ContactList extends Component<
             headerColumn: 'A',
             loading: false,
             noList: false,
+            page: 0,
+            pageLoading: false,
         };
     }
 
     componentDidMount() {
         this.loadData();
-
-        this.props.navigation.addListener('willFocus', (payload: any) => {
-            this.loadData();
-        });
     }
 
     loadData = () => {
-        ContactService.getContactList({
-            currentPage: 0,
-            pageSize: 0,
-        }).subscribe((response: any) => {
-            this.setState({
-                sounds: response.data,
-                noList: response.data.length == 0 ? true : false,
-            });
+        if (this.state.pageLoading) {
+            return;
+        }
+
+        this.setState({
+            page: 0,
+            sounds: [],
         });
+
+        this.loadPage();
+    };
+
+    loadPage = () => {
+        if (this.state.pageLoading) {
+            return;
+        }
+        this.setState(
+            {
+                pageLoading: true,
+                page: this.state.page + 1,
+            },
+            () => {
+                ContactService.getContactList({
+                    currentPage: this.state.page,
+                    pageSize: this.PAGE_SIZE,
+                }).subscribe((response: any) => {
+                    console.log(response.data);
+                    this.setState({
+                        pageLoading: false,
+                        sounds: this.state.sounds.concat(response.data),
+                        noList:
+                            this.state.sounds.concat(response.data).length == 0
+                                ? true
+                                : false,
+                    });
+                });
+            },
+        );
     };
 
     onMenu = () => {
@@ -319,6 +351,7 @@ class ContactList extends Component<
                             marginTop: 24,
                         }}
                         data={this.state.sounds}
+                        keyExtractor={(item, index) => String(index)}
                         renderItem={(item: any) => {
                             return (
                                 <View
@@ -404,7 +437,9 @@ class ContactList extends Component<
                                     </TouchableOpacity>
                                 </View>
                             );
-                        }}></FlatList>
+                        }}
+                        onEndReached={this.loadPage}
+                        onEndReachedThreshold={0.5}></FlatList>
                 </View>
 
                 <Modal

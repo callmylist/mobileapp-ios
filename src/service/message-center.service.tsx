@@ -23,6 +23,7 @@ export class MessageCenterService {
             .replace('{limit}', PageLimit)
             .replace('{search}', value);
 
+        console.log(url);
         return RestClient.get(url);
     }
 
@@ -39,6 +40,13 @@ export class MessageCenterService {
                 body: message,
             },
         );
+    }
+
+    static sendNewMessageWithNumberOnly(message: string, phonenumber: string) {
+        return RestClient.post(constants.apiUrl.sendNewMessageDirect, {
+            body: message,
+            phoneto: phonenumber,
+        });
     }
 
     static getMessageInfo() {

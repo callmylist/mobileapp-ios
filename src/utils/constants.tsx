@@ -68,6 +68,8 @@ export default {
             '/contact?page={number}&limit={limit}&search={search}',
         getOneConatct: '/contact/{conatctID}',
         sendNewMessage: '/contact/{contactID}/message',
+        sendNewMessageDirect: '/directmessage',
+
         getMessageinfo: '/messagesettings',
         getMessageList: '/contact/{contactID}/message',
         makFollowUp: '/contact/{contactID}/followup?status={status}',
