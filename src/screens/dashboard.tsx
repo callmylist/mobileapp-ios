@@ -1,5 +1,11 @@
 import React, {Component} from 'react';
-import {StyleSheet, FlatList, View, SafeAreaView} from 'react-native';
+import {
+    StyleSheet,
+    FlatList,
+    View,
+    SafeAreaView,
+    TouchableOpacity,
+} from 'react-native';
 import Foundation from 'react-native-vector-icons/Foundation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -8,7 +14,7 @@ import SemiCircleProgress from '../components/progress';
 import {CmlText} from '../components/text';
 import {CmlButton} from '../components/button';
 
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import Utils from '../utils';
 import {compose} from 'redux';
 import {connect} from 'react-redux';

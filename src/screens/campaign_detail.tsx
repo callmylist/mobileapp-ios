@@ -1,12 +1,18 @@
 import React, {Component} from 'react';
-import {StyleSheet, Keyboard, View, SafeAreaView} from 'react-native';
+import {
+    StyleSheet,
+    Keyboard,
+    View,
+    SafeAreaView,
+    TouchableOpacity,
+} from 'react-native';
 import Foundation from 'react-native-vector-icons/Foundation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Header from '../components/header';
 import SemiCircleProgress from '../components/progress';
 import {CmlText} from '../components/text';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import {
     Menu,
     MenuTrigger,
@@ -42,6 +48,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginTop: 8,
         marginBottom: 8,
+        overflow: 'hidden',
     },
     percentLabel: {
         fontSize: 32,

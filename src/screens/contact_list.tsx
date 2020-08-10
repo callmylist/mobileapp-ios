@@ -235,6 +235,7 @@ class ContactList extends Component<
     download = (item: any) => {
         let dirs = RNFetchBlob.fs.dirs;
         this.setState({loading: true});
+        console.log(dirs.DocumentDir + '/' + item.fileName);
         RNFetchBlob.config({
             // response data will be saved to this path if it has access right.
             path: dirs.DocumentDir + '/' + item.fileName,
@@ -251,6 +252,9 @@ class ContactList extends Component<
                 // the path should be dirs.DocumentDir + 'path-to-file.anything'
                 Utils.presentToast('File downloaded to application folder.');
                 this.setState({loading: false});
+            })
+            .catch((err: any) => {
+                console.log(err);
             });
     };
 

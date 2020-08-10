@@ -21,7 +21,6 @@ import Header from '../components/header';
 import {CmlText} from '../components/text';
 import {CmlButton} from '../components/button';
 import {CmlTextInput} from '../components/textinput';
-import {ScrollView} from 'react-native-gesture-handler';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import moment from 'moment';
 import * as momenttz from 'moment-timezone';
@@ -31,6 +30,7 @@ import DocumentPicker from 'react-native-document-picker';
 import Utils from '../utils';
 import {CmlSpinner} from '../components/loading';
 import {ContactService} from '../service/contact.service';
+import {ScrollView} from 'react-native-gesture-handler';
 
 import Modal from 'react-native-modal';
 import AppStyle from '../shared/styles';
@@ -1648,16 +1648,19 @@ class CampaignCreate extends Component<
                                                                                 .pickerSelectStyles
                                                                         }
                                                                     />
-                                                                    <Ionicons
-                                                                        name="md-arrow-dropdown"
-                                                                        size={
-                                                                            18
-                                                                        }
-                                                                        color="#7b7b7b"
-                                                                        style={{
-                                                                            marginLeft: 8,
-                                                                        }}
-                                                                    />
+                                                                    {Platform.OS ==
+                                                                        'ios' && (
+                                                                        <Ionicons
+                                                                            name="md-arrow-dropdown"
+                                                                            size={
+                                                                                18
+                                                                            }
+                                                                            color="#7b7b7b"
+                                                                            style={{
+                                                                                marginLeft: 8,
+                                                                            }}
+                                                                        />
+                                                                    )}
                                                                 </View>
                                                                 <CmlButton
                                                                     title="Upload Audio"
@@ -2018,14 +2021,19 @@ class CampaignCreate extends Component<
                                                                             .pickerSelectStyles
                                                                     }
                                                                 />
-                                                                <Ionicons
-                                                                    name="md-arrow-dropdown"
-                                                                    size={18}
-                                                                    color="#7b7b7b"
-                                                                    style={{
-                                                                        marginLeft: 8,
-                                                                    }}
-                                                                />
+                                                                {Platform.OS ==
+                                                                    'ios' && (
+                                                                    <Ionicons
+                                                                        name="md-arrow-dropdown"
+                                                                        size={
+                                                                            18
+                                                                        }
+                                                                        color="#7b7b7b"
+                                                                        style={{
+                                                                            marginLeft: 8,
+                                                                        }}
+                                                                    />
+                                                                )}
                                                             </View>
                                                             <CmlButton
                                                                 title="Upload Audio"
@@ -2525,16 +2533,19 @@ class CampaignCreate extends Component<
                                                                                 .pickerSelectStyles
                                                                         }
                                                                     />
-                                                                    <Ionicons
-                                                                        name="md-arrow-dropdown"
-                                                                        size={
-                                                                            18
-                                                                        }
-                                                                        color="#7b7b7b"
-                                                                        style={{
-                                                                            marginLeft: 8,
-                                                                        }}
-                                                                    />
+                                                                    {Platform.OS ==
+                                                                        'ios' && (
+                                                                        <Ionicons
+                                                                            name="md-arrow-dropdown"
+                                                                            size={
+                                                                                18
+                                                                            }
+                                                                            color="#7b7b7b"
+                                                                            style={{
+                                                                                marginLeft: 8,
+                                                                            }}
+                                                                        />
+                                                                    )}
                                                                 </View>
                                                                 <CmlButton
                                                                     title="Upload Audio"
@@ -3252,16 +3263,19 @@ class CampaignCreate extends Component<
                                                                                 .pickerSelectStyles
                                                                         }
                                                                     />
-                                                                    <Ionicons
-                                                                        name="md-arrow-dropdown"
-                                                                        size={
-                                                                            18
-                                                                        }
-                                                                        color="#7b7b7b"
-                                                                        style={{
-                                                                            marginLeft: 8,
-                                                                        }}
-                                                                    />
+                                                                    {Platform.OS ==
+                                                                        'ios' && (
+                                                                        <Ionicons
+                                                                            name="md-arrow-dropdown"
+                                                                            size={
+                                                                                18
+                                                                            }
+                                                                            color="#7b7b7b"
+                                                                            style={{
+                                                                                marginLeft: 8,
+                                                                            }}
+                                                                        />
+                                                                    )}
                                                                 </View>
                                                                 <CmlButton
                                                                     title="Upload Audio"

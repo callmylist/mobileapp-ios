@@ -1,11 +1,17 @@
 import React, {Component} from 'react';
-import {StyleSheet, FlatList, View, SafeAreaView} from 'react-native';
+import {
+    StyleSheet,
+    FlatList,
+    View,
+    SafeAreaView,
+    TouchableOpacity,
+} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Header from '../components/header';
 import SemiCircleProgress from '../components/progress';
 import {CmlText} from '../components/text';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import {CampaignService} from '../service/campaign.service';
 import {StatusIcon} from '../components/campaign_status';
 

@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     SafeAreaView,
     Linking,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
@@ -30,7 +31,6 @@ import RNFetchBlob from 'rn-fetch-blob';
 import FileViewer from 'react-native-file-viewer';
 import RNFS from 'react-native-fs';
 import RNPickerSelect from 'react-native-picker-select';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
     container: {
