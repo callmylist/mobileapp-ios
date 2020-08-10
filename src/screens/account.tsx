@@ -289,9 +289,13 @@ class AccountScreen extends Component<
             }
         });
 
+        this.props.navigation.addListener('willFocus', this.didAppear);
+    }
+
+    didAppear = () => {
         this.loadChildAccounts();
         this.loadAccountBillingInfo();
-    }
+    };
 
     onMenu = () => {
         this.props.navigation.openDrawer();
@@ -1170,7 +1174,6 @@ class AccountScreen extends Component<
                                                                     padding: 4,
                                                                 },
                                                             }}>
-                                                            <MenuOption text="Edit Account" />
                                                             <MenuOption
                                                                 text="Lock"
                                                                 onSelect={() => {
@@ -1183,7 +1186,6 @@ class AccountScreen extends Component<
                                                                     );
                                                                 }}
                                                             />
-                                                            <MenuOption text="Add Funds" />
                                                             <MenuOption
                                                                 text="Delete"
                                                                 onSelect={() => {

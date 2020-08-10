@@ -20,6 +20,8 @@ import IconIonic from 'react-native-vector-icons/Ionicons';
 import styles, {colorPack} from './styles';
 
 export default class MultiSelect extends Component {
+    searchInput = null;
+
     static propTypes = {
         single: PropTypes.bool,
         selectedItems: PropTypes.array,
@@ -210,9 +212,18 @@ export default class MultiSelect extends Component {
 
     _toggleSelector = () => {
         //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        this.setState({
-            selector: !this.state.selector,
-        });
+        this.setState(
+            {
+                selector: !this.state.selector,
+            },
+            () => {
+                if (this.state.selector) {
+                    setTimeout(() => {
+                        this.searchInput.focus();
+                    }, 300);
+                }
+            },
+        );
     };
 
     _submitSelection = () => {
@@ -353,33 +364,34 @@ export default class MultiSelect extends Component {
                     renderItem={(rowData) => this._getRow(rowData.item)}
                 />
             );
-        } else {
-            component = (
-                <TouchableOpacity
-                    onPress={() => {
-                        this.props.onSelectedItemsChange(this.state.searchTerm);
-                        this.setState({
-                            itemSelectedText: this.state.searchTerm,
-                        });
-                        this._submitSelection();
-                    }}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text
-                            style={[
-                                {
-                                    flex: 1,
-                                    marginTop: 20,
-                                    textAlign: 'center',
-                                    color: colorPack.danger,
-                                },
-                                fontFamily ? {fontFamily} : {},
-                            ]}>
-                            Use this number.
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-            );
         }
+        // else {
+        //     component = (
+        //         <TouchableOpacity
+        //             onPress={() => {
+        //                 this.props.onSelectedItemsChange(this.state.searchTerm);
+        //                 this.setState({
+        //                     itemSelectedText: this.state.searchTerm,
+        //                 });
+        //                 this._submitSelection();
+        //             }}>
+        //             <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        //                 <Text
+        //                     style={[
+        //                         {
+        //                             flex: 1,
+        //                             marginTop: 20,
+        //                             textAlign: 'center',
+        //                             color: colorPack.danger,
+        //                         },
+        //                         fontFamily ? {fontFamily} : {},
+        //                     ]}>
+        //                     Use this number.
+        //                 </Text>
+        //             </View>
+        //         </TouchableOpacity>
+        //     );
+        // }
         return component;
     };
 
@@ -400,6 +412,14 @@ export default class MultiSelect extends Component {
         } = this.props;
 
         const {selector, itemSelectedText} = this.state;
+
+        const {items, uniqueKey} = this.props;
+        const {searchTerm} = this.state;
+        let component = null;
+        const renderItems = searchTerm
+            ? this._filterItems(searchTerm.trim())
+            : items;
+
         return (
             <View
                 style={{
@@ -426,6 +446,19 @@ export default class MultiSelect extends Component {
                                 }
                                 underlineColorAndroid="transparent"
                                 style={[searchInputStyle, {flex: 1}]}
+                                ref={(input) => {
+                                    console.log('input', input);
+                                    this.searchInput = input;
+                                }}
+                                onSubmitEditing={() => {
+                                    this.props.onSelectedItemsChange(
+                                        this.state.searchTerm,
+                                    );
+                                    this.setState({
+                                        itemSelectedText: this.state.searchTerm,
+                                    });
+                                    this._submitSelection();
+                                }}
                             />
                             {hideSubmitButton && (
                                 <TouchableOpacity
@@ -440,56 +473,67 @@ export default class MultiSelect extends Component {
                                 </TouchableOpacity>
                             )}
                         </View>
-                        <View
-                            style={{
-                                flexDirection: 'column',
-                                backgroundColor: 'white',
-                                height: 400,
-                                borderColor: 'black',
-                                borderWidth: 0.3,
-                                borderBottomRightRadius: 8,
-                                borderBottomLeftRadius: 8,
-                                // zIndex: 9999,
-                            }}>
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    height: 40,
-                                }}>
-                                <Text
+
+                        {this.state.searchTerm.length > 0 &&
+                            renderItems.length > 0 && (
+                                <View
                                     style={{
-                                        flex: 1,
-                                        padding: 8,
-                                        marginLeft: 8,
+                                        flexDirection: 'column',
+                                        backgroundColor: 'white',
+                                        height: 400,
+                                        borderColor: 'black',
+                                        borderWidth: 0.3,
+                                        borderBottomRightRadius: 8,
+                                        borderBottomLeftRadius: 8,
+                                        // zIndex: 9999,
                                     }}>
-                                    Name
-                                </Text>
-                                <Text style={{flex: 1, padding: 8}}>Phone</Text>
-                            </View>
-                            <View
-                                style={{
-                                    backgroundColor: 'white',
-                                    height: 350,
-                                }}>
-                                {this._renderItems()}
-                            </View>
-                            {!single && !hideSubmitButton && (
-                                <TouchableOpacity
-                                    onPress={this._submitSelection}
-                                    style={[
-                                        styles.button,
-                                        {backgroundColor: submitButtonColor},
-                                    ]}>
-                                    <Text
-                                        style={[
-                                            styles.buttonText,
-                                            fontFamily ? {fontFamily} : {},
-                                        ]}>
-                                        {submitButtonText}
-                                    </Text>
-                                </TouchableOpacity>
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            height: 40,
+                                        }}>
+                                        <Text
+                                            style={{
+                                                flex: 1,
+                                                padding: 8,
+                                                marginLeft: 8,
+                                            }}>
+                                            Name
+                                        </Text>
+                                        <Text style={{flex: 1, padding: 8}}>
+                                            Phone
+                                        </Text>
+                                    </View>
+
+                                    <View
+                                        style={{
+                                            backgroundColor: 'white',
+                                            height: 350,
+                                        }}>
+                                        {this._renderItems()}
+                                    </View>
+                                    {!single && !hideSubmitButton && (
+                                        <TouchableOpacity
+                                            onPress={this._submitSelection}
+                                            style={[
+                                                styles.button,
+                                                {
+                                                    backgroundColor: submitButtonColor,
+                                                },
+                                            ]}>
+                                            <Text
+                                                style={[
+                                                    styles.buttonText,
+                                                    fontFamily
+                                                        ? {fontFamily}
+                                                        : {},
+                                                ]}>
+                                                {submitButtonText}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )}
+                                </View>
                             )}
-                        </View>
                     </View>
                 ) : (
                     <View>
@@ -525,14 +569,14 @@ export default class MultiSelect extends Component {
                                             ]}>
                                             {itemSelectedText}
                                         </Text>
-                                        <IconIonic
+                                        {/* <IconIonic
                                             name={
                                                 hideSubmitButton
                                                     ? 'md-arrow-dropright'
                                                     : 'md-arrow-dropdown'
                                             }
                                             style={styles.indicator}
-                                        />
+                                        /> */}
                                     </View>
                                 </TouchableWithoutFeedback>
                             </View>
