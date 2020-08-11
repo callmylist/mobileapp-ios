@@ -11,6 +11,7 @@ import {
     Keyboard,
     Platform,
     Text,
+    ScrollView,
 } from 'react-native';
 import {NavigationActions} from 'react-navigation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -21,7 +22,7 @@ import Header from '../components/header';
 import {CmlText} from '../components/text';
 import {CmlButton} from '../components/button';
 import {CmlTextInput} from '../components/textinput';
-import {ScrollView} from 'react-native-gesture-handler';
+// import {ScrollView} from 'react-native-gesture-handler';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import moment from 'moment';
 import * as momenttz from 'moment-timezone';
@@ -1146,57 +1147,53 @@ class CampaignCreate extends Component<
             <SafeAreaView style={{flex: 1}}>
                 <Header back={true} onBack={this.onBack} menu={false} />
                 <CmlSpinner visible={this.state.loading} />
-                <TouchableWithoutFeedback
+                {/* <TouchableWithoutFeedback
                     onPress={() => {
                         Keyboard.dismiss();
-                    }}>
-                    <View style={styles.container}>
-                        <View style={{flex: 1, alignItems: 'center'}}>
-                            <CmlText style={styles.campaignLabel}>
-                                New Campaign
-                            </CmlText>
-                            <View
-                                style={{
-                                    width: '80%',
-                                    flex: 1,
-                                }}>
-                                {this.state.step == 0 && (
-                                    <View style={styles.stepViewContainer}>
-                                        <Image
-                                            source={require('../assets/images/create_logo.png')}
-                                            style={styles.logo}
-                                        />
+                    }}> */}
+                <View style={styles.container}>
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                        <CmlText style={styles.campaignLabel}>
+                            New Campaign
+                        </CmlText>
+                        <View
+                            style={{
+                                width: '80%',
+                                flex: 1,
+                            }}>
+                            {this.state.step == 0 && (
+                                <View style={styles.stepViewContainer}>
+                                    <Image
+                                        source={require('../assets/images/create_logo.png')}
+                                        style={styles.logo}
+                                    />
 
-                                        <CmlText style={styles.stepDescription}>
-                                            What type of campaign would you like
-                                            to send?
-                                        </CmlText>
+                                    <CmlText style={styles.stepDescription}>
+                                        What type of campaign would you like to
+                                        send?
+                                    </CmlText>
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            marginTop: 24,
+                                        }}>
                                         <View
                                             style={{
-                                                flexDirection: 'row',
-                                                marginTop: 24,
+                                                alignItems: 'center',
+                                                padding: 16,
                                             }}>
-                                            <View
-                                                style={{
-                                                    alignItems: 'center',
-                                                    padding: 16,
-                                                }}>
-                                                <Image
-                                                    source={require('../assets/images/campaign_call.png')}
-                                                    style={
-                                                        styles.campaignTypeLogo
-                                                    }
-                                                />
-                                                <CmlButton
-                                                    title="CALL"
-                                                    backgroundColor="#02b9db"
-                                                    style={{marginTop: 16}}
-                                                    onPress={() =>
-                                                        this.continue()
-                                                    }
-                                                />
-                                            </View>
-                                            {/* <View
+                                            <Image
+                                                source={require('../assets/images/campaign_call.png')}
+                                                style={styles.campaignTypeLogo}
+                                            />
+                                            <CmlButton
+                                                title="CALL"
+                                                backgroundColor="#02b9db"
+                                                style={{marginTop: 16}}
+                                                onPress={() => this.continue()}
+                                            />
+                                        </View>
+                                        {/* <View
                                                 style={{
                                                     alignItems: 'center',
                                                     padding: 16,
@@ -1213,526 +1210,141 @@ class CampaignCreate extends Component<
                                                     style={{marginTop: 16}}
                                                 />
                                             </View> */}
-                                        </View>
-
-                                        <TouchableOpacity
-                                            style={styles.continueButton}
-                                            onPress={() => this.continue()}>
-                                            <View
-                                                style={
-                                                    styles.continueButtonContainer
-                                                }>
-                                                <CmlText
-                                                    style={
-                                                        styles.continueButtonText
-                                                    }>
-                                                    CONTINUE
-                                                </CmlText>
-                                                <MaterialIcons
-                                                    name="navigate-next"
-                                                    size={30}
-                                                />
-                                            </View>
-                                        </TouchableOpacity>
                                     </View>
-                                )}
-                                {this.state.step == 1 && (
-                                    <View style={styles.stepViewContainer}>
-                                        <CmlText style={styles.stepDescription}>
-                                            Enter your campaign name below
-                                        </CmlText>
-                                        <View style={styles.inputContainer}>
-                                            <CmlTextInput
-                                                placeholder="Please add campaign name here"
-                                                style={styles.input}
-                                                value={this.state.campaign.name}
-                                                onChangeText={(val: string) => {
-                                                    this.setState({
-                                                        campaign: {
-                                                            ...this.state
-                                                                .campaign,
-                                                            name: val,
-                                                        },
-                                                    });
-                                                }}
+
+                                    <TouchableOpacity
+                                        style={styles.continueButton}
+                                        onPress={() => this.continue()}>
+                                        <View
+                                            style={
+                                                styles.continueButtonContainer
+                                            }>
+                                            <CmlText
+                                                style={
+                                                    styles.continueButtonText
+                                                }>
+                                                CONTINUE
+                                            </CmlText>
+                                            <MaterialIcons
+                                                name="navigate-next"
+                                                size={30}
                                             />
                                         </View>
-
-                                        <TouchableOpacity
-                                            style={styles.continueButton}
-                                            onPress={() => this.continue()}>
-                                            <View
-                                                style={
-                                                    styles.continueButtonContainer
-                                                }>
-                                                <CmlText
-                                                    style={
-                                                        styles.continueButtonText
-                                                    }>
-                                                    CONTINUE
-                                                </CmlText>
-                                                <MaterialIcons
-                                                    name="navigate-next"
-                                                    size={30}
-                                                />
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
-                                {this.state.step == 2 && (
-                                    <View style={styles.stepViewContainer}>
-                                        <CmlText style={styles.stepDescription}>
-                                            What number would you like displayed
-                                            on the Caller ID
-                                        </CmlText>
-                                        <View style={styles.inputContainer}>
-                                            <CmlTextInput
-                                                placeholder="Please add caller id"
-                                                style={styles.input}
-                                                keyboardType="phone-pad"
-                                                value={
-                                                    this.state.campaign.call
-                                                        .callerId
-                                                }
-                                                onChangeText={(val: string) => {
-                                                    this.setState({
-                                                        campaign: {
-                                                            ...this.state
-                                                                .campaign,
-                                                            call: {
-                                                                ...this.state
-                                                                    .campaign
-                                                                    .call,
-                                                                callerId: val,
-                                                            },
-                                                        },
-                                                    });
-                                                }}
-                                            />
-                                        </View>
-
-                                        <TouchableOpacity
-                                            style={styles.continueButton}
-                                            onPress={() => this.continue()}>
-                                            <View
-                                                style={
-                                                    styles.continueButtonContainer
-                                                }>
-                                                <CmlText
-                                                    style={
-                                                        styles.continueButtonText
-                                                    }>
-                                                    CONTINUE
-                                                </CmlText>
-                                                <MaterialIcons
-                                                    name="navigate-next"
-                                                    size={30}
-                                                />
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
-                                {this.state.step == 3 && (
-                                    <View style={styles.stepViewContainer}>
-                                        <CmlText style={styles.stepDescription}>
-                                            Select all options you would like
-                                            for your campaign
-                                        </CmlText>
-                                        <ScrollView
-                                            style={styles.panelContainer}>
-                                            {this.state.isLiveAnswer && (
-                                                <View style={styles.panel}>
-                                                    <View
-                                                        style={
-                                                            styles.leftContainer
-                                                        }>
-                                                        <TouchableOpacity
-                                                            onPress={() => {
-                                                                Utils.presentToast(
-                                                                    'This audio file will be played when the recipient answers the phone live.',
-                                                                );
-                                                            }}>
-                                                            <AntDesign
-                                                                name="infocirlce"
-                                                                size={20}
-                                                                color="#7b7b7b"
-                                                                style={{
-                                                                    marginLeft: 8,
-                                                                }}
-                                                            />
-                                                        </TouchableOpacity>
-                                                        <Image
-                                                            source={require('../assets/images/live_answer.png')}
-                                                            style={
-                                                                styles.leftLogo
-                                                            }
-                                                            resizeMode="contain"
-                                                        />
-                                                    </View>
-
-                                                    <View
-                                                        style={
-                                                            styles.panelBody
-                                                        }>
-                                                        {this.state
-                                                            .liveAnswerSelected && (
-                                                            <View
-                                                                style={{
-                                                                    width:
-                                                                        '100%',
-                                                                    flexDirection:
-                                                                        'row',
-                                                                    marginBottom: 24,
-                                                                }}>
-                                                                <CmlText
-                                                                    style={{
-                                                                        flex: 1,
-                                                                        marginTop: 4,
-                                                                    }}
-                                                                    numberOfLines={
-                                                                        1
-                                                                    }>
-                                                                    {
-                                                                        this.state.soundFiles.filter(
-                                                                            (
-                                                                                file: any,
-                                                                            ) => {
-                                                                                return (
-                                                                                    file.id ==
-                                                                                    this
-                                                                                        .state
-                                                                                        .campaign
-                                                                                        .call
-                                                                                        .liveanswer
-                                                                                        .soundFileId
-                                                                                );
-                                                                            },
-                                                                        )[0]
-                                                                            .fileName
-                                                                    }
-                                                                </CmlText>
-
-                                                                <TouchableOpacity
-                                                                    style={{
-                                                                        marginRight: 8,
-                                                                    }}
-                                                                    onPress={() => {
-                                                                        this.playSound(
-                                                                            this.state.soundFiles.filter(
-                                                                                (
-                                                                                    file: any,
-                                                                                ) => {
-                                                                                    return (
-                                                                                        file.id ==
-                                                                                        this
-                                                                                            .state
-                                                                                            .campaign
-                                                                                            .call
-                                                                                            .liveanswer
-                                                                                            .soundFileId
-                                                                                    );
-                                                                                },
-                                                                            )[0],
-                                                                        );
-                                                                    }}>
-                                                                    <AntDesign
-                                                                        name="playcircleo"
-                                                                        size={
-                                                                            24
-                                                                        }
-                                                                    />
-                                                                </TouchableOpacity>
-                                                                <TouchableOpacity
-                                                                    style={{
-                                                                        marginRight: 8,
-                                                                    }}
-                                                                    onPress={() => {
-                                                                        this.download(
-                                                                            this.state.soundFiles.filter(
-                                                                                (
-                                                                                    file: any,
-                                                                                ) => {
-                                                                                    return (
-                                                                                        file.id ==
-                                                                                        this
-                                                                                            .state
-                                                                                            .campaign
-                                                                                            .call
-                                                                                            .liveanswer
-                                                                                            .soundFileId
-                                                                                    );
-                                                                                },
-                                                                            )[0],
-                                                                        );
-                                                                    }}>
-                                                                    <View
-                                                                        style={
-                                                                            styles.itemIcon
-                                                                        }>
-                                                                        <AntDesign
-                                                                            name="download"
-                                                                            size={
-                                                                                14
-                                                                            }
-                                                                            color="#f57536"
-                                                                        />
-                                                                    </View>
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                        )}
-                                                        <View
-                                                            style={
-                                                                styles.panelSwitchContainer
-                                                            }>
-                                                            <Switch
-                                                                value={
-                                                                    this.state
-                                                                        .isTransfer
-                                                                }
-                                                                onValueChange={(
-                                                                    value: boolean,
-                                                                ) => {
-                                                                    this.setState(
-                                                                        {
-                                                                            isTransfer: value,
-                                                                        },
-                                                                    );
-                                                                }}
-                                                                trackColor={{
-                                                                    true:
-                                                                        '#02b8da',
-                                                                    false:
-                                                                        'grey',
-                                                                }}
-                                                            />
-                                                            <CmlText
-                                                                style={
-                                                                    styles.panelOptionText
-                                                                }>
-                                                                Transfer
-                                                            </CmlText>
-                                                        </View>
-                                                        <View
-                                                            style={[
-                                                                styles.panelSwitchContainer,
-                                                                {marginTop: 8},
-                                                            ]}>
-                                                            <Switch
-                                                                value={
-                                                                    this.state
-                                                                        .isDNC
-                                                                }
-                                                                onValueChange={(
-                                                                    value: boolean,
-                                                                ) => {
-                                                                    this.setState(
-                                                                        {
-                                                                            isDNC: value,
-                                                                        },
-                                                                    );
-                                                                }}
-                                                                trackColor={{
-                                                                    true:
-                                                                        '#02b8da',
-                                                                    false:
-                                                                        'grey',
-                                                                }}
-                                                            />
-                                                            <CmlText
-                                                                style={
-                                                                    styles.panelOptionText
-                                                                }>
-                                                                Do Not Call
-                                                            </CmlText>
-                                                        </View>
-                                                        {!this.state
-                                                            .liveAnswerSelected && (
-                                                            <>
-                                                                <View
-                                                                    style={
-                                                                        styles.panelUploadContainer
-                                                                    }>
-                                                                    <RNPickerSelect
-                                                                        value={
-                                                                            this
-                                                                                .state
-                                                                                .campaign
-                                                                                .call
-                                                                                .liveanswer
-                                                                                .soundFileId
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value,
-                                                                        ) => {
-                                                                            this.setState(
-                                                                                {
-                                                                                    campaign: {
-                                                                                        ...this
-                                                                                            .state
-                                                                                            .campaign,
-                                                                                        call: {
-                                                                                            ...this
-                                                                                                .state
-                                                                                                .campaign
-                                                                                                .call,
-                                                                                            liveanswer: {
-                                                                                                ...this
-                                                                                                    .state
-                                                                                                    .campaign
-                                                                                                    .call
-                                                                                                    .liveanswer,
-                                                                                                soundFileId: value,
-                                                                                            },
-                                                                                        },
-                                                                                    },
-                                                                                    SoundPathUrlLiveanswer: this.state.soundFiles.filter(
-                                                                                        (
-                                                                                            item: any,
-                                                                                        ) => {
-                                                                                            return (
-                                                                                                item.id ===
-                                                                                                value
-                                                                                            );
-                                                                                        },
-                                                                                    )[0]
-                                                                                        .wavFilePath,
-                                                                                },
-                                                                            );
-                                                                            if (
-                                                                                Platform.OS ==
-                                                                                'android'
-                                                                            ) {
-                                                                                this.setState(
-                                                                                    {
-                                                                                        liveAnswerSelected: true,
-                                                                                    },
-                                                                                );
-                                                                            }
-                                                                        }}
-                                                                        items={this.state.soundFiles.map(
-                                                                            (
-                                                                                file: any,
-                                                                            ) => {
-                                                                                return {
-                                                                                    label:
-                                                                                        file.fileName,
-                                                                                    value:
-                                                                                        file.id,
-                                                                                };
-                                                                            },
-                                                                        )}
-                                                                        placeholder={{
-                                                                            label:
-                                                                                'Select Audio File',
-                                                                        }}
-                                                                        onDonePress={() => {
-                                                                            if (
-                                                                                this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .liveanswer
-                                                                                    .soundFileId
-                                                                                    .length >
-                                                                                0
-                                                                            ) {
-                                                                                this.setState(
-                                                                                    {
-                                                                                        liveAnswerSelected: true,
-                                                                                    },
-                                                                                );
-                                                                            }
-                                                                        }}
-                                                                        style={
-                                                                            this
-                                                                                .pickerSelectStyles
-                                                                        }
-                                                                    />
-                                                                    <Ionicons
-                                                                        name="md-arrow-dropdown"
-                                                                        size={
-                                                                            18
-                                                                        }
-                                                                        color="#7b7b7b"
-                                                                        style={{
-                                                                            marginLeft: 8,
-                                                                        }}
-                                                                    />
-                                                                </View>
-                                                                <CmlButton
-                                                                    title="Upload Audio"
-                                                                    backgroundColor="#02b9db"
-                                                                    style={{
-                                                                        marginTop: 24,
-                                                                    }}
-                                                                    onPress={() => {
-                                                                        this.uploadAudio();
-                                                                    }}
-                                                                />
-                                                            </>
-                                                        )}
-
-                                                        {this.state
-                                                            .liveAnswerSelected && (
-                                                            <CmlButton
-                                                                title="Remove Audio"
-                                                                backgroundColor="#ffa67a"
-                                                                style={{
-                                                                    marginTop: 20,
-                                                                }}
-                                                                onPress={() => {
-                                                                    this.setState(
-                                                                        {
-                                                                            liveAnswerSelected: false,
-                                                                            campaign: {
-                                                                                ...this
-                                                                                    .state
-                                                                                    .campaign,
-                                                                                call: {
-                                                                                    ...this
-                                                                                        .state
-                                                                                        .campaign
-                                                                                        .call,
-                                                                                    liveanswer: {
-                                                                                        ...this
-                                                                                            .state
-                                                                                            .campaign
-                                                                                            .call
-                                                                                            .liveanswer,
-                                                                                        soundFileId:
-                                                                                            '',
-                                                                                    },
-                                                                                },
-                                                                            },
-                                                                        },
-                                                                    );
-                                                                }}
-                                                            />
-                                                        )}
-                                                    </View>
-                                                </View>
-                                            )}
-
-                                            <View
-                                                style={[
-                                                    styles.panel,
-                                                    {
-                                                        marginTop: 16,
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                            {this.state.step == 1 && (
+                                <View style={styles.stepViewContainer}>
+                                    <CmlText style={styles.stepDescription}>
+                                        Enter your campaign name below
+                                    </CmlText>
+                                    <View style={styles.inputContainer}>
+                                        <CmlTextInput
+                                            placeholder="Please add campaign name here"
+                                            style={styles.input}
+                                            value={this.state.campaign.name}
+                                            onChangeText={(val: string) => {
+                                                this.setState({
+                                                    campaign: {
+                                                        ...this.state.campaign,
+                                                        name: val,
                                                     },
-                                                ]}>
+                                                });
+                                            }}
+                                        />
+                                    </View>
+
+                                    <TouchableOpacity
+                                        style={styles.continueButton}
+                                        onPress={() => this.continue()}>
+                                        <View
+                                            style={
+                                                styles.continueButtonContainer
+                                            }>
+                                            <CmlText
+                                                style={
+                                                    styles.continueButtonText
+                                                }>
+                                                CONTINUE
+                                            </CmlText>
+                                            <MaterialIcons
+                                                name="navigate-next"
+                                                size={30}
+                                            />
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                            {this.state.step == 2 && (
+                                <View style={styles.stepViewContainer}>
+                                    <CmlText style={styles.stepDescription}>
+                                        What number would you like displayed on
+                                        the Caller ID
+                                    </CmlText>
+                                    <View style={styles.inputContainer}>
+                                        <CmlTextInput
+                                            placeholder="Please add caller id"
+                                            style={styles.input}
+                                            keyboardType="phone-pad"
+                                            value={
+                                                this.state.campaign.call
+                                                    .callerId
+                                            }
+                                            onChangeText={(val: string) => {
+                                                this.setState({
+                                                    campaign: {
+                                                        ...this.state.campaign,
+                                                        call: {
+                                                            ...this.state
+                                                                .campaign.call,
+                                                            callerId: val,
+                                                        },
+                                                    },
+                                                });
+                                            }}
+                                        />
+                                    </View>
+
+                                    <TouchableOpacity
+                                        style={styles.continueButton}
+                                        onPress={() => this.continue()}>
+                                        <View
+                                            style={
+                                                styles.continueButtonContainer
+                                            }>
+                                            <CmlText
+                                                style={
+                                                    styles.continueButtonText
+                                                }>
+                                                CONTINUE
+                                            </CmlText>
+                                            <MaterialIcons
+                                                name="navigate-next"
+                                                size={30}
+                                            />
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                            {this.state.step == 3 && (
+                                <View style={styles.stepViewContainer}>
+                                    <CmlText style={styles.stepDescription}>
+                                        Select all options you would like for
+                                        your campaign
+                                    </CmlText>
+                                    <ScrollView
+                                        style={styles.panelContainer}
+                                        keyboardShouldPersistTaps={'always'}>
+                                        {this.state.isLiveAnswer && (
+                                            <View style={styles.panel}>
                                                 <View
                                                     style={
                                                         styles.leftContainer
                                                     }>
-                                                    <Image
-                                                        source={require('../assets/images/voice_mail.png')}
-                                                        style={styles.leftLogo}
-                                                        resizeMode="contain"
-                                                    />
                                                     <TouchableOpacity
                                                         onPress={() => {
                                                             Utils.presentToast(
-                                                                "This audio file will be played when the recipient doesn't answer live.",
+                                                                'This audio file will be played when the recipient answers the phone live.',
                                                             );
                                                         }}>
                                                         <AntDesign
@@ -1744,17 +1356,22 @@ class CampaignCreate extends Component<
                                                             }}
                                                         />
                                                     </TouchableOpacity>
+                                                    <Image
+                                                        source={require('../assets/images/live_answer.png')}
+                                                        style={styles.leftLogo}
+                                                        resizeMode="contain"
+                                                    />
                                                 </View>
 
                                                 <View style={styles.panelBody}>
                                                     {this.state
-                                                        .voiceMailSelected && (
+                                                        .liveAnswerSelected && (
                                                         <View
                                                             style={{
                                                                 width: '100%',
                                                                 flexDirection:
                                                                     'row',
-                                                                marginBottom: 12,
+                                                                marginBottom: 24,
                                                             }}>
                                                             <CmlText
                                                                 style={{
@@ -1775,7 +1392,7 @@ class CampaignCreate extends Component<
                                                                                     .state
                                                                                     .campaign
                                                                                     .call
-                                                                                    .voicemail
+                                                                                    .liveanswer
                                                                                     .soundFileId
                                                                             );
                                                                         },
@@ -1788,12 +1405,25 @@ class CampaignCreate extends Component<
                                                                 style={{
                                                                     marginRight: 8,
                                                                 }}
-                                                                onPress={
-                                                                    () => {}
-                                                                    // this.playSound(
-                                                                    //     item.item,
-                                                                    // )
-                                                                }>
+                                                                onPress={() => {
+                                                                    this.playSound(
+                                                                        this.state.soundFiles.filter(
+                                                                            (
+                                                                                file: any,
+                                                                            ) => {
+                                                                                return (
+                                                                                    file.id ==
+                                                                                    this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call
+                                                                                        .liveanswer
+                                                                                        .soundFileId
+                                                                                );
+                                                                            },
+                                                                        )[0],
+                                                                    );
+                                                                }}>
                                                                 <AntDesign
                                                                     name="playcircleo"
                                                                     size={24}
@@ -1803,12 +1433,25 @@ class CampaignCreate extends Component<
                                                                 style={{
                                                                     marginRight: 8,
                                                                 }}
-                                                                onPress={
-                                                                    () => {}
-                                                                    // this.download(
-                                                                    //     item.item,
-                                                                    // )
-                                                                }>
+                                                                onPress={() => {
+                                                                    this.download(
+                                                                        this.state.soundFiles.filter(
+                                                                            (
+                                                                                file: any,
+                                                                            ) => {
+                                                                                return (
+                                                                                    file.id ==
+                                                                                    this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call
+                                                                                        .liveanswer
+                                                                                        .soundFileId
+                                                                                );
+                                                                            },
+                                                                        )[0],
+                                                                    );
+                                                                }}>
                                                                 <View
                                                                     style={
                                                                         styles.itemIcon
@@ -1824,81 +1467,21 @@ class CampaignCreate extends Component<
                                                             </TouchableOpacity>
                                                         </View>
                                                     )}
-
-                                                    {!this.state
-                                                        .voiceMailSelected && (
-                                                        <View
-                                                            style={{
-                                                                width: '100%',
-                                                            }}>
-                                                            <CmlText>
-                                                                For best
-                                                                results:
-                                                            </CmlText>
-                                                            <CmlText
-                                                                style={{
-                                                                    fontSize: 12,
-                                                                    color:
-                                                                        '#6a6a6a',
-                                                                }}>
-                                                                23-37 seconds
-                                                                recommended
-                                                            </CmlText>
-                                                        </View>
-                                                    )}
-
                                                     <View
-                                                        style={[
-                                                            styles.panelSwitchContainer,
-                                                            {marginTop: 16},
-                                                        ]}>
+                                                        style={
+                                                            styles.panelSwitchContainer
+                                                        }>
                                                         <Switch
                                                             value={
                                                                 this.state
-                                                                    .campaign
-                                                                    .call
-                                                                    .voicemail
-                                                                    .isRingless
+                                                                    .isTransfer
                                                             }
                                                             onValueChange={(
                                                                 value: boolean,
                                                             ) => {
                                                                 this.setState({
-                                                                    campaign: {
-                                                                        ...this
-                                                                            .state
-                                                                            .campaign,
-                                                                        call: {
-                                                                            ...this
-                                                                                .state
-                                                                                .campaign
-                                                                                .call,
-                                                                            voicemail: {
-                                                                                ...this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .voicemail,
-                                                                                isRingless: value,
-                                                                            },
-                                                                        },
-                                                                    },
+                                                                    isTransfer: value,
                                                                 });
-                                                                if (value) {
-                                                                    this.setState(
-                                                                        {
-                                                                            isDNC: false,
-                                                                            isTransfer: false,
-                                                                            isLiveAnswer: false,
-                                                                        },
-                                                                    );
-                                                                } else {
-                                                                    this.setState(
-                                                                        {
-                                                                            isLiveAnswer: true,
-                                                                        },
-                                                                    );
-                                                                }
                                                             }}
                                                             trackColor={{
                                                                 true: '#02b8da',
@@ -1909,13 +1492,39 @@ class CampaignCreate extends Component<
                                                             style={
                                                                 styles.panelOptionText
                                                             }>
-                                                            Use Ringless
-                                                            Voicemail
+                                                            Transfer
                                                         </CmlText>
                                                     </View>
-
+                                                    <View
+                                                        style={[
+                                                            styles.panelSwitchContainer,
+                                                            {marginTop: 8},
+                                                        ]}>
+                                                        <Switch
+                                                            value={
+                                                                this.state.isDNC
+                                                            }
+                                                            onValueChange={(
+                                                                value: boolean,
+                                                            ) => {
+                                                                this.setState({
+                                                                    isDNC: value,
+                                                                });
+                                                            }}
+                                                            trackColor={{
+                                                                true: '#02b8da',
+                                                                false: 'grey',
+                                                            }}
+                                                        />
+                                                        <CmlText
+                                                            style={
+                                                                styles.panelOptionText
+                                                            }>
+                                                            Do Not Call
+                                                        </CmlText>
+                                                    </View>
                                                     {!this.state
-                                                        .voiceMailSelected && (
+                                                        .liveAnswerSelected && (
                                                         <>
                                                             <View
                                                                 style={
@@ -1927,7 +1536,7 @@ class CampaignCreate extends Component<
                                                                             .state
                                                                             .campaign
                                                                             .call
-                                                                            .voicemail
+                                                                            .liveanswer
                                                                             .soundFileId
                                                                     }
                                                                     onValueChange={(
@@ -1944,22 +1553,868 @@ class CampaignCreate extends Component<
                                                                                             .state
                                                                                             .campaign
                                                                                             .call,
-                                                                                        voicemail: {
+                                                                                        liveanswer: {
                                                                                             ...this
                                                                                                 .state
                                                                                                 .campaign
                                                                                                 .call
-                                                                                                .voicemail,
+                                                                                                .liveanswer,
                                                                                             soundFileId: value,
                                                                                         },
                                                                                     },
                                                                                 },
-                                                                                SoundPathUrlVoicemail: this.state.soundFiles.filter(
+                                                                                SoundPathUrlLiveanswer: this.state.soundFiles.filter(
                                                                                     (
                                                                                         item: any,
                                                                                     ) => {
                                                                                         return (
                                                                                             item.id ===
+                                                                                            value
+                                                                                        );
+                                                                                    },
+                                                                                )[0]
+                                                                                    .wavFilePath,
+                                                                            },
+                                                                        );
+                                                                        if (
+                                                                            Platform.OS ==
+                                                                            'android'
+                                                                        ) {
+                                                                            this.setState(
+                                                                                {
+                                                                                    liveAnswerSelected: true,
+                                                                                },
+                                                                            );
+                                                                        }
+                                                                    }}
+                                                                    items={this.state.soundFiles.map(
+                                                                        (
+                                                                            file: any,
+                                                                        ) => {
+                                                                            return {
+                                                                                label:
+                                                                                    file.fileName,
+                                                                                value:
+                                                                                    file.id,
+                                                                            };
+                                                                        },
+                                                                    )}
+                                                                    placeholder={{
+                                                                        label:
+                                                                            'Select Audio File',
+                                                                    }}
+                                                                    onDonePress={() => {
+                                                                        if (
+                                                                            this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call
+                                                                                .liveanswer
+                                                                                .soundFileId
+                                                                                .length >
+                                                                            0
+                                                                        ) {
+                                                                            this.setState(
+                                                                                {
+                                                                                    liveAnswerSelected: true,
+                                                                                },
+                                                                            );
+                                                                        }
+                                                                    }}
+                                                                    style={
+                                                                        this
+                                                                            .pickerSelectStyles
+                                                                    }
+                                                                />
+                                                                <Ionicons
+                                                                    name="md-arrow-dropdown"
+                                                                    size={18}
+                                                                    color="#7b7b7b"
+                                                                    style={{
+                                                                        marginLeft: 8,
+                                                                    }}
+                                                                />
+                                                            </View>
+                                                            <CmlButton
+                                                                title="Upload Audio"
+                                                                backgroundColor="#02b9db"
+                                                                style={{
+                                                                    marginTop: 24,
+                                                                }}
+                                                                onPress={() => {
+                                                                    this.uploadAudio();
+                                                                }}
+                                                            />
+                                                        </>
+                                                    )}
+
+                                                    {this.state
+                                                        .liveAnswerSelected && (
+                                                        <CmlButton
+                                                            title="Remove Audio"
+                                                            backgroundColor="#ffa67a"
+                                                            style={{
+                                                                marginTop: 20,
+                                                            }}
+                                                            onPress={() => {
+                                                                this.setState({
+                                                                    liveAnswerSelected: false,
+                                                                    campaign: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign,
+                                                                        call: {
+                                                                            ...this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call,
+                                                                            liveanswer: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .liveanswer,
+                                                                                soundFileId:
+                                                                                    '',
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                });
+                                                            }}
+                                                        />
+                                                    )}
+                                                </View>
+                                            </View>
+                                        )}
+
+                                        <View
+                                            style={[
+                                                styles.panel,
+                                                {
+                                                    marginTop: 16,
+                                                },
+                                            ]}>
+                                            <View style={styles.leftContainer}>
+                                                <Image
+                                                    source={require('../assets/images/voice_mail.png')}
+                                                    style={styles.leftLogo}
+                                                    resizeMode="contain"
+                                                />
+                                                <TouchableOpacity
+                                                    onPress={() => {
+                                                        Utils.presentToast(
+                                                            "This audio file will be played when the recipient doesn't answer live.",
+                                                        );
+                                                    }}>
+                                                    <AntDesign
+                                                        name="infocirlce"
+                                                        size={20}
+                                                        color="#7b7b7b"
+                                                        style={{
+                                                            marginLeft: 8,
+                                                        }}
+                                                    />
+                                                </TouchableOpacity>
+                                            </View>
+
+                                            <View style={styles.panelBody}>
+                                                {this.state
+                                                    .voiceMailSelected && (
+                                                    <View
+                                                        style={{
+                                                            width: '100%',
+                                                            flexDirection:
+                                                                'row',
+                                                            marginBottom: 12,
+                                                        }}>
+                                                        <CmlText
+                                                            style={{
+                                                                flex: 1,
+                                                                marginTop: 4,
+                                                            }}
+                                                            numberOfLines={1}>
+                                                            {
+                                                                this.state.soundFiles.filter(
+                                                                    (
+                                                                        file: any,
+                                                                    ) => {
+                                                                        return (
+                                                                            file.id ==
+                                                                            this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call
+                                                                                .voicemail
+                                                                                .soundFileId
+                                                                        );
+                                                                    },
+                                                                )[0].fileName
+                                                            }
+                                                        </CmlText>
+
+                                                        <TouchableOpacity
+                                                            style={{
+                                                                marginRight: 8,
+                                                            }}
+                                                            onPress={
+                                                                () => {}
+                                                                // this.playSound(
+                                                                //     item.item,
+                                                                // )
+                                                            }>
+                                                            <AntDesign
+                                                                name="playcircleo"
+                                                                size={24}
+                                                            />
+                                                        </TouchableOpacity>
+                                                        <TouchableOpacity
+                                                            style={{
+                                                                marginRight: 8,
+                                                            }}
+                                                            onPress={
+                                                                () => {}
+                                                                // this.download(
+                                                                //     item.item,
+                                                                // )
+                                                            }>
+                                                            <View
+                                                                style={
+                                                                    styles.itemIcon
+                                                                }>
+                                                                <AntDesign
+                                                                    name="download"
+                                                                    size={14}
+                                                                    color="#f57536"
+                                                                />
+                                                            </View>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                )}
+
+                                                {!this.state
+                                                    .voiceMailSelected && (
+                                                    <View
+                                                        style={{
+                                                            width: '100%',
+                                                        }}>
+                                                        <CmlText>
+                                                            For best results:
+                                                        </CmlText>
+                                                        <CmlText
+                                                            style={{
+                                                                fontSize: 12,
+                                                                color:
+                                                                    '#6a6a6a',
+                                                            }}>
+                                                            23-37 seconds
+                                                            recommended
+                                                        </CmlText>
+                                                    </View>
+                                                )}
+
+                                                <View
+                                                    style={[
+                                                        styles.panelSwitchContainer,
+                                                        {marginTop: 16},
+                                                    ]}>
+                                                    <Switch
+                                                        value={
+                                                            this.state.campaign
+                                                                .call.voicemail
+                                                                .isRingless
+                                                        }
+                                                        onValueChange={(
+                                                            value: boolean,
+                                                        ) => {
+                                                            this.setState({
+                                                                campaign: {
+                                                                    ...this
+                                                                        .state
+                                                                        .campaign,
+                                                                    call: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign
+                                                                            .call,
+                                                                        voicemail: {
+                                                                            ...this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call
+                                                                                .voicemail,
+                                                                            isRingless: value,
+                                                                        },
+                                                                    },
+                                                                },
+                                                            });
+                                                            if (value) {
+                                                                this.setState({
+                                                                    isDNC: false,
+                                                                    isTransfer: false,
+                                                                    isLiveAnswer: false,
+                                                                });
+                                                            } else {
+                                                                this.setState({
+                                                                    isLiveAnswer: true,
+                                                                });
+                                                            }
+                                                        }}
+                                                        trackColor={{
+                                                            true: '#02b8da',
+                                                            false: 'grey',
+                                                        }}
+                                                    />
+                                                    <CmlText
+                                                        style={
+                                                            styles.panelOptionText
+                                                        }>
+                                                        Use Ringless Voicemail
+                                                    </CmlText>
+                                                </View>
+
+                                                {!this.state
+                                                    .voiceMailSelected && (
+                                                    <>
+                                                        <View
+                                                            style={
+                                                                styles.panelUploadContainer
+                                                            }>
+                                                            <RNPickerSelect
+                                                                value={
+                                                                    this.state
+                                                                        .campaign
+                                                                        .call
+                                                                        .voicemail
+                                                                        .soundFileId
+                                                                }
+                                                                onValueChange={(
+                                                                    value,
+                                                                ) => {
+                                                                    this.setState(
+                                                                        {
+                                                                            campaign: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign,
+                                                                                call: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call,
+                                                                                    voicemail: {
+                                                                                        ...this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call
+                                                                                            .voicemail,
+                                                                                        soundFileId: value,
+                                                                                    },
+                                                                                },
+                                                                            },
+                                                                            SoundPathUrlVoicemail: this.state.soundFiles.filter(
+                                                                                (
+                                                                                    item: any,
+                                                                                ) => {
+                                                                                    return (
+                                                                                        item.id ===
+                                                                                        value
+                                                                                    );
+                                                                                },
+                                                                            )[0]
+                                                                                .wavFilePath,
+                                                                        },
+                                                                    );
+
+                                                                    if (
+                                                                        Platform.OS ==
+                                                                        'android'
+                                                                    ) {
+                                                                        this.setState(
+                                                                            {
+                                                                                voiceMailSelected: true,
+                                                                            },
+                                                                        );
+                                                                    }
+                                                                }}
+                                                                onDonePress={() => {
+                                                                    if (
+                                                                        this
+                                                                            .state
+                                                                            .campaign
+                                                                            .call
+                                                                            .voicemail
+                                                                            .soundFileId
+                                                                            .length >
+                                                                        0
+                                                                    ) {
+                                                                        this.setState(
+                                                                            {
+                                                                                voiceMailSelected: true,
+                                                                            },
+                                                                        );
+                                                                    }
+                                                                }}
+                                                                items={this.state.soundFiles.map(
+                                                                    (
+                                                                        file: any,
+                                                                    ) => {
+                                                                        return {
+                                                                            label:
+                                                                                file.fileName,
+                                                                            value:
+                                                                                file.id,
+                                                                        };
+                                                                    },
+                                                                )}
+                                                                placeholder={{
+                                                                    label:
+                                                                        'Select Audio File',
+                                                                }}
+                                                                style={
+                                                                    this
+                                                                        .pickerSelectStyles
+                                                                }
+                                                            />
+                                                            <Ionicons
+                                                                name="md-arrow-dropdown"
+                                                                size={18}
+                                                                color="#7b7b7b"
+                                                                style={{
+                                                                    marginLeft: 8,
+                                                                }}
+                                                            />
+                                                        </View>
+                                                        <CmlButton
+                                                            title="Upload Audio"
+                                                            backgroundColor="#02b9db"
+                                                            style={{
+                                                                marginTop: 24,
+                                                            }}
+                                                            onPress={() => {
+                                                                this.uploadAudio();
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
+
+                                                {this.state
+                                                    .voiceMailSelected && (
+                                                    <CmlButton
+                                                        title="Remove Audio"
+                                                        backgroundColor="#ffa67a"
+                                                        style={{
+                                                            marginTop: 40,
+                                                        }}
+                                                        onPress={() => {
+                                                            this.setState({
+                                                                voiceMailSelected: false,
+                                                                campaign: {
+                                                                    ...this
+                                                                        .state
+                                                                        .campaign,
+                                                                    call: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign
+                                                                            .call,
+                                                                        voicemail: {
+                                                                            ...this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call
+                                                                                .voicemail,
+                                                                            soundFileId:
+                                                                                '',
+                                                                        },
+                                                                    },
+                                                                },
+                                                            });
+                                                        }}
+                                                    />
+                                                )}
+                                            </View>
+                                        </View>
+
+                                        {this.state.isTransfer && (
+                                            <View
+                                                style={[
+                                                    styles.panel,
+                                                    {
+                                                        marginTop: 16,
+                                                    },
+                                                ]}>
+                                                <View
+                                                    style={
+                                                        styles.leftContainer
+                                                    }>
+                                                    <Image
+                                                        source={require('../assets/images/transfer.png')}
+                                                        style={styles.leftLogo}
+                                                        resizeMode="contain"
+                                                    />
+                                                    <TouchableOpacity
+                                                        onPress={() => {
+                                                            Utils.presentToast(
+                                                                "This audio file will be played if the recipient doens't answer live.",
+                                                            );
+                                                        }}>
+                                                        <AntDesign
+                                                            name="infocirlce"
+                                                            size={20}
+                                                            color="#7b7b7b"
+                                                            style={{
+                                                                marginLeft: 8,
+                                                            }}
+                                                        />
+                                                    </TouchableOpacity>
+                                                </View>
+
+                                                <View style={styles.panelBody}>
+                                                    {this.state
+                                                        .transferFileSelected && (
+                                                        <>
+                                                            {this.state.campaign
+                                                                .call.transfer
+                                                                .defaultAudio && (
+                                                                <View
+                                                                    style={{
+                                                                        width:
+                                                                            '100%',
+                                                                        flexDirection:
+                                                                            'row',
+                                                                        marginBottom: 12,
+                                                                    }}>
+                                                                    <CmlText
+                                                                        style={{
+                                                                            flex: 1,
+                                                                            marginTop: 4,
+                                                                        }}
+                                                                        numberOfLines={
+                                                                            1
+                                                                        }>
+                                                                        Default
+                                                                        Audio
+                                                                    </CmlText>
+
+                                                                    <TouchableOpacity
+                                                                        style={{
+                                                                            marginRight: 8,
+                                                                        }}
+                                                                        onPress={
+                                                                            () => {}
+                                                                            // this.playSound(
+                                                                            //     item.item,
+                                                                            // )
+                                                                        }>
+                                                                        <AntDesign
+                                                                            name="playcircleo"
+                                                                            size={
+                                                                                24
+                                                                            }
+                                                                        />
+                                                                    </TouchableOpacity>
+                                                                    <TouchableOpacity
+                                                                        style={{
+                                                                            marginRight: 8,
+                                                                        }}
+                                                                        onPress={
+                                                                            () => {}
+                                                                            // this.download(
+                                                                            //     item.item,
+                                                                            // )
+                                                                        }>
+                                                                        <View
+                                                                            style={
+                                                                                styles.itemIcon
+                                                                            }>
+                                                                            <AntDesign
+                                                                                name="download"
+                                                                                size={
+                                                                                    14
+                                                                                }
+                                                                                color="#f57536"
+                                                                            />
+                                                                        </View>
+                                                                    </TouchableOpacity>
+                                                                </View>
+                                                            )}
+                                                            {!this.state
+                                                                .campaign.call
+                                                                .transfer
+                                                                .defaultAudio && (
+                                                                <View
+                                                                    style={{
+                                                                        width:
+                                                                            '100%',
+                                                                        flexDirection:
+                                                                            'row',
+                                                                        marginBottom: 12,
+                                                                    }}>
+                                                                    <CmlText
+                                                                        style={{
+                                                                            flex: 1,
+                                                                            marginTop: 4,
+                                                                        }}
+                                                                        numberOfLines={
+                                                                            1
+                                                                        }>
+                                                                        {
+                                                                            this.state.soundFiles.filter(
+                                                                                (
+                                                                                    file: any,
+                                                                                ) => {
+                                                                                    return (
+                                                                                        file.id ==
+                                                                                        this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call
+                                                                                            .transfer
+                                                                                            .soundFileId
+                                                                                    );
+                                                                                },
+                                                                            )[0]
+                                                                                .fileName
+                                                                        }
+                                                                    </CmlText>
+
+                                                                    <TouchableOpacity
+                                                                        style={{
+                                                                            marginRight: 8,
+                                                                        }}
+                                                                        onPress={
+                                                                            () => {}
+                                                                            // this.playSound(
+                                                                            //     item.item,
+                                                                            // )
+                                                                        }>
+                                                                        <AntDesign
+                                                                            name="playcircleo"
+                                                                            size={
+                                                                                24
+                                                                            }
+                                                                        />
+                                                                    </TouchableOpacity>
+                                                                    <TouchableOpacity
+                                                                        style={{
+                                                                            marginRight: 8,
+                                                                        }}
+                                                                        onPress={
+                                                                            () => {}
+                                                                            // this.download(
+                                                                            //     item.item,
+                                                                            // )
+                                                                        }>
+                                                                        <View
+                                                                            style={
+                                                                                styles.itemIcon
+                                                                            }>
+                                                                            <AntDesign
+                                                                                name="download"
+                                                                                size={
+                                                                                    14
+                                                                                }
+                                                                                color="#f57536"
+                                                                            />
+                                                                        </View>
+                                                                    </TouchableOpacity>
+                                                                </View>
+                                                            )}
+                                                        </>
+                                                    )}
+
+                                                    {!this.state
+                                                        .transferFileSelected && (
+                                                        <>
+                                                            <View
+                                                                style={{
+                                                                    width:
+                                                                        '100%',
+                                                                }}>
+                                                                <CmlText>
+                                                                    For best
+                                                                    results:
+                                                                </CmlText>
+                                                                <CmlText
+                                                                    style={{
+                                                                        fontSize: 12,
+                                                                        color:
+                                                                            '#6a6a6a',
+                                                                    }}>
+                                                                    23-37
+                                                                    seconds
+                                                                    recommended
+                                                                </CmlText>
+                                                            </View>
+                                                            <View
+                                                                style={[
+                                                                    styles.panelSwitchContainer,
+                                                                    {
+                                                                        marginTop: 16,
+                                                                    },
+                                                                ]}>
+                                                                <Switch
+                                                                    value={
+                                                                        this
+                                                                            .state
+                                                                            .campaign
+                                                                            .call
+                                                                            .transfer
+                                                                            .defaultAudio
+                                                                    }
+                                                                    onValueChange={(
+                                                                        value: boolean,
+                                                                    ) => {
+                                                                        this.setState(
+                                                                            {
+                                                                                campaign: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign,
+                                                                                    call: {
+                                                                                        ...this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call,
+                                                                                        transfer: {
+                                                                                            ...this
+                                                                                                .state
+                                                                                                .campaign
+                                                                                                .call
+                                                                                                .transfer,
+                                                                                            defaultAudio: value,
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                                SoundPathUrlTransfer: this
+                                                                                    .state
+                                                                                    .defaultTransferSound
+                                                                                    .wavFilePath,
+                                                                            },
+                                                                            () => {
+                                                                                if (
+                                                                                    this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call
+                                                                                        .transfer
+                                                                                        .defaultAudio
+                                                                                ) {
+                                                                                    this.setState(
+                                                                                        {
+                                                                                            campaign: {
+                                                                                                ...this
+                                                                                                    .state
+                                                                                                    .campaign,
+                                                                                                call: {
+                                                                                                    ...this
+                                                                                                        .state
+                                                                                                        .campaign
+                                                                                                        .call,
+                                                                                                    transfer: {
+                                                                                                        ...this
+                                                                                                            .state
+                                                                                                            .campaign
+                                                                                                            .call
+                                                                                                            .transfer,
+                                                                                                        soundFileId: this
+                                                                                                            .state
+                                                                                                            .defaultTransferSound
+                                                                                                            .id,
+                                                                                                    },
+                                                                                                },
+                                                                                            },
+                                                                                            transferFileSelected: true,
+                                                                                        },
+                                                                                    );
+                                                                                } else {
+                                                                                    this.setState(
+                                                                                        {
+                                                                                            campaign: {
+                                                                                                ...this
+                                                                                                    .state
+                                                                                                    .campaign,
+                                                                                                call: {
+                                                                                                    ...this
+                                                                                                        .state
+                                                                                                        .campaign
+                                                                                                        .call,
+                                                                                                    transfer: {
+                                                                                                        ...this
+                                                                                                            .state
+                                                                                                            .campaign
+                                                                                                            .call
+                                                                                                            .transfer,
+                                                                                                        soundFileId:
+                                                                                                            '',
+                                                                                                    },
+                                                                                                },
+                                                                                            },
+                                                                                            transferFileSelected: true,
+                                                                                        },
+                                                                                    );
+                                                                                }
+                                                                            },
+                                                                        );
+                                                                    }}
+                                                                    trackColor={{
+                                                                        true:
+                                                                            '#02b8da',
+                                                                        false:
+                                                                            'grey',
+                                                                    }}
+                                                                />
+                                                                <CmlText
+                                                                    style={
+                                                                        styles.panelOptionText
+                                                                    }>
+                                                                    Use default
+                                                                    audio
+                                                                </CmlText>
+                                                            </View>
+                                                            <View
+                                                                style={
+                                                                    styles.panelUploadContainer
+                                                                }>
+                                                                <RNPickerSelect
+                                                                    value={
+                                                                        this
+                                                                            .state
+                                                                            .campaign
+                                                                            .call
+                                                                            .transfer
+                                                                            .soundFileId
+                                                                    }
+                                                                    onValueChange={(
+                                                                        value,
+                                                                    ) => {
+                                                                        this.setState(
+                                                                            {
+                                                                                campaign: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign,
+                                                                                    call: {
+                                                                                        ...this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call,
+                                                                                        transfer: {
+                                                                                            ...this
+                                                                                                .state
+                                                                                                .campaign
+                                                                                                .call
+                                                                                                .transfer,
+                                                                                            soundFileId: value,
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                                SoundPathUrlTransfer: this.state.soundFiles.filter(
+                                                                                    (
+                                                                                        file: any,
+                                                                                    ) => {
+                                                                                        return (
+                                                                                            file.id ===
                                                                                             value
                                                                                         );
                                                                                     },
@@ -1974,7 +2429,7 @@ class CampaignCreate extends Component<
                                                                         ) {
                                                                             this.setState(
                                                                                 {
-                                                                                    voiceMailSelected: true,
+                                                                                    transferFileSelected: true,
                                                                                 },
                                                                             );
                                                                         }
@@ -1985,14 +2440,14 @@ class CampaignCreate extends Component<
                                                                                 .state
                                                                                 .campaign
                                                                                 .call
-                                                                                .voicemail
+                                                                                .transfer
                                                                                 .soundFileId
                                                                                 .length >
                                                                             0
                                                                         ) {
                                                                             this.setState(
                                                                                 {
-                                                                                    voiceMailSelected: true,
+                                                                                    transferFileSelected: true,
                                                                                 },
                                                                             );
                                                                         }
@@ -2041,393 +2496,30 @@ class CampaignCreate extends Component<
                                                     )}
 
                                                     {this.state
-                                                        .voiceMailSelected && (
-                                                        <CmlButton
-                                                            title="Remove Audio"
-                                                            backgroundColor="#ffa67a"
-                                                            style={{
-                                                                marginTop: 40,
-                                                            }}
-                                                            onPress={() => {
-                                                                this.setState({
-                                                                    voiceMailSelected: false,
-                                                                    campaign: {
-                                                                        ...this
-                                                                            .state
-                                                                            .campaign,
-                                                                        call: {
-                                                                            ...this
-                                                                                .state
-                                                                                .campaign
-                                                                                .call,
-                                                                            voicemail: {
-                                                                                ...this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .voicemail,
-                                                                                soundFileId:
-                                                                                    '',
-                                                                            },
-                                                                        },
-                                                                    },
-                                                                });
-                                                            }}
-                                                        />
-                                                    )}
-                                                </View>
-                                            </View>
-
-                                            {this.state.isTransfer && (
-                                                <View
-                                                    style={[
-                                                        styles.panel,
-                                                        {
-                                                            marginTop: 16,
-                                                        },
-                                                    ]}>
-                                                    <View
-                                                        style={
-                                                            styles.leftContainer
-                                                        }>
-                                                        <Image
-                                                            source={require('../assets/images/transfer.png')}
-                                                            style={
-                                                                styles.leftLogo
-                                                            }
-                                                            resizeMode="contain"
-                                                        />
-                                                        <TouchableOpacity
-                                                            onPress={() => {
-                                                                Utils.presentToast(
-                                                                    "This audio file will be played if the recipient doens't answer live.",
-                                                                );
-                                                            }}>
-                                                            <AntDesign
-                                                                name="infocirlce"
-                                                                size={20}
-                                                                color="#7b7b7b"
+                                                        .transferFileSelected && (
+                                                        <>
+                                                            <View
                                                                 style={{
-                                                                    marginLeft: 8,
-                                                                }}
-                                                            />
-                                                        </TouchableOpacity>
-                                                    </View>
-
-                                                    <View
-                                                        style={
-                                                            styles.panelBody
-                                                        }>
-                                                        {this.state
-                                                            .transferFileSelected && (
-                                                            <>
-                                                                {this.state
-                                                                    .campaign
-                                                                    .call
-                                                                    .transfer
-                                                                    .defaultAudio && (
-                                                                    <View
-                                                                        style={{
-                                                                            width:
-                                                                                '100%',
-                                                                            flexDirection:
-                                                                                'row',
-                                                                            marginBottom: 12,
-                                                                        }}>
-                                                                        <CmlText
-                                                                            style={{
-                                                                                flex: 1,
-                                                                                marginTop: 4,
-                                                                            }}
-                                                                            numberOfLines={
-                                                                                1
-                                                                            }>
-                                                                            Default
-                                                                            Audio
-                                                                        </CmlText>
-
-                                                                        <TouchableOpacity
-                                                                            style={{
-                                                                                marginRight: 8,
-                                                                            }}
-                                                                            onPress={
-                                                                                () => {}
-                                                                                // this.playSound(
-                                                                                //     item.item,
-                                                                                // )
-                                                                            }>
-                                                                            <AntDesign
-                                                                                name="playcircleo"
-                                                                                size={
-                                                                                    24
-                                                                                }
-                                                                            />
-                                                                        </TouchableOpacity>
-                                                                        <TouchableOpacity
-                                                                            style={{
-                                                                                marginRight: 8,
-                                                                            }}
-                                                                            onPress={
-                                                                                () => {}
-                                                                                // this.download(
-                                                                                //     item.item,
-                                                                                // )
-                                                                            }>
-                                                                            <View
-                                                                                style={
-                                                                                    styles.itemIcon
-                                                                                }>
-                                                                                <AntDesign
-                                                                                    name="download"
-                                                                                    size={
-                                                                                        14
-                                                                                    }
-                                                                                    color="#f57536"
-                                                                                />
-                                                                            </View>
-                                                                        </TouchableOpacity>
-                                                                    </View>
-                                                                )}
-                                                                {!this.state
-                                                                    .campaign
-                                                                    .call
-                                                                    .transfer
-                                                                    .defaultAudio && (
-                                                                    <View
-                                                                        style={{
-                                                                            width:
-                                                                                '100%',
-                                                                            flexDirection:
-                                                                                'row',
-                                                                            marginBottom: 12,
-                                                                        }}>
-                                                                        <CmlText
-                                                                            style={{
-                                                                                flex: 1,
-                                                                                marginTop: 4,
-                                                                            }}
-                                                                            numberOfLines={
-                                                                                1
-                                                                            }>
-                                                                            {
-                                                                                this.state.soundFiles.filter(
-                                                                                    (
-                                                                                        file: any,
-                                                                                    ) => {
-                                                                                        return (
-                                                                                            file.id ==
-                                                                                            this
-                                                                                                .state
-                                                                                                .campaign
-                                                                                                .call
-                                                                                                .transfer
-                                                                                                .soundFileId
-                                                                                        );
-                                                                                    },
-                                                                                )[0]
-                                                                                    .fileName
-                                                                            }
-                                                                        </CmlText>
-
-                                                                        <TouchableOpacity
-                                                                            style={{
-                                                                                marginRight: 8,
-                                                                            }}
-                                                                            onPress={
-                                                                                () => {}
-                                                                                // this.playSound(
-                                                                                //     item.item,
-                                                                                // )
-                                                                            }>
-                                                                            <AntDesign
-                                                                                name="playcircleo"
-                                                                                size={
-                                                                                    24
-                                                                                }
-                                                                            />
-                                                                        </TouchableOpacity>
-                                                                        <TouchableOpacity
-                                                                            style={{
-                                                                                marginRight: 8,
-                                                                            }}
-                                                                            onPress={
-                                                                                () => {}
-                                                                                // this.download(
-                                                                                //     item.item,
-                                                                                // )
-                                                                            }>
-                                                                            <View
-                                                                                style={
-                                                                                    styles.itemIcon
-                                                                                }>
-                                                                                <AntDesign
-                                                                                    name="download"
-                                                                                    size={
-                                                                                        14
-                                                                                    }
-                                                                                    color="#f57536"
-                                                                                />
-                                                                            </View>
-                                                                        </TouchableOpacity>
-                                                                    </View>
-                                                                )}
-                                                            </>
-                                                        )}
-
-                                                        {!this.state
-                                                            .transferFileSelected && (
-                                                            <>
-                                                                <View
+                                                                    width:
+                                                                        '100%',
+                                                                    marginTop: 8,
+                                                                }}>
+                                                                <CmlText
                                                                     style={{
                                                                         width:
                                                                             '100%',
                                                                     }}>
-                                                                    <CmlText>
-                                                                        For best
-                                                                        results:
-                                                                    </CmlText>
-                                                                    <CmlText
-                                                                        style={{
-                                                                            fontSize: 12,
-                                                                            color:
-                                                                                '#6a6a6a',
-                                                                        }}>
-                                                                        23-37
-                                                                        seconds
-                                                                        recommended
-                                                                    </CmlText>
-                                                                </View>
+                                                                    Transfer
+                                                                    Digit
+                                                                </CmlText>
+
                                                                 <View
                                                                     style={[
-                                                                        styles.panelSwitchContainer,
+                                                                        styles.panelUploadContainer,
                                                                         {
-                                                                            marginTop: 16,
+                                                                            marginTop: 8,
                                                                         },
                                                                     ]}>
-                                                                    <Switch
-                                                                        value={
-                                                                            this
-                                                                                .state
-                                                                                .campaign
-                                                                                .call
-                                                                                .transfer
-                                                                                .defaultAudio
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value: boolean,
-                                                                        ) => {
-                                                                            this.setState(
-                                                                                {
-                                                                                    campaign: {
-                                                                                        ...this
-                                                                                            .state
-                                                                                            .campaign,
-                                                                                        call: {
-                                                                                            ...this
-                                                                                                .state
-                                                                                                .campaign
-                                                                                                .call,
-                                                                                            transfer: {
-                                                                                                ...this
-                                                                                                    .state
-                                                                                                    .campaign
-                                                                                                    .call
-                                                                                                    .transfer,
-                                                                                                defaultAudio: value,
-                                                                                            },
-                                                                                        },
-                                                                                    },
-                                                                                    SoundPathUrlTransfer: this
-                                                                                        .state
-                                                                                        .defaultTransferSound
-                                                                                        .wavFilePath,
-                                                                                },
-                                                                                () => {
-                                                                                    if (
-                                                                                        this
-                                                                                            .state
-                                                                                            .campaign
-                                                                                            .call
-                                                                                            .transfer
-                                                                                            .defaultAudio
-                                                                                    ) {
-                                                                                        this.setState(
-                                                                                            {
-                                                                                                campaign: {
-                                                                                                    ...this
-                                                                                                        .state
-                                                                                                        .campaign,
-                                                                                                    call: {
-                                                                                                        ...this
-                                                                                                            .state
-                                                                                                            .campaign
-                                                                                                            .call,
-                                                                                                        transfer: {
-                                                                                                            ...this
-                                                                                                                .state
-                                                                                                                .campaign
-                                                                                                                .call
-                                                                                                                .transfer,
-                                                                                                            soundFileId: this
-                                                                                                                .state
-                                                                                                                .defaultTransferSound
-                                                                                                                .id,
-                                                                                                        },
-                                                                                                    },
-                                                                                                },
-                                                                                                transferFileSelected: true,
-                                                                                            },
-                                                                                        );
-                                                                                    } else {
-                                                                                        this.setState(
-                                                                                            {
-                                                                                                campaign: {
-                                                                                                    ...this
-                                                                                                        .state
-                                                                                                        .campaign,
-                                                                                                    call: {
-                                                                                                        ...this
-                                                                                                            .state
-                                                                                                            .campaign
-                                                                                                            .call,
-                                                                                                        transfer: {
-                                                                                                            ...this
-                                                                                                                .state
-                                                                                                                .campaign
-                                                                                                                .call
-                                                                                                                .transfer,
-                                                                                                            soundFileId:
-                                                                                                                '',
-                                                                                                        },
-                                                                                                    },
-                                                                                                },
-                                                                                                transferFileSelected: true,
-                                                                                            },
-                                                                                        );
-                                                                                    }
-                                                                                },
-                                                                            );
-                                                                        }}
-                                                                        trackColor={{
-                                                                            true:
-                                                                                '#02b8da',
-                                                                            false:
-                                                                                'grey',
-                                                                        }}
-                                                                    />
-                                                                    <CmlText
-                                                                        style={
-                                                                            styles.panelOptionText
-                                                                        }>
-                                                                        Use
-                                                                        default
-                                                                        audio
-                                                                    </CmlText>
-                                                                </View>
-                                                                <View
-                                                                    style={
-                                                                        styles.panelUploadContainer
-                                                                    }>
                                                                     <RNPickerSelect
                                                                         value={
                                                                             this
@@ -2435,7 +2527,7 @@ class CampaignCreate extends Component<
                                                                                 .campaign
                                                                                 .call
                                                                                 .transfer
-                                                                                .soundFileId
+                                                                                .digit
                                                                         }
                                                                         onValueChange={(
                                                                             value,
@@ -2457,69 +2549,24 @@ class CampaignCreate extends Component<
                                                                                                     .campaign
                                                                                                     .call
                                                                                                     .transfer,
-                                                                                                soundFileId: value,
+                                                                                                digit: value,
                                                                                             },
                                                                                         },
                                                                                     },
-                                                                                    SoundPathUrlTransfer: this.state.soundFiles.filter(
-                                                                                        (
-                                                                                            file: any,
-                                                                                        ) => {
-                                                                                            return (
-                                                                                                file.id ===
-                                                                                                value
-                                                                                            );
-                                                                                        },
-                                                                                    )[0]
-                                                                                        .wavFilePath,
                                                                                 },
                                                                             );
-
-                                                                            if (
-                                                                                Platform.OS ==
-                                                                                'android'
-                                                                            ) {
-                                                                                this.setState(
-                                                                                    {
-                                                                                        transferFileSelected: true,
-                                                                                    },
-                                                                                );
-                                                                            }
                                                                         }}
-                                                                        onDonePress={() => {
-                                                                            if (
-                                                                                this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .transfer
-                                                                                    .soundFileId
-                                                                                    .length >
-                                                                                0
-                                                                            ) {
-                                                                                this.setState(
-                                                                                    {
-                                                                                        transferFileSelected: true,
-                                                                                    },
-                                                                                );
-                                                                            }
-                                                                        }}
-                                                                        items={this.state.soundFiles.map(
+                                                                        items={this.DIGITS.map(
                                                                             (
-                                                                                file: any,
+                                                                                digit: any,
                                                                             ) => {
                                                                                 return {
-                                                                                    label:
-                                                                                        file.fileName,
-                                                                                    value:
-                                                                                        file.id,
+                                                                                    label: digit,
+                                                                                    value: digit,
                                                                                 };
                                                                             },
                                                                         )}
-                                                                        placeholder={{
-                                                                            label:
-                                                                                'Select Audio File',
-                                                                        }}
+                                                                        placeholder={{}}
                                                                         style={
                                                                             this
                                                                                 .pickerSelectStyles
@@ -2536,512 +2583,42 @@ class CampaignCreate extends Component<
                                                                         }}
                                                                     />
                                                                 </View>
-                                                                <CmlButton
-                                                                    title="Upload Audio"
-                                                                    backgroundColor="#02b9db"
-                                                                    style={{
-                                                                        marginTop: 24,
-                                                                    }}
-                                                                    onPress={() => {
-                                                                        this.uploadAudio();
-                                                                    }}
-                                                                />
-                                                            </>
-                                                        )}
 
-                                                        {this.state
-                                                            .transferFileSelected && (
-                                                            <>
-                                                                <View
+                                                                <CmlText
                                                                     style={{
                                                                         width:
                                                                             '100%',
-                                                                        marginTop: 8,
+                                                                        marginTop: 12,
                                                                     }}>
-                                                                    <CmlText
-                                                                        style={{
-                                                                            width:
-                                                                                '100%',
-                                                                        }}>
-                                                                        Transfer
-                                                                        Digit
-                                                                    </CmlText>
-
-                                                                    <View
-                                                                        style={[
-                                                                            styles.panelUploadContainer,
-                                                                            {
-                                                                                marginTop: 8,
-                                                                            },
-                                                                        ]}>
-                                                                        <RNPickerSelect
-                                                                            value={
-                                                                                this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .transfer
-                                                                                    .digit
-                                                                            }
-                                                                            onValueChange={(
-                                                                                value,
-                                                                            ) => {
-                                                                                this.setState(
-                                                                                    {
-                                                                                        campaign: {
-                                                                                            ...this
-                                                                                                .state
-                                                                                                .campaign,
-                                                                                            call: {
-                                                                                                ...this
-                                                                                                    .state
-                                                                                                    .campaign
-                                                                                                    .call,
-                                                                                                transfer: {
-                                                                                                    ...this
-                                                                                                        .state
-                                                                                                        .campaign
-                                                                                                        .call
-                                                                                                        .transfer,
-                                                                                                    digit: value,
-                                                                                                },
-                                                                                            },
-                                                                                        },
-                                                                                    },
-                                                                                );
-                                                                            }}
-                                                                            items={this.DIGITS.map(
-                                                                                (
-                                                                                    digit: any,
-                                                                                ) => {
-                                                                                    return {
-                                                                                        label: digit,
-                                                                                        value: digit,
-                                                                                    };
-                                                                                },
-                                                                            )}
-                                                                            placeholder={{}}
-                                                                            style={
-                                                                                this
-                                                                                    .pickerSelectStyles
-                                                                            }
-                                                                        />
-                                                                        <Ionicons
-                                                                            name="md-arrow-dropdown"
-                                                                            size={
-                                                                                18
-                                                                            }
-                                                                            color="#7b7b7b"
-                                                                            style={{
-                                                                                marginLeft: 8,
-                                                                            }}
-                                                                        />
-                                                                    </View>
-
-                                                                    <CmlText
-                                                                        style={{
-                                                                            width:
-                                                                                '100%',
-                                                                            marginTop: 12,
-                                                                        }}>
-                                                                        Concurrent
-                                                                        Transfers
-                                                                        (1 - 99)
-                                                                    </CmlText>
-                                                                    <View
-                                                                        style={[
-                                                                            styles.panelUploadContainer,
-                                                                            {
-                                                                                marginTop: 8,
-                                                                            },
-                                                                        ]}>
-                                                                        <CmlTextInput
-                                                                            style={{
-                                                                                flex: 1,
-                                                                            }}
-                                                                            keyboardType={
-                                                                                'numeric'
-                                                                            }
-                                                                            value={
-                                                                                this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .transfer
-                                                                                    .ctlimit +
-                                                                                ''
-                                                                            }
-                                                                            onChangeText={(
-                                                                                value: any,
-                                                                            ) => {
-                                                                                this.setState(
-                                                                                    {
-                                                                                        campaign: {
-                                                                                            ...this
-                                                                                                .state
-                                                                                                .campaign,
-                                                                                            call: {
-                                                                                                ...this
-                                                                                                    .state
-                                                                                                    .campaign
-                                                                                                    .call,
-                                                                                                transfer: {
-                                                                                                    ...this
-                                                                                                        .state
-                                                                                                        .campaign
-                                                                                                        .call
-                                                                                                        .transfer,
-                                                                                                    ctlimit: value,
-                                                                                                },
-                                                                                            },
-                                                                                        },
-                                                                                    },
-                                                                                );
-                                                                            }}
-                                                                        />
-                                                                    </View>
-
-                                                                    <CmlText
-                                                                        style={{
-                                                                            width:
-                                                                                '100%',
-                                                                            marginTop: 12,
-                                                                        }}>
-                                                                        Phone
-                                                                        Number
-                                                                    </CmlText>
-                                                                    <View
-                                                                        style={[
-                                                                            styles.panelUploadContainer,
-                                                                            {
-                                                                                marginTop: 8,
-                                                                            },
-                                                                        ]}>
-                                                                        <CmlTextInput
-                                                                            style={{
-                                                                                flex: 1,
-                                                                            }}
-                                                                            keyboardType={
-                                                                                'phone-pad'
-                                                                            }
-                                                                            placeholder="555-555-5555"
-                                                                            value={
-                                                                                this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .transfer
-                                                                                    .number
-                                                                            }
-                                                                            onChangeText={(
-                                                                                value: any,
-                                                                            ) => {
-                                                                                this.setState(
-                                                                                    {
-                                                                                        campaign: {
-                                                                                            ...this
-                                                                                                .state
-                                                                                                .campaign,
-                                                                                            call: {
-                                                                                                ...this
-                                                                                                    .state
-                                                                                                    .campaign
-                                                                                                    .call,
-                                                                                                transfer: {
-                                                                                                    ...this
-                                                                                                        .state
-                                                                                                        .campaign
-                                                                                                        .call
-                                                                                                        .transfer,
-                                                                                                    number: value,
-                                                                                                },
-                                                                                            },
-                                                                                        },
-                                                                                    },
-                                                                                );
-                                                                            }}
-                                                                        />
-                                                                    </View>
-                                                                </View>
-
-                                                                <CmlButton
-                                                                    title="Remove Audio"
-                                                                    backgroundColor="#ffa67a"
-                                                                    style={{
-                                                                        marginTop: 40,
-                                                                    }}
-                                                                    onPress={() => {
-                                                                        this.setState(
-                                                                            {
-                                                                                transferFileSelected: false,
-                                                                                campaign: {
-                                                                                    ...this
-                                                                                        .state
-                                                                                        .campaign,
-                                                                                    call: {
-                                                                                        ...this
-                                                                                            .state
-                                                                                            .campaign
-                                                                                            .call,
-                                                                                        transfer: {
-                                                                                            ...this
-                                                                                                .state
-                                                                                                .campaign
-                                                                                                .call
-                                                                                                .transfer,
-                                                                                            soundFileId:
-                                                                                                '',
-                                                                                            defaultAudio: false,
-                                                                                        },
-                                                                                    },
-                                                                                },
-                                                                                SoundPathUrlTransfer:
-                                                                                    '',
-                                                                            },
-                                                                        );
-                                                                    }}
-                                                                />
-                                                            </>
-                                                        )}
-                                                    </View>
-                                                </View>
-                                            )}
-
-                                            {this.state.isDNC && (
-                                                <View
-                                                    style={[
-                                                        styles.panel,
-                                                        {
-                                                            marginTop: 16,
-                                                        },
-                                                    ]}>
-                                                    <View
-                                                        style={
-                                                            styles.leftContainer
-                                                        }>
-                                                        <Image
-                                                            source={require('../assets/images/do_not_call.png')}
-                                                            style={
-                                                                styles.leftLogo
-                                                            }
-                                                            resizeMode="contain"
-                                                        />
-                                                        <TouchableOpacity
-                                                            onPress={() => {
-                                                                Utils.presentToast(
-                                                                    "This audio file will be played if the recipient chooses to opt out the future campaigns. Ex - 'You have now been placed on the do not call list and you will not receive any future automated calls from us.'",
-                                                                );
-                                                            }}>
-                                                            <AntDesign
-                                                                name="infocirlce"
-                                                                size={20}
-                                                                color="#7b7b7b"
-                                                                style={{
-                                                                    marginLeft: 8,
-                                                                }}
-                                                            />
-                                                        </TouchableOpacity>
-                                                    </View>
-
-                                                    <View
-                                                        style={
-                                                            styles.panelBody
-                                                        }>
-                                                        {this.state
-                                                            .doNotCallSelected && (
-                                                            <>
-                                                                {this.state
-                                                                    .campaign
-                                                                    .call.dnc
-                                                                    .defaultAudio && (
-                                                                    <View
-                                                                        style={{
-                                                                            width:
-                                                                                '100%',
-                                                                            flexDirection:
-                                                                                'row',
-                                                                            marginBottom: 12,
-                                                                        }}>
-                                                                        <CmlText
-                                                                            style={{
-                                                                                flex: 1,
-                                                                                marginTop: 4,
-                                                                            }}
-                                                                            numberOfLines={
-                                                                                1
-                                                                            }>
-                                                                            Default
-                                                                            Audio
-                                                                        </CmlText>
-
-                                                                        <TouchableOpacity
-                                                                            style={{
-                                                                                marginRight: 8,
-                                                                            }}
-                                                                            onPress={
-                                                                                () => {}
-                                                                                // this.playSound(
-                                                                                //     item.item,
-                                                                                // )
-                                                                            }>
-                                                                            <AntDesign
-                                                                                name="playcircleo"
-                                                                                size={
-                                                                                    24
-                                                                                }
-                                                                            />
-                                                                        </TouchableOpacity>
-                                                                        <TouchableOpacity
-                                                                            style={{
-                                                                                marginRight: 8,
-                                                                            }}
-                                                                            onPress={
-                                                                                () => {}
-                                                                                // this.download(
-                                                                                //     item.item,
-                                                                                // )
-                                                                            }>
-                                                                            <View
-                                                                                style={
-                                                                                    styles.itemIcon
-                                                                                }>
-                                                                                <AntDesign
-                                                                                    name="download"
-                                                                                    size={
-                                                                                        14
-                                                                                    }
-                                                                                    color="#f57536"
-                                                                                />
-                                                                            </View>
-                                                                        </TouchableOpacity>
-                                                                    </View>
-                                                                )}
-                                                                {!this.state
-                                                                    .campaign
-                                                                    .call.dnc
-                                                                    .defaultAudio && (
-                                                                    <View
-                                                                        style={{
-                                                                            width:
-                                                                                '100%',
-                                                                            flexDirection:
-                                                                                'row',
-                                                                            marginBottom: 12,
-                                                                        }}>
-                                                                        <CmlText
-                                                                            style={{
-                                                                                flex: 1,
-                                                                                marginTop: 4,
-                                                                            }}
-                                                                            numberOfLines={
-                                                                                1
-                                                                            }>
-                                                                            {
-                                                                                this.state.soundFiles.filter(
-                                                                                    (
-                                                                                        file: any,
-                                                                                    ) => {
-                                                                                        return (
-                                                                                            file.id ==
-                                                                                            this
-                                                                                                .state
-                                                                                                .campaign
-                                                                                                .call
-                                                                                                .dnc
-                                                                                                .soundFileId
-                                                                                        );
-                                                                                    },
-                                                                                )[0]
-                                                                                    .fileName
-                                                                            }
-                                                                        </CmlText>
-
-                                                                        <TouchableOpacity
-                                                                            style={{
-                                                                                marginRight: 8,
-                                                                            }}
-                                                                            onPress={
-                                                                                () => {}
-                                                                                // this.playSound(
-                                                                                //     item.item,
-                                                                                // )
-                                                                            }>
-                                                                            <AntDesign
-                                                                                name="playcircleo"
-                                                                                size={
-                                                                                    24
-                                                                                }
-                                                                            />
-                                                                        </TouchableOpacity>
-                                                                        <TouchableOpacity
-                                                                            style={{
-                                                                                marginRight: 8,
-                                                                            }}
-                                                                            onPress={
-                                                                                () => {}
-                                                                                // this.download(
-                                                                                //     item.item,
-                                                                                // )
-                                                                            }>
-                                                                            <View
-                                                                                style={
-                                                                                    styles.itemIcon
-                                                                                }>
-                                                                                <AntDesign
-                                                                                    name="download"
-                                                                                    size={
-                                                                                        14
-                                                                                    }
-                                                                                    color="#f57536"
-                                                                                />
-                                                                            </View>
-                                                                        </TouchableOpacity>
-                                                                    </View>
-                                                                )}
-                                                            </>
-                                                        )}
-
-                                                        {!this.state
-                                                            .doNotCallSelected && (
-                                                            <>
-                                                                <View
-                                                                    style={{
-                                                                        width:
-                                                                            '100%',
-                                                                    }}>
-                                                                    <CmlText>
-                                                                        For best
-                                                                        results:
-                                                                    </CmlText>
-                                                                    <CmlText
-                                                                        style={{
-                                                                            fontSize: 12,
-                                                                            color:
-                                                                                '#6a6a6a',
-                                                                        }}>
-                                                                        23-37
-                                                                        seconds
-                                                                        recommended
-                                                                    </CmlText>
-                                                                </View>
+                                                                    Concurrent
+                                                                    Transfers (1
+                                                                    - 99)
+                                                                </CmlText>
                                                                 <View
                                                                     style={[
-                                                                        styles.panelSwitchContainer,
+                                                                        styles.panelUploadContainer,
                                                                         {
-                                                                            marginTop: 16,
+                                                                            marginTop: 8,
                                                                         },
                                                                     ]}>
-                                                                    <Switch
+                                                                    <CmlTextInput
+                                                                        style={{
+                                                                            flex: 1,
+                                                                        }}
+                                                                        keyboardType={
+                                                                            'numeric'
+                                                                        }
                                                                         value={
                                                                             this
                                                                                 .state
                                                                                 .campaign
                                                                                 .call
                                                                                 .transfer
-                                                                                .defaultAudio
+                                                                                .ctlimit +
+                                                                            ''
                                                                         }
-                                                                        onValueChange={(
-                                                                            value: boolean,
+                                                                        onChangeText={(
+                                                                            value: any,
                                                                         ) => {
                                                                             this.setState(
                                                                                 {
@@ -3054,331 +2631,359 @@ class CampaignCreate extends Component<
                                                                                                 .state
                                                                                                 .campaign
                                                                                                 .call,
-                                                                                            dnc: {
+                                                                                            transfer: {
                                                                                                 ...this
                                                                                                     .state
                                                                                                     .campaign
                                                                                                     .call
-                                                                                                    .dnc,
-                                                                                                defaultAudio: value,
+                                                                                                    .transfer,
+                                                                                                ctlimit: value,
                                                                                             },
                                                                                         },
                                                                                     },
-                                                                                    SoundPathUrlDnc: this
-                                                                                        .state
-                                                                                        .defaultDNCLiveSound
-                                                                                        .wavFilePath,
                                                                                 },
-                                                                                () => {
-                                                                                    if (
+                                                                            );
+                                                                        }}
+                                                                    />
+                                                                </View>
+
+                                                                <CmlText
+                                                                    style={{
+                                                                        width:
+                                                                            '100%',
+                                                                        marginTop: 12,
+                                                                    }}>
+                                                                    Phone Number
+                                                                </CmlText>
+                                                                <View
+                                                                    style={[
+                                                                        styles.panelUploadContainer,
+                                                                        {
+                                                                            marginTop: 8,
+                                                                        },
+                                                                    ]}>
+                                                                    <CmlTextInput
+                                                                        style={{
+                                                                            flex: 1,
+                                                                        }}
+                                                                        keyboardType={
+                                                                            'phone-pad'
+                                                                        }
+                                                                        placeholder="555-555-5555"
+                                                                        value={
+                                                                            this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call
+                                                                                .transfer
+                                                                                .number
+                                                                        }
+                                                                        onChangeText={(
+                                                                            value: any,
+                                                                        ) => {
+                                                                            this.setState(
+                                                                                {
+                                                                                    campaign: {
+                                                                                        ...this
+                                                                                            .state
+                                                                                            .campaign,
+                                                                                        call: {
+                                                                                            ...this
+                                                                                                .state
+                                                                                                .campaign
+                                                                                                .call,
+                                                                                            transfer: {
+                                                                                                ...this
+                                                                                                    .state
+                                                                                                    .campaign
+                                                                                                    .call
+                                                                                                    .transfer,
+                                                                                                number: value,
+                                                                                            },
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                            );
+                                                                        }}
+                                                                    />
+                                                                </View>
+                                                            </View>
+
+                                                            <CmlButton
+                                                                title="Remove Audio"
+                                                                backgroundColor="#ffa67a"
+                                                                style={{
+                                                                    marginTop: 40,
+                                                                }}
+                                                                onPress={() => {
+                                                                    this.setState(
+                                                                        {
+                                                                            transferFileSelected: false,
+                                                                            campaign: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign,
+                                                                                call: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call,
+                                                                                    transfer: {
+                                                                                        ...this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call
+                                                                                            .transfer,
+                                                                                        soundFileId:
+                                                                                            '',
+                                                                                        defaultAudio: false,
+                                                                                    },
+                                                                                },
+                                                                            },
+                                                                            SoundPathUrlTransfer:
+                                                                                '',
+                                                                        },
+                                                                    );
+                                                                }}
+                                                            />
+                                                        </>
+                                                    )}
+                                                </View>
+                                            </View>
+                                        )}
+
+                                        {this.state.isDNC && (
+                                            <View
+                                                style={[
+                                                    styles.panel,
+                                                    {
+                                                        marginTop: 16,
+                                                    },
+                                                ]}>
+                                                <View
+                                                    style={
+                                                        styles.leftContainer
+                                                    }>
+                                                    <Image
+                                                        source={require('../assets/images/do_not_call.png')}
+                                                        style={styles.leftLogo}
+                                                        resizeMode="contain"
+                                                    />
+                                                    <TouchableOpacity
+                                                        onPress={() => {
+                                                            Utils.presentToast(
+                                                                "This audio file will be played if the recipient chooses to opt out the future campaigns. Ex - 'You have now been placed on the do not call list and you will not receive any future automated calls from us.'",
+                                                            );
+                                                        }}>
+                                                        <AntDesign
+                                                            name="infocirlce"
+                                                            size={20}
+                                                            color="#7b7b7b"
+                                                            style={{
+                                                                marginLeft: 8,
+                                                            }}
+                                                        />
+                                                    </TouchableOpacity>
+                                                </View>
+
+                                                <View style={styles.panelBody}>
+                                                    {this.state
+                                                        .doNotCallSelected && (
+                                                        <>
+                                                            {this.state.campaign
+                                                                .call.dnc
+                                                                .defaultAudio && (
+                                                                <View
+                                                                    style={{
+                                                                        width:
+                                                                            '100%',
+                                                                        flexDirection:
+                                                                            'row',
+                                                                        marginBottom: 12,
+                                                                    }}>
+                                                                    <CmlText
+                                                                        style={{
+                                                                            flex: 1,
+                                                                            marginTop: 4,
+                                                                        }}
+                                                                        numberOfLines={
+                                                                            1
+                                                                        }>
+                                                                        Default
+                                                                        Audio
+                                                                    </CmlText>
+
+                                                                    <TouchableOpacity
+                                                                        style={{
+                                                                            marginRight: 8,
+                                                                        }}
+                                                                        onPress={
+                                                                            () => {}
+                                                                            // this.playSound(
+                                                                            //     item.item,
+                                                                            // )
+                                                                        }>
+                                                                        <AntDesign
+                                                                            name="playcircleo"
+                                                                            size={
+                                                                                24
+                                                                            }
+                                                                        />
+                                                                    </TouchableOpacity>
+                                                                    <TouchableOpacity
+                                                                        style={{
+                                                                            marginRight: 8,
+                                                                        }}
+                                                                        onPress={
+                                                                            () => {}
+                                                                            // this.download(
+                                                                            //     item.item,
+                                                                            // )
+                                                                        }>
+                                                                        <View
+                                                                            style={
+                                                                                styles.itemIcon
+                                                                            }>
+                                                                            <AntDesign
+                                                                                name="download"
+                                                                                size={
+                                                                                    14
+                                                                                }
+                                                                                color="#f57536"
+                                                                            />
+                                                                        </View>
+                                                                    </TouchableOpacity>
+                                                                </View>
+                                                            )}
+                                                            {!this.state
+                                                                .campaign.call
+                                                                .dnc
+                                                                .defaultAudio && (
+                                                                <View
+                                                                    style={{
+                                                                        width:
+                                                                            '100%',
+                                                                        flexDirection:
+                                                                            'row',
+                                                                        marginBottom: 12,
+                                                                    }}>
+                                                                    <CmlText
+                                                                        style={{
+                                                                            flex: 1,
+                                                                            marginTop: 4,
+                                                                        }}
+                                                                        numberOfLines={
+                                                                            1
+                                                                        }>
+                                                                        {
+                                                                            this.state.soundFiles.filter(
+                                                                                (
+                                                                                    file: any,
+                                                                                ) => {
+                                                                                    return (
+                                                                                        file.id ==
                                                                                         this
                                                                                             .state
                                                                                             .campaign
                                                                                             .call
                                                                                             .dnc
-                                                                                            .defaultAudio
-                                                                                    ) {
-                                                                                        this.setState(
-                                                                                            {
-                                                                                                campaign: {
-                                                                                                    ...this
-                                                                                                        .state
-                                                                                                        .campaign,
-                                                                                                    call: {
-                                                                                                        ...this
-                                                                                                            .state
-                                                                                                            .campaign
-                                                                                                            .call,
-                                                                                                        dnc: {
-                                                                                                            ...this
-                                                                                                                .state
-                                                                                                                .campaign
-                                                                                                                .call
-                                                                                                                .dnc,
-                                                                                                            soundFileId: this
-                                                                                                                .state
-                                                                                                                .defaultDNCLiveSound
-                                                                                                                .id,
-                                                                                                        },
-                                                                                                    },
-                                                                                                },
-                                                                                                doNotCallSelected: true,
-                                                                                            },
-                                                                                        );
-                                                                                    } else {
-                                                                                        this.setState(
-                                                                                            {
-                                                                                                campaign: {
-                                                                                                    ...this
-                                                                                                        .state
-                                                                                                        .campaign,
-                                                                                                    call: {
-                                                                                                        ...this
-                                                                                                            .state
-                                                                                                            .campaign
-                                                                                                            .call,
-                                                                                                        dnc: {
-                                                                                                            ...this
-                                                                                                                .state
-                                                                                                                .campaign
-                                                                                                                .call
-                                                                                                                .dnc,
-                                                                                                            soundFileId:
-                                                                                                                '',
-                                                                                                        },
-                                                                                                    },
-                                                                                                },
-                                                                                                doNotCallSelected: true,
-                                                                                            },
-                                                                                        );
-                                                                                    }
+                                                                                            .soundFileId
+                                                                                    );
                                                                                 },
-                                                                            );
+                                                                            )[0]
+                                                                                .fileName
+                                                                        }
+                                                                    </CmlText>
+
+                                                                    <TouchableOpacity
+                                                                        style={{
+                                                                            marginRight: 8,
                                                                         }}
-                                                                        trackColor={{
-                                                                            true:
-                                                                                '#02b8da',
-                                                                            false:
-                                                                                'grey',
-                                                                        }}
-                                                                    />
-                                                                    <CmlText
-                                                                        style={
-                                                                            styles.panelOptionText
+                                                                        onPress={
+                                                                            () => {}
+                                                                            // this.playSound(
+                                                                            //     item.item,
+                                                                            // )
                                                                         }>
-                                                                        Use
-                                                                        default
-                                                                        audio
-                                                                    </CmlText>
-                                                                </View>
-                                                                <View
-                                                                    style={
-                                                                        styles.panelUploadContainer
-                                                                    }>
-                                                                    <RNPickerSelect
-                                                                        value={
-                                                                            this
-                                                                                .state
-                                                                                .campaign
-                                                                                .call
-                                                                                .dnc
-                                                                                .soundFileId
-                                                                        }
-                                                                        onValueChange={(
-                                                                            value,
-                                                                        ) => {
-                                                                            this.setState(
-                                                                                {
-                                                                                    campaign: {
-                                                                                        ...this
-                                                                                            .state
-                                                                                            .campaign,
-                                                                                        call: {
-                                                                                            ...this
-                                                                                                .state
-                                                                                                .campaign
-                                                                                                .call,
-                                                                                            dnc: {
-                                                                                                ...this
-                                                                                                    .state
-                                                                                                    .campaign
-                                                                                                    .call
-                                                                                                    .dnc,
-                                                                                                soundFileId: value,
-                                                                                            },
-                                                                                        },
-                                                                                    },
-                                                                                    SoundPathUrlDnc: this.state.soundFiles.filter(
-                                                                                        (
-                                                                                            file: any,
-                                                                                        ) => {
-                                                                                            return (
-                                                                                                file.id ===
-                                                                                                value
-                                                                                            );
-                                                                                        },
-                                                                                    )[0]
-                                                                                        .wavFilePath,
-                                                                                },
-                                                                            );
-
-                                                                            if (
-                                                                                Platform.OS ==
-                                                                                'android'
-                                                                            ) {
-                                                                                this.setState(
-                                                                                    {
-                                                                                        doNotCallSelected: true,
-                                                                                    },
-                                                                                );
-                                                                            }
-                                                                        }}
-                                                                        onDonePress={() => {
-                                                                            if (
-                                                                                this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .dnc
-                                                                                    .soundFileId
-                                                                                    .length >
-                                                                                0
-                                                                            ) {
-                                                                                this.setState(
-                                                                                    {
-                                                                                        doNotCallSelected: true,
-                                                                                    },
-                                                                                );
-                                                                            }
-                                                                        }}
-                                                                        items={this.state.soundFiles.map(
-                                                                            (
-                                                                                file: any,
-                                                                            ) => {
-                                                                                return {
-                                                                                    label:
-                                                                                        file.fileName,
-                                                                                    value:
-                                                                                        file.id,
-                                                                                };
-                                                                            },
-                                                                        )}
-                                                                        placeholder={{
-                                                                            label:
-                                                                                'Select Audio File',
-                                                                        }}
-                                                                        style={
-                                                                            this
-                                                                                .pickerSelectStyles
-                                                                        }
-                                                                    />
-                                                                    <Ionicons
-                                                                        name="md-arrow-dropdown"
-                                                                        size={
-                                                                            18
-                                                                        }
-                                                                        color="#7b7b7b"
-                                                                        style={{
-                                                                            marginLeft: 8,
-                                                                        }}
-                                                                    />
-                                                                </View>
-                                                                <CmlButton
-                                                                    title="Upload Audio"
-                                                                    backgroundColor="#02b9db"
-                                                                    style={{
-                                                                        marginTop: 24,
-                                                                    }}
-                                                                    onPress={() => {
-                                                                        this.uploadAudio();
-                                                                    }}
-                                                                />
-                                                            </>
-                                                        )}
-
-                                                        {this.state
-                                                            .doNotCallSelected && (
-                                                            <>
-                                                                <View
-                                                                    style={{
-                                                                        width:
-                                                                            '100%',
-                                                                        marginTop: 8,
-                                                                    }}>
-                                                                    <CmlText
-                                                                        style={{
-                                                                            width:
-                                                                                '100%',
-                                                                        }}>
-                                                                        DNC
-                                                                        Digit
-                                                                    </CmlText>
-
-                                                                    <View
-                                                                        style={[
-                                                                            styles.panelUploadContainer,
-                                                                            {
-                                                                                marginTop: 8,
-                                                                            },
-                                                                        ]}>
-                                                                        <RNPickerSelect
-                                                                            value={
-                                                                                this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .dnc
-                                                                                    .digit
-                                                                            }
-                                                                            onValueChange={(
-                                                                                value,
-                                                                            ) => {
-                                                                                this.setState(
-                                                                                    {
-                                                                                        campaign: {
-                                                                                            ...this
-                                                                                                .state
-                                                                                                .campaign,
-                                                                                            call: {
-                                                                                                ...this
-                                                                                                    .state
-                                                                                                    .campaign
-                                                                                                    .call,
-                                                                                                dnc: {
-                                                                                                    ...this
-                                                                                                        .state
-                                                                                                        .campaign
-                                                                                                        .call
-                                                                                                        .dnc,
-                                                                                                    digit: value,
-                                                                                                },
-                                                                                            },
-                                                                                        },
-                                                                                    },
-                                                                                );
-                                                                            }}
-                                                                            items={this.DIGITS.map(
-                                                                                (
-                                                                                    digit: any,
-                                                                                ) => {
-                                                                                    return {
-                                                                                        label: digit,
-                                                                                        value: digit,
-                                                                                    };
-                                                                                },
-                                                                            )}
-                                                                            placeholder={{
-                                                                                label:
-                                                                                    'Select DNC Digit',
-                                                                            }}
-                                                                            style={
-                                                                                this
-                                                                                    .pickerSelectStyles
-                                                                            }
-                                                                        />
-                                                                        <Ionicons
-                                                                            name="md-arrow-dropdown"
+                                                                        <AntDesign
+                                                                            name="playcircleo"
                                                                             size={
-                                                                                18
+                                                                                24
                                                                             }
-                                                                            color="#7b7b7b"
-                                                                            style={{
-                                                                                marginLeft: 8,
-                                                                            }}
                                                                         />
-                                                                    </View>
+                                                                    </TouchableOpacity>
+                                                                    <TouchableOpacity
+                                                                        style={{
+                                                                            marginRight: 8,
+                                                                        }}
+                                                                        onPress={
+                                                                            () => {}
+                                                                            // this.download(
+                                                                            //     item.item,
+                                                                            // )
+                                                                        }>
+                                                                        <View
+                                                                            style={
+                                                                                styles.itemIcon
+                                                                            }>
+                                                                            <AntDesign
+                                                                                name="download"
+                                                                                size={
+                                                                                    14
+                                                                                }
+                                                                                color="#f57536"
+                                                                            />
+                                                                        </View>
+                                                                    </TouchableOpacity>
                                                                 </View>
+                                                            )}
+                                                        </>
+                                                    )}
 
-                                                                <CmlButton
-                                                                    title="Remove Audio"
-                                                                    backgroundColor="#ffa67a"
+                                                    {!this.state
+                                                        .doNotCallSelected && (
+                                                        <>
+                                                            <View
+                                                                style={{
+                                                                    width:
+                                                                        '100%',
+                                                                }}>
+                                                                <CmlText>
+                                                                    For best
+                                                                    results:
+                                                                </CmlText>
+                                                                <CmlText
                                                                     style={{
-                                                                        marginTop: 40,
-                                                                    }}
-                                                                    onPress={() => {
+                                                                        fontSize: 12,
+                                                                        color:
+                                                                            '#6a6a6a',
+                                                                    }}>
+                                                                    23-37
+                                                                    seconds
+                                                                    recommended
+                                                                </CmlText>
+                                                            </View>
+                                                            <View
+                                                                style={[
+                                                                    styles.panelSwitchContainer,
+                                                                    {
+                                                                        marginTop: 16,
+                                                                    },
+                                                                ]}>
+                                                                <Switch
+                                                                    value={
+                                                                        this
+                                                                            .state
+                                                                            .campaign
+                                                                            .call
+                                                                            .transfer
+                                                                            .defaultAudio
+                                                                    }
+                                                                    onValueChange={(
+                                                                        value: boolean,
+                                                                    ) => {
                                                                         this.setState(
                                                                             {
-                                                                                doNotCallSelected: false,
                                                                                 campaign: {
                                                                                     ...this
                                                                                         .state
@@ -3394,980 +2999,1289 @@ class CampaignCreate extends Component<
                                                                                                 .campaign
                                                                                                 .call
                                                                                                 .dnc,
-                                                                                            soundFileId:
-                                                                                                '',
-                                                                                            defaultAudio: false,
+                                                                                            defaultAudio: value,
                                                                                         },
                                                                                     },
                                                                                 },
-                                                                                SoundPathUrlDnc:
-                                                                                    '',
+                                                                                SoundPathUrlDnc: this
+                                                                                    .state
+                                                                                    .defaultDNCLiveSound
+                                                                                    .wavFilePath,
+                                                                            },
+                                                                            () => {
+                                                                                if (
+                                                                                    this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call
+                                                                                        .dnc
+                                                                                        .defaultAudio
+                                                                                ) {
+                                                                                    this.setState(
+                                                                                        {
+                                                                                            campaign: {
+                                                                                                ...this
+                                                                                                    .state
+                                                                                                    .campaign,
+                                                                                                call: {
+                                                                                                    ...this
+                                                                                                        .state
+                                                                                                        .campaign
+                                                                                                        .call,
+                                                                                                    dnc: {
+                                                                                                        ...this
+                                                                                                            .state
+                                                                                                            .campaign
+                                                                                                            .call
+                                                                                                            .dnc,
+                                                                                                        soundFileId: this
+                                                                                                            .state
+                                                                                                            .defaultDNCLiveSound
+                                                                                                            .id,
+                                                                                                    },
+                                                                                                },
+                                                                                            },
+                                                                                            doNotCallSelected: true,
+                                                                                        },
+                                                                                    );
+                                                                                } else {
+                                                                                    this.setState(
+                                                                                        {
+                                                                                            campaign: {
+                                                                                                ...this
+                                                                                                    .state
+                                                                                                    .campaign,
+                                                                                                call: {
+                                                                                                    ...this
+                                                                                                        .state
+                                                                                                        .campaign
+                                                                                                        .call,
+                                                                                                    dnc: {
+                                                                                                        ...this
+                                                                                                            .state
+                                                                                                            .campaign
+                                                                                                            .call
+                                                                                                            .dnc,
+                                                                                                        soundFileId:
+                                                                                                            '',
+                                                                                                    },
+                                                                                                },
+                                                                                            },
+                                                                                            doNotCallSelected: true,
+                                                                                        },
+                                                                                    );
+                                                                                }
                                                                             },
                                                                         );
                                                                     }}
+                                                                    trackColor={{
+                                                                        true:
+                                                                            '#02b8da',
+                                                                        false:
+                                                                            'grey',
+                                                                    }}
                                                                 />
-                                                            </>
-                                                        )}
-                                                    </View>
-                                                </View>
-                                            )}
-
-                                            <TouchableOpacity
-                                                style={styles.continueButton}
-                                                onPress={() => this.continue()}>
-                                                <View
-                                                    style={
-                                                        styles.continueButtonContainer
-                                                    }>
-                                                    <CmlText
-                                                        style={
-                                                            styles.continueButtonText
-                                                        }>
-                                                        CONTINUE
-                                                    </CmlText>
-                                                    <MaterialIcons
-                                                        name="navigate-next"
-                                                        size={30}
-                                                    />
-                                                </View>
-                                            </TouchableOpacity>
-                                        </ScrollView>
-                                    </View>
-                                )}
-                                {this.state.step == 4 && (
-                                    <View style={styles.stepViewContainer}>
-                                        <CmlText style={styles.stepDescription}>
-                                            Select Contact List
-                                        </CmlText>
-                                        <ScrollView
-                                            style={styles.panelContainer}>
-                                            <View style={styles.panel}>
-                                                <View style={styles.panelBody}>
-                                                    <View
-                                                        style={[
-                                                            styles.panelUploadContainer,
-                                                            {marginTop: 8},
-                                                        ]}>
-                                                        <RNPickerSelect
-                                                            value={
-                                                                this.state
-                                                                    .campaign
-                                                                    .contactlistId
-                                                            }
-                                                            onValueChange={(
-                                                                value,
-                                                            ) => {
-                                                                this.setState({
-                                                                    campaign: {
-                                                                        ...this
+                                                                <CmlText
+                                                                    style={
+                                                                        styles.panelOptionText
+                                                                    }>
+                                                                    Use default
+                                                                    audio
+                                                                </CmlText>
+                                                            </View>
+                                                            <View
+                                                                style={
+                                                                    styles.panelUploadContainer
+                                                                }>
+                                                                <RNPickerSelect
+                                                                    value={
+                                                                        this
                                                                             .state
-                                                                            .campaign,
-                                                                        contactlistId: value,
-                                                                    },
-                                                                });
-                                                            }}
-                                                            items={this.state.contactList.map(
-                                                                (file: any) => {
-                                                                    return {
-                                                                        label:
-                                                                            file.name,
-                                                                        value:
-                                                                            file.id,
-                                                                    };
-                                                                },
-                                                            )}
-                                                            placeholder={{
-                                                                label:
-                                                                    'Select Contact List',
-                                                            }}
-                                                            style={
-                                                                this
-                                                                    .pickerSelectStyles
-                                                            }
-                                                        />
-                                                        <Ionicons
-                                                            name="md-arrow-dropdown"
-                                                            size={18}
-                                                            color="#c1c1c1"
-                                                            style={{
-                                                                marginLeft: 8,
-                                                            }}
-                                                        />
-                                                    </View>
-
-                                                    <CmlButton
-                                                        title="Upload Contact List"
-                                                        backgroundColor="#02b9db"
-                                                        style={{
-                                                            marginTop: 16,
-                                                            width: 180,
-                                                        }}
-                                                        onPress={() => {
-                                                            this.uploadList();
-                                                        }}
-                                                    />
-                                                </View>
-                                            </View>
-                                            <TouchableOpacity
-                                                style={styles.continueButton}
-                                                onPress={() => this.continue()}>
-                                                <View
-                                                    style={
-                                                        styles.continueButtonContainer
-                                                    }>
-                                                    <CmlText
-                                                        style={
-                                                            styles.continueButtonText
-                                                        }>
-                                                        CONTINUE
-                                                    </CmlText>
-                                                    <MaterialIcons
-                                                        name="navigate-next"
-                                                        size={30}
-                                                    />
-                                                </View>
-                                            </TouchableOpacity>
-                                        </ScrollView>
-                                    </View>
-                                )}
-                                {this.state.step == 5 && (
-                                    <View style={styles.stepViewContainer}>
-                                        <CmlText style={styles.stepDescription}>
-                                            Campaign Settings
-                                        </CmlText>
-                                        <ScrollView
-                                            style={styles.panelContainer}>
-                                            <View style={styles.panel}>
-                                                <View style={styles.panelBody}>
-                                                    <CmlText
-                                                        style={{
-                                                            width: '100%',
-                                                        }}>
-                                                        Maximum Calls Per Minute
-                                                    </CmlText>
-                                                    <View
-                                                        style={[
-                                                            styles.panelUploadContainer,
-                                                            {marginTop: 8},
-                                                        ]}>
-                                                        <CmlTextInput
-                                                            style={
-                                                                styles.panelUploadLabel
-                                                            }
-                                                            placeholder="Calls Per Minute"
-                                                            keyboardType="numeric"
-                                                            value={this.state.campaign.call.settings.cpm.toString()}
-                                                            onChangeText={(
-                                                                value: string,
-                                                            ) => {
-                                                                if (
-                                                                    Number(
+                                                                            .campaign
+                                                                            .call
+                                                                            .dnc
+                                                                            .soundFileId
+                                                                    }
+                                                                    onValueChange={(
                                                                         value,
-                                                                    ) == NaN
-                                                                ) {
-                                                                    this.setState(
-                                                                        {
-                                                                            campaign: {
-                                                                                ...this
-                                                                                    .state
-                                                                                    .campaign,
-                                                                                call: {
+                                                                    ) => {
+                                                                        this.setState(
+                                                                            {
+                                                                                campaign: {
                                                                                     ...this
                                                                                         .state
-                                                                                        .campaign
-                                                                                        .call,
-                                                                                    settings: {
+                                                                                        .campaign,
+                                                                                    call: {
                                                                                         ...this
                                                                                             .state
                                                                                             .campaign
-                                                                                            .call
-                                                                                            .settings,
-                                                                                        cpm: 1,
+                                                                                            .call,
+                                                                                        dnc: {
+                                                                                            ...this
+                                                                                                .state
+                                                                                                .campaign
+                                                                                                .call
+                                                                                                .dnc,
+                                                                                            soundFileId: value,
+                                                                                        },
                                                                                     },
                                                                                 },
-                                                                            },
-                                                                        },
-                                                                    );
-                                                                } else {
-                                                                    this.setState(
-                                                                        {
-                                                                            campaign: {
-                                                                                ...this
-                                                                                    .state
-                                                                                    .campaign,
-                                                                                call: {
-                                                                                    ...this
-                                                                                        .state
-                                                                                        .campaign
-                                                                                        .call,
-                                                                                    settings: {
-                                                                                        ...this
-                                                                                            .state
-                                                                                            .campaign
-                                                                                            .call
-                                                                                            .settings,
-                                                                                        cpm: Number(
-                                                                                            value,
-                                                                                        ),
+                                                                                SoundPathUrlDnc: this.state.soundFiles.filter(
+                                                                                    (
+                                                                                        file: any,
+                                                                                    ) => {
+                                                                                        return (
+                                                                                            file.id ===
+                                                                                            value
+                                                                                        );
                                                                                     },
-                                                                                },
+                                                                                )[0]
+                                                                                    .wavFilePath,
                                                                             },
+                                                                        );
+
+                                                                        if (
+                                                                            Platform.OS ==
+                                                                            'android'
+                                                                        ) {
+                                                                            this.setState(
+                                                                                {
+                                                                                    doNotCallSelected: true,
+                                                                                },
+                                                                            );
+                                                                        }
+                                                                    }}
+                                                                    onDonePress={() => {
+                                                                        if (
+                                                                            this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call
+                                                                                .dnc
+                                                                                .soundFileId
+                                                                                .length >
+                                                                            0
+                                                                        ) {
+                                                                            this.setState(
+                                                                                {
+                                                                                    doNotCallSelected: true,
+                                                                                },
+                                                                            );
+                                                                        }
+                                                                    }}
+                                                                    items={this.state.soundFiles.map(
+                                                                        (
+                                                                            file: any,
+                                                                        ) => {
+                                                                            return {
+                                                                                label:
+                                                                                    file.fileName,
+                                                                                value:
+                                                                                    file.id,
+                                                                            };
                                                                         },
-                                                                    );
-                                                                }
-                                                            }}></CmlTextInput>
-                                                    </View>
-                                                    {(this.state.campaign.call
-                                                        .settings.cpm < 1 ||
-                                                        this.state.campaign.call
-                                                            .settings.cpm >
-                                                            50) && (
-                                                        <CmlText
-                                                            style={{
-                                                                width: '100%',
-                                                                fontSize: 12,
-                                                                color: 'red',
-                                                                marginTop: 8,
-                                                            }}>
-                                                            Please enter a value
-                                                            between 1 and 50
-                                                        </CmlText>
+                                                                    )}
+                                                                    placeholder={{
+                                                                        label:
+                                                                            'Select Audio File',
+                                                                    }}
+                                                                    style={
+                                                                        this
+                                                                            .pickerSelectStyles
+                                                                    }
+                                                                />
+                                                                <Ionicons
+                                                                    name="md-arrow-dropdown"
+                                                                    size={18}
+                                                                    color="#7b7b7b"
+                                                                    style={{
+                                                                        marginLeft: 8,
+                                                                    }}
+                                                                />
+                                                            </View>
+                                                            <CmlButton
+                                                                title="Upload Audio"
+                                                                backgroundColor="#02b9db"
+                                                                style={{
+                                                                    marginTop: 24,
+                                                                }}
+                                                                onPress={() => {
+                                                                    this.uploadAudio();
+                                                                }}
+                                                            />
+                                                        </>
                                                     )}
 
-                                                    <CmlText
-                                                        style={{
-                                                            width: '100%',
-                                                            marginTop: 24,
-                                                        }}>
-                                                        Callback Options
-                                                    </CmlText>
-                                                    <CmlText
-                                                        style={{
-                                                            width: '100%',
-                                                            fontSize: 12,
-                                                            color: '#6a6a6a',
-                                                        }}>
-                                                        Which Contacts would you
-                                                        like to retry?
-                                                    </CmlText>
-                                                    <View
-                                                        style={[
-                                                            styles.panelSwitchContainer,
-                                                            {marginTop: 16},
-                                                        ]}>
-                                                        <Switch
-                                                            onValueChange={(
-                                                                value,
-                                                            ) =>
-                                                                this.setState({
-                                                                    campaign: {
-                                                                        ...this
-                                                                            .state
-                                                                            .campaign,
-                                                                        call: {
-                                                                            ...this
-                                                                                .state
-                                                                                .campaign
-                                                                                .call,
-                                                                            settings: {
-                                                                                ...this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .settings,
-                                                                                callbackOptions: {
-                                                                                    ...this
-                                                                                        .state
-                                                                                        .campaign
-                                                                                        .call
-                                                                                        .settings
-                                                                                        .callbackOptions,
-                                                                                    vm: value,
-                                                                                },
-                                                                            },
-                                                                        },
-                                                                    },
-                                                                })
-                                                            }
-                                                            value={
-                                                                this.state
-                                                                    .campaign
-                                                                    .call
-                                                                    .settings
-                                                                    .callbackOptions
-                                                                    .vm
-                                                            }
-                                                            trackColor={{
-                                                                true: '#02b8da',
-                                                                false: 'grey',
-                                                            }}
-                                                        />
-                                                        <CmlText
-                                                            style={
-                                                                styles.panelOptionText
-                                                            }>
-                                                            Voicemail
-                                                        </CmlText>
-                                                    </View>
-                                                    <View
-                                                        style={[
-                                                            styles.panelSwitchContainer,
-                                                            {marginTop: 8},
-                                                        ]}>
-                                                        <Switch
-                                                            onValueChange={(
-                                                                value,
-                                                            ) =>
-                                                                this.setState({
-                                                                    campaign: {
-                                                                        ...this
-                                                                            .state
-                                                                            .campaign,
-                                                                        call: {
-                                                                            ...this
-                                                                                .state
-                                                                                .campaign
-                                                                                .call,
-                                                                            settings: {
-                                                                                ...this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .settings,
-                                                                                callbackOptions: {
-                                                                                    ...this
-                                                                                        .state
-                                                                                        .campaign
-                                                                                        .call
-                                                                                        .settings
-                                                                                        .callbackOptions,
-                                                                                    busy: value,
-                                                                                },
-                                                                            },
-                                                                        },
-                                                                    },
-                                                                })
-                                                            }
-                                                            value={
-                                                                this.state
-                                                                    .campaign
-                                                                    .call
-                                                                    .settings
-                                                                    .callbackOptions
-                                                                    .busy
-                                                            }
-                                                            trackColor={{
-                                                                true: '#02b8da',
-                                                                false: 'grey',
-                                                            }}
-                                                        />
-                                                        <CmlText
-                                                            style={
-                                                                styles.panelOptionText
-                                                            }>
-                                                            Busy
-                                                        </CmlText>
-                                                    </View>
-                                                    <View
-                                                        style={[
-                                                            styles.panelSwitchContainer,
-                                                            {marginTop: 8},
-                                                        ]}>
-                                                        <Switch
-                                                            onValueChange={(
-                                                                value,
-                                                            ) =>
-                                                                this.setState({
-                                                                    campaign: {
-                                                                        ...this
-                                                                            .state
-                                                                            .campaign,
-                                                                        call: {
-                                                                            ...this
-                                                                                .state
-                                                                                .campaign
-                                                                                .call,
-                                                                            settings: {
-                                                                                ...this
-                                                                                    .state
-                                                                                    .campaign
-                                                                                    .call
-                                                                                    .settings,
-                                                                                callbackOptions: {
-                                                                                    ...this
-                                                                                        .state
-                                                                                        .campaign
-                                                                                        .call
-                                                                                        .settings
-                                                                                        .callbackOptions,
-                                                                                    na: value,
-                                                                                },
-                                                                            },
-                                                                        },
-                                                                    },
-                                                                })
-                                                            }
-                                                            value={
-                                                                this.state
-                                                                    .campaign
-                                                                    .call
-                                                                    .settings
-                                                                    .callbackOptions
-                                                                    .na
-                                                            }
-                                                            trackColor={{
-                                                                true: '#02b8da',
-                                                                false: 'grey',
-                                                            }}
-                                                        />
-                                                        <CmlText
-                                                            style={
-                                                                styles.panelOptionText
-                                                            }>
-                                                            No answer
-                                                        </CmlText>
-                                                    </View>
-
-                                                    {(this.state.campaign.call
-                                                        .settings
-                                                        .callbackOptions.busy ||
-                                                        this.state.campaign.call
-                                                            .settings
-                                                            .callbackOptions
-                                                            .vm ||
-                                                        this.state.campaign.call
-                                                            .settings
-                                                            .callbackOptions
-                                                            .na) && (
+                                                    {this.state
+                                                        .doNotCallSelected && (
                                                         <>
-                                                            <CmlText
+                                                            <View
                                                                 style={{
                                                                     width:
                                                                         '100%',
-                                                                    marginTop: 16,
+                                                                    marginTop: 8,
                                                                 }}>
-                                                                Number of
-                                                                Attempts (1-5)
-                                                            </CmlText>
+                                                                <CmlText
+                                                                    style={{
+                                                                        width:
+                                                                            '100%',
+                                                                    }}>
+                                                                    DNC Digit
+                                                                </CmlText>
 
-                                                            <View
-                                                                style={[
-                                                                    styles.panelUploadContainer,
-                                                                    {
-                                                                        marginTop: 8,
-                                                                    },
-                                                                ]}>
-                                                                <RNPickerSelect
-                                                                    value={
-                                                                        this
-                                                                            .state
-                                                                            .campaign
-                                                                            .call
-                                                                            .settings
-                                                                            .callbackOptions
-                                                                            .attempts
-                                                                    }
-                                                                    onValueChange={(
-                                                                        value,
-                                                                    ) => {
-                                                                        this.setState(
-                                                                            {
-                                                                                campaign: {
-                                                                                    ...this
-                                                                                        .state
-                                                                                        .campaign,
-                                                                                    call: {
+                                                                <View
+                                                                    style={[
+                                                                        styles.panelUploadContainer,
+                                                                        {
+                                                                            marginTop: 8,
+                                                                        },
+                                                                    ]}>
+                                                                    <RNPickerSelect
+                                                                        value={
+                                                                            this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call
+                                                                                .dnc
+                                                                                .digit
+                                                                        }
+                                                                        onValueChange={(
+                                                                            value,
+                                                                        ) => {
+                                                                            this.setState(
+                                                                                {
+                                                                                    campaign: {
                                                                                         ...this
                                                                                             .state
-                                                                                            .campaign
-                                                                                            .call,
-                                                                                        settings: {
+                                                                                            .campaign,
+                                                                                        call: {
                                                                                             ...this
                                                                                                 .state
                                                                                                 .campaign
-                                                                                                .call
-                                                                                                .settings,
-                                                                                            callbackOptions: {
+                                                                                                .call,
+                                                                                            dnc: {
                                                                                                 ...this
                                                                                                     .state
                                                                                                     .campaign
                                                                                                     .call
-                                                                                                    .settings
-                                                                                                    .callbackOptions,
-                                                                                                attempts: value,
+                                                                                                    .dnc,
+                                                                                                digit: value,
                                                                                             },
                                                                                         },
                                                                                     },
                                                                                 },
+                                                                            );
+                                                                        }}
+                                                                        items={this.DIGITS.map(
+                                                                            (
+                                                                                digit: any,
+                                                                            ) => {
+                                                                                return {
+                                                                                    label: digit,
+                                                                                    value: digit,
+                                                                                };
                                                                             },
-                                                                        );
-                                                                    }}
-                                                                    items={[
-                                                                        1,
-                                                                        2,
-                                                                        3,
-                                                                        4,
-                                                                        5,
-                                                                    ].map(
-                                                                        (
-                                                                            digit: any,
-                                                                        ) => {
-                                                                            return {
-                                                                                label:
-                                                                                    digit +
-                                                                                    '',
-                                                                                value: digit,
-                                                                            };
-                                                                        },
-                                                                    )}
-                                                                    placeholder={{}}
-                                                                    style={
-                                                                        this
-                                                                            .pickerSelectStyles
-                                                                    }
-                                                                />
-                                                                <Ionicons
-                                                                    name="md-arrow-dropdown"
-                                                                    size={18}
-                                                                    color="#7b7b7b"
-                                                                    style={{
-                                                                        marginLeft: 8,
-                                                                    }}
-                                                                />
+                                                                        )}
+                                                                        placeholder={{
+                                                                            label:
+                                                                                'Select DNC Digit',
+                                                                        }}
+                                                                        style={
+                                                                            this
+                                                                                .pickerSelectStyles
+                                                                        }
+                                                                    />
+                                                                    <Ionicons
+                                                                        name="md-arrow-dropdown"
+                                                                        size={
+                                                                            18
+                                                                        }
+                                                                        color="#7b7b7b"
+                                                                        style={{
+                                                                            marginLeft: 8,
+                                                                        }}
+                                                                    />
+                                                                </View>
                                                             </View>
-                                                            <CmlText
-                                                                style={{
-                                                                    width:
-                                                                        '100%',
-                                                                    marginTop: 16,
-                                                                }}>
-                                                                Minutes between
-                                                                Attepmts
-                                                            </CmlText>
 
-                                                            <View
-                                                                style={[
-                                                                    styles.panelUploadContainer,
-                                                                    {
-                                                                        marginTop: 8,
-                                                                    },
-                                                                ]}>
-                                                                <RNPickerSelect
-                                                                    value={
-                                                                        this
-                                                                            .state
-                                                                            .campaign
-                                                                            .call
-                                                                            .settings
-                                                                            .callbackOptions
-                                                                            .attemptTime
-                                                                    }
-                                                                    onValueChange={(
-                                                                        value,
-                                                                    ) => {
-                                                                        this.setState(
-                                                                            {
-                                                                                campaign: {
+                                                            <CmlButton
+                                                                title="Remove Audio"
+                                                                backgroundColor="#ffa67a"
+                                                                style={{
+                                                                    marginTop: 40,
+                                                                }}
+                                                                onPress={() => {
+                                                                    this.setState(
+                                                                        {
+                                                                            doNotCallSelected: false,
+                                                                            campaign: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign,
+                                                                                call: {
                                                                                     ...this
                                                                                         .state
-                                                                                        .campaign,
-                                                                                    call: {
+                                                                                        .campaign
+                                                                                        .call,
+                                                                                    dnc: {
                                                                                         ...this
                                                                                             .state
                                                                                             .campaign
-                                                                                            .call,
-                                                                                        settings: {
-                                                                                            ...this
-                                                                                                .state
-                                                                                                .campaign
-                                                                                                .call
-                                                                                                .settings,
-                                                                                            callbackOptions: {
-                                                                                                ...this
-                                                                                                    .state
-                                                                                                    .campaign
-                                                                                                    .call
-                                                                                                    .settings
-                                                                                                    .callbackOptions,
-                                                                                                attemptTime: value,
-                                                                                            },
-                                                                                        },
+                                                                                            .call
+                                                                                            .dnc,
+                                                                                        soundFileId:
+                                                                                            '',
+                                                                                        defaultAudio: false,
                                                                                     },
                                                                                 },
                                                                             },
-                                                                        );
-                                                                    }}
-                                                                    items={[
-                                                                        15,
-                                                                        30,
-                                                                        45,
-                                                                        60,
-                                                                        75,
-                                                                        90,
-                                                                        105,
-                                                                        120,
-                                                                    ].map(
-                                                                        (
-                                                                            digit: any,
-                                                                        ) => {
-                                                                            return {
-                                                                                label:
-                                                                                    digit +
-                                                                                    '',
-                                                                                value: digit,
-                                                                            };
+                                                                            SoundPathUrlDnc:
+                                                                                '',
                                                                         },
-                                                                    )}
-                                                                    placeholder={{}}
-                                                                    style={
-                                                                        this
-                                                                            .pickerSelectStyles
-                                                                    }
-                                                                />
-                                                                <Ionicons
-                                                                    name="md-arrow-dropdown"
-                                                                    size={18}
-                                                                    color="#7b7b7b"
-                                                                    style={{
-                                                                        marginLeft: 8,
-                                                                    }}
-                                                                />
-                                                            </View>
+                                                                    );
+                                                                }}
+                                                            />
                                                         </>
                                                     )}
                                                 </View>
                                             </View>
-                                            <TouchableOpacity
-                                                style={styles.continueButton}
-                                                onPress={() => this.continue()}>
-                                                <View
+                                        )}
+
+                                        <TouchableOpacity
+                                            style={styles.continueButton}
+                                            onPress={() => this.continue()}>
+                                            <View
+                                                style={
+                                                    styles.continueButtonContainer
+                                                }>
+                                                <CmlText
                                                     style={
-                                                        styles.continueButtonContainer
+                                                        styles.continueButtonText
                                                     }>
-                                                    <CmlText
-                                                        style={
-                                                            styles.continueButtonText
-                                                        }>
-                                                        CONTINUE
-                                                    </CmlText>
-                                                    <MaterialIcons
-                                                        name="navigate-next"
-                                                        size={30}
-                                                    />
-                                                </View>
-                                            </TouchableOpacity>
-                                        </ScrollView>
-                                    </View>
-                                )}
-                                {this.state.step == 6 && (
-                                    <View style={styles.stepViewContainer}>
-                                        <CmlText style={styles.stepDescription}>
-                                            When would you like to schedule your
-                                            campaign to start?
-                                        </CmlText>
-                                        <ScrollView
-                                            style={styles.panelContainer}>
-                                            <View
-                                                style={[
-                                                    styles.panel,
-                                                    {
-                                                        width: '70%',
-                                                        alignSelf: 'center',
-                                                    },
-                                                ]}>
-                                                <View
-                                                    style={[
-                                                        styles.panelBody,
-                                                        {padding: 8},
-                                                    ]}>
-                                                    <Feather
-                                                        name="play-circle"
-                                                        size={70}
-                                                        color="#7b7b7b"
-                                                        style={{
-                                                            marginLeft: 8,
-                                                        }}
-                                                    />
-                                                    <CmlButton
-                                                        title="Start Now"
-                                                        backgroundColor="#02b9db"
-                                                        style={{marginTop: 8}}
-                                                        onPress={() => {
-                                                            this.onStart();
-                                                        }}
-                                                    />
-                                                </View>
+                                                    CONTINUE
+                                                </CmlText>
+                                                <MaterialIcons
+                                                    name="navigate-next"
+                                                    size={30}
+                                                />
                                             </View>
-                                            <View
-                                                style={[
-                                                    styles.panel,
-                                                    {
-                                                        width: '70%',
-                                                        alignSelf: 'center',
-                                                        marginTop: 16,
-                                                    },
-                                                ]}>
+                                        </TouchableOpacity>
+                                    </ScrollView>
+                                </View>
+                            )}
+                            {this.state.step == 4 && (
+                                <View style={styles.stepViewContainer}>
+                                    <CmlText style={styles.stepDescription}>
+                                        Select Contact List
+                                    </CmlText>
+                                    <ScrollView style={styles.panelContainer}>
+                                        <View style={styles.panel}>
+                                            <View style={styles.panelBody}>
                                                 <View
                                                     style={[
-                                                        styles.panelBody,
-                                                        {padding: 8},
+                                                        styles.panelUploadContainer,
+                                                        {marginTop: 8},
                                                     ]}>
-                                                    <MaterialIcons
-                                                        name="access-time"
-                                                        size={70}
-                                                        color="#7b7b7b"
-                                                        style={{
-                                                            marginLeft: 8,
-                                                        }}
-                                                    />
-                                                    <CmlButton
-                                                        title="In The Future"
-                                                        backgroundColor="#ffa67a"
-                                                        style={{marginTop: 8}}
-                                                        onPress={() => {
+                                                    <RNPickerSelect
+                                                        value={
+                                                            this.state.campaign
+                                                                .contactlistId
+                                                        }
+                                                        onValueChange={(
+                                                            value,
+                                                        ) => {
                                                             this.setState({
-                                                                startFuture: true,
-                                                                scheduleType: 2,
+                                                                campaign: {
+                                                                    ...this
+                                                                        .state
+                                                                        .campaign,
+                                                                    contactlistId: value,
+                                                                },
                                                             });
                                                         }}
+                                                        items={this.state.contactList.map(
+                                                            (file: any) => {
+                                                                return {
+                                                                    label:
+                                                                        file.name,
+                                                                    value:
+                                                                        file.id,
+                                                                };
+                                                            },
+                                                        )}
+                                                        placeholder={{
+                                                            label:
+                                                                'Select Contact List',
+                                                        }}
+                                                        style={
+                                                            this
+                                                                .pickerSelectStyles
+                                                        }
+                                                    />
+                                                    <Ionicons
+                                                        name="md-arrow-dropdown"
+                                                        size={18}
+                                                        color="#c1c1c1"
+                                                        style={{
+                                                            marginLeft: 8,
+                                                        }}
                                                     />
                                                 </View>
+
+                                                <CmlButton
+                                                    title="Upload Contact List"
+                                                    backgroundColor="#02b9db"
+                                                    style={{
+                                                        marginTop: 16,
+                                                        width: 180,
+                                                    }}
+                                                    onPress={() => {
+                                                        this.uploadList();
+                                                    }}
+                                                />
                                             </View>
-                                        </ScrollView>
-                                    </View>
-                                )}
-                            </View>
-                        </View>
-                        <View style={{width: 30}}>
-                            <View
-                                style={{
-                                    alignItems: 'center',
-                                    paddingTop: 100,
-                                }}>
-                                <TouchableOpacity
-                                    onPress={() => this.setState({step: 0})}>
-                                    <View
-                                        style={
-                                            this.state.step == 0
-                                                ? styles.selectedStepContainer
-                                                : styles.stepContainer
-                                        }>
-                                        <CmlText
-                                            style={[
-                                                styles.stepLabel,
-                                                {
-                                                    color:
-                                                        this.state.step == 0
-                                                            ? 'black'
-                                                            : 'white',
-                                                },
-                                            ]}>
-                                            1
-                                        </CmlText>
-                                    </View>
-                                </TouchableOpacity>
+                                        </View>
+                                        <TouchableOpacity
+                                            style={styles.continueButton}
+                                            onPress={() => this.continue()}>
+                                            <View
+                                                style={
+                                                    styles.continueButtonContainer
+                                                }>
+                                                <CmlText
+                                                    style={
+                                                        styles.continueButtonText
+                                                    }>
+                                                    CONTINUE
+                                                </CmlText>
+                                                <MaterialIcons
+                                                    name="navigate-next"
+                                                    size={30}
+                                                />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </ScrollView>
+                                </View>
+                            )}
+                            {this.state.step == 5 && (
+                                <View style={styles.stepViewContainer}>
+                                    <CmlText style={styles.stepDescription}>
+                                        Campaign Settings
+                                    </CmlText>
+                                    <ScrollView style={styles.panelContainer}>
+                                        <View style={styles.panel}>
+                                            <View style={styles.panelBody}>
+                                                <CmlText
+                                                    style={{
+                                                        width: '100%',
+                                                    }}>
+                                                    Maximum Calls Per Minute
+                                                </CmlText>
+                                                <View
+                                                    style={[
+                                                        styles.panelUploadContainer,
+                                                        {marginTop: 8},
+                                                    ]}>
+                                                    <CmlTextInput
+                                                        style={
+                                                            styles.panelUploadLabel
+                                                        }
+                                                        placeholder="Calls Per Minute"
+                                                        keyboardType="numeric"
+                                                        value={this.state.campaign.call.settings.cpm.toString()}
+                                                        onChangeText={(
+                                                            value: string,
+                                                        ) => {
+                                                            if (
+                                                                Number(value) ==
+                                                                NaN
+                                                            ) {
+                                                                this.setState({
+                                                                    campaign: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign,
+                                                                        call: {
+                                                                            ...this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call,
+                                                                            settings: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .settings,
+                                                                                cpm: 1,
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                });
+                                                            } else {
+                                                                this.setState({
+                                                                    campaign: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign,
+                                                                        call: {
+                                                                            ...this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call,
+                                                                            settings: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .settings,
+                                                                                cpm: Number(
+                                                                                    value,
+                                                                                ),
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                });
+                                                            }
+                                                        }}></CmlTextInput>
+                                                </View>
+                                                {(this.state.campaign.call
+                                                    .settings.cpm < 1 ||
+                                                    this.state.campaign.call
+                                                        .settings.cpm > 50) && (
+                                                    <CmlText
+                                                        style={{
+                                                            width: '100%',
+                                                            fontSize: 12,
+                                                            color: 'red',
+                                                            marginTop: 8,
+                                                        }}>
+                                                        Please enter a value
+                                                        between 1 and 50
+                                                    </CmlText>
+                                                )}
 
-                                <Image
-                                    source={require('../assets/images/create_campaign_seperator.png')}
-                                    style={{
-                                        height: 30,
-                                    }}
-                                    resizeMode="contain"
-                                />
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        if (this.state.finishStep >= 1)
-                                            this.setState({step: 1});
-                                    }}>
-                                    <View
-                                        style={
-                                            this.state.step == 1
-                                                ? styles.selectedStepContainer
-                                                : styles.stepContainer
-                                        }>
-                                        <CmlText
-                                            style={[
-                                                styles.stepLabel,
-                                                {
-                                                    color:
-                                                        this.state.step == 1
-                                                            ? 'black'
-                                                            : 'white',
-                                                },
-                                            ]}>
-                                            2
-                                        </CmlText>
-                                    </View>
-                                </TouchableOpacity>
+                                                <CmlText
+                                                    style={{
+                                                        width: '100%',
+                                                        marginTop: 24,
+                                                    }}>
+                                                    Callback Options
+                                                </CmlText>
+                                                <CmlText
+                                                    style={{
+                                                        width: '100%',
+                                                        fontSize: 12,
+                                                        color: '#6a6a6a',
+                                                    }}>
+                                                    Which Contacts would you
+                                                    like to retry?
+                                                </CmlText>
+                                                <View
+                                                    style={[
+                                                        styles.panelSwitchContainer,
+                                                        {marginTop: 16},
+                                                    ]}>
+                                                    <Switch
+                                                        onValueChange={(
+                                                            value,
+                                                        ) =>
+                                                            this.setState({
+                                                                campaign: {
+                                                                    ...this
+                                                                        .state
+                                                                        .campaign,
+                                                                    call: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign
+                                                                            .call,
+                                                                        settings: {
+                                                                            ...this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call
+                                                                                .settings,
+                                                                            callbackOptions: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .settings
+                                                                                    .callbackOptions,
+                                                                                vm: value,
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                },
+                                                            })
+                                                        }
+                                                        value={
+                                                            this.state.campaign
+                                                                .call.settings
+                                                                .callbackOptions
+                                                                .vm
+                                                        }
+                                                        trackColor={{
+                                                            true: '#02b8da',
+                                                            false: 'grey',
+                                                        }}
+                                                    />
+                                                    <CmlText
+                                                        style={
+                                                            styles.panelOptionText
+                                                        }>
+                                                        Voicemail
+                                                    </CmlText>
+                                                </View>
+                                                <View
+                                                    style={[
+                                                        styles.panelSwitchContainer,
+                                                        {marginTop: 8},
+                                                    ]}>
+                                                    <Switch
+                                                        onValueChange={(
+                                                            value,
+                                                        ) =>
+                                                            this.setState({
+                                                                campaign: {
+                                                                    ...this
+                                                                        .state
+                                                                        .campaign,
+                                                                    call: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign
+                                                                            .call,
+                                                                        settings: {
+                                                                            ...this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call
+                                                                                .settings,
+                                                                            callbackOptions: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .settings
+                                                                                    .callbackOptions,
+                                                                                busy: value,
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                },
+                                                            })
+                                                        }
+                                                        value={
+                                                            this.state.campaign
+                                                                .call.settings
+                                                                .callbackOptions
+                                                                .busy
+                                                        }
+                                                        trackColor={{
+                                                            true: '#02b8da',
+                                                            false: 'grey',
+                                                        }}
+                                                    />
+                                                    <CmlText
+                                                        style={
+                                                            styles.panelOptionText
+                                                        }>
+                                                        Busy
+                                                    </CmlText>
+                                                </View>
+                                                <View
+                                                    style={[
+                                                        styles.panelSwitchContainer,
+                                                        {marginTop: 8},
+                                                    ]}>
+                                                    <Switch
+                                                        onValueChange={(
+                                                            value,
+                                                        ) =>
+                                                            this.setState({
+                                                                campaign: {
+                                                                    ...this
+                                                                        .state
+                                                                        .campaign,
+                                                                    call: {
+                                                                        ...this
+                                                                            .state
+                                                                            .campaign
+                                                                            .call,
+                                                                        settings: {
+                                                                            ...this
+                                                                                .state
+                                                                                .campaign
+                                                                                .call
+                                                                                .settings,
+                                                                            callbackOptions: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign
+                                                                                    .call
+                                                                                    .settings
+                                                                                    .callbackOptions,
+                                                                                na: value,
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                },
+                                                            })
+                                                        }
+                                                        value={
+                                                            this.state.campaign
+                                                                .call.settings
+                                                                .callbackOptions
+                                                                .na
+                                                        }
+                                                        trackColor={{
+                                                            true: '#02b8da',
+                                                            false: 'grey',
+                                                        }}
+                                                    />
+                                                    <CmlText
+                                                        style={
+                                                            styles.panelOptionText
+                                                        }>
+                                                        No answer
+                                                    </CmlText>
+                                                </View>
 
-                                <Image
-                                    source={require('../assets/images/create_campaign_seperator.png')}
-                                    style={{
-                                        height: 30,
-                                    }}
-                                    resizeMode="contain"
-                                />
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        if (this.state.finishStep >= 2)
-                                            this.setState({step: 2});
-                                    }}>
-                                    <View
-                                        style={
-                                            this.state.step == 2
-                                                ? styles.selectedStepContainer
-                                                : styles.stepContainer
-                                        }>
-                                        <CmlText
-                                            style={[
-                                                styles.stepLabel,
-                                                {
-                                                    color:
-                                                        this.state.step == 2
-                                                            ? 'black'
-                                                            : 'white',
-                                                },
-                                            ]}>
-                                            3
-                                        </CmlText>
-                                    </View>
-                                </TouchableOpacity>
+                                                {(this.state.campaign.call
+                                                    .settings.callbackOptions
+                                                    .busy ||
+                                                    this.state.campaign.call
+                                                        .settings
+                                                        .callbackOptions.vm ||
+                                                    this.state.campaign.call
+                                                        .settings
+                                                        .callbackOptions
+                                                        .na) && (
+                                                    <>
+                                                        <CmlText
+                                                            style={{
+                                                                width: '100%',
+                                                                marginTop: 16,
+                                                            }}>
+                                                            Number of Attempts
+                                                            (1-5)
+                                                        </CmlText>
 
-                                <Image
-                                    source={require('../assets/images/create_campaign_seperator.png')}
-                                    style={{
-                                        height: 30,
-                                    }}
-                                    resizeMode="contain"
-                                />
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        if (this.state.finishStep >= 3)
-                                            this.setState({step: 3});
-                                    }}>
-                                    <View
-                                        style={
-                                            this.state.step == 3
-                                                ? styles.selectedStepContainer
-                                                : styles.stepContainer
-                                        }>
-                                        <CmlText
-                                            style={[
-                                                styles.stepLabel,
-                                                {
-                                                    color:
-                                                        this.state.step == 3
-                                                            ? 'black'
-                                                            : 'white',
-                                                },
-                                            ]}>
-                                            4
-                                        </CmlText>
-                                    </View>
-                                </TouchableOpacity>
+                                                        <View
+                                                            style={[
+                                                                styles.panelUploadContainer,
+                                                                {
+                                                                    marginTop: 8,
+                                                                },
+                                                            ]}>
+                                                            <RNPickerSelect
+                                                                value={
+                                                                    this.state
+                                                                        .campaign
+                                                                        .call
+                                                                        .settings
+                                                                        .callbackOptions
+                                                                        .attempts
+                                                                }
+                                                                onValueChange={(
+                                                                    value,
+                                                                ) => {
+                                                                    this.setState(
+                                                                        {
+                                                                            campaign: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign,
+                                                                                call: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call,
+                                                                                    settings: {
+                                                                                        ...this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call
+                                                                                            .settings,
+                                                                                        callbackOptions: {
+                                                                                            ...this
+                                                                                                .state
+                                                                                                .campaign
+                                                                                                .call
+                                                                                                .settings
+                                                                                                .callbackOptions,
+                                                                                            attempts: value,
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    );
+                                                                }}
+                                                                items={[
+                                                                    1,
+                                                                    2,
+                                                                    3,
+                                                                    4,
+                                                                    5,
+                                                                ].map(
+                                                                    (
+                                                                        digit: any,
+                                                                    ) => {
+                                                                        return {
+                                                                            label:
+                                                                                digit +
+                                                                                '',
+                                                                            value: digit,
+                                                                        };
+                                                                    },
+                                                                )}
+                                                                placeholder={{}}
+                                                                style={
+                                                                    this
+                                                                        .pickerSelectStyles
+                                                                }
+                                                            />
+                                                            <Ionicons
+                                                                name="md-arrow-dropdown"
+                                                                size={18}
+                                                                color="#7b7b7b"
+                                                                style={{
+                                                                    marginLeft: 8,
+                                                                }}
+                                                            />
+                                                        </View>
+                                                        <CmlText
+                                                            style={{
+                                                                width: '100%',
+                                                                marginTop: 16,
+                                                            }}>
+                                                            Minutes between
+                                                            Attepmts
+                                                        </CmlText>
 
-                                <Image
-                                    source={require('../assets/images/create_campaign_seperator.png')}
-                                    style={{
-                                        height: 30,
-                                    }}
-                                    resizeMode="contain"
-                                />
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        if (this.state.finishStep >= 4)
-                                            this.setState({step: 4});
-                                    }}>
-                                    <View
-                                        style={
-                                            this.state.step == 4
-                                                ? styles.selectedStepContainer
-                                                : styles.stepContainer
-                                        }>
-                                        <CmlText
+                                                        <View
+                                                            style={[
+                                                                styles.panelUploadContainer,
+                                                                {
+                                                                    marginTop: 8,
+                                                                },
+                                                            ]}>
+                                                            <RNPickerSelect
+                                                                value={
+                                                                    this.state
+                                                                        .campaign
+                                                                        .call
+                                                                        .settings
+                                                                        .callbackOptions
+                                                                        .attemptTime
+                                                                }
+                                                                onValueChange={(
+                                                                    value,
+                                                                ) => {
+                                                                    this.setState(
+                                                                        {
+                                                                            campaign: {
+                                                                                ...this
+                                                                                    .state
+                                                                                    .campaign,
+                                                                                call: {
+                                                                                    ...this
+                                                                                        .state
+                                                                                        .campaign
+                                                                                        .call,
+                                                                                    settings: {
+                                                                                        ...this
+                                                                                            .state
+                                                                                            .campaign
+                                                                                            .call
+                                                                                            .settings,
+                                                                                        callbackOptions: {
+                                                                                            ...this
+                                                                                                .state
+                                                                                                .campaign
+                                                                                                .call
+                                                                                                .settings
+                                                                                                .callbackOptions,
+                                                                                            attemptTime: value,
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    );
+                                                                }}
+                                                                items={[
+                                                                    15,
+                                                                    30,
+                                                                    45,
+                                                                    60,
+                                                                    75,
+                                                                    90,
+                                                                    105,
+                                                                    120,
+                                                                ].map(
+                                                                    (
+                                                                        digit: any,
+                                                                    ) => {
+                                                                        return {
+                                                                            label:
+                                                                                digit +
+                                                                                '',
+                                                                            value: digit,
+                                                                        };
+                                                                    },
+                                                                )}
+                                                                placeholder={{}}
+                                                                style={
+                                                                    this
+                                                                        .pickerSelectStyles
+                                                                }
+                                                            />
+                                                            <Ionicons
+                                                                name="md-arrow-dropdown"
+                                                                size={18}
+                                                                color="#7b7b7b"
+                                                                style={{
+                                                                    marginLeft: 8,
+                                                                }}
+                                                            />
+                                                        </View>
+                                                    </>
+                                                )}
+                                            </View>
+                                        </View>
+                                        <TouchableOpacity
+                                            style={styles.continueButton}
+                                            onPress={() => this.continue()}>
+                                            <View
+                                                style={
+                                                    styles.continueButtonContainer
+                                                }>
+                                                <CmlText
+                                                    style={
+                                                        styles.continueButtonText
+                                                    }>
+                                                    CONTINUE
+                                                </CmlText>
+                                                <MaterialIcons
+                                                    name="navigate-next"
+                                                    size={30}
+                                                />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </ScrollView>
+                                </View>
+                            )}
+                            {this.state.step == 6 && (
+                                <View style={styles.stepViewContainer}>
+                                    <CmlText style={styles.stepDescription}>
+                                        When would you like to schedule your
+                                        campaign to start?
+                                    </CmlText>
+                                    <ScrollView style={styles.panelContainer}>
+                                        <View
                                             style={[
-                                                styles.stepLabel,
+                                                styles.panel,
                                                 {
-                                                    color:
-                                                        this.state.step == 4
-                                                            ? 'black'
-                                                            : 'white',
+                                                    width: '70%',
+                                                    alignSelf: 'center',
                                                 },
                                             ]}>
-                                            5
-                                        </CmlText>
-                                    </View>
-                                </TouchableOpacity>
-
-                                <Image
-                                    source={require('../assets/images/create_campaign_seperator.png')}
-                                    style={{
-                                        height: 30,
-                                    }}
-                                    resizeMode="contain"
-                                />
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        if (this.state.finishStep >= 5)
-                                            this.setState({step: 5});
-                                    }}>
-                                    <View
-                                        style={
-                                            this.state.step == 5
-                                                ? styles.selectedStepContainer
-                                                : styles.stepContainer
-                                        }>
-                                        <CmlText
+                                            <View
+                                                style={[
+                                                    styles.panelBody,
+                                                    {padding: 8},
+                                                ]}>
+                                                <Feather
+                                                    name="play-circle"
+                                                    size={70}
+                                                    color="#7b7b7b"
+                                                    style={{
+                                                        marginLeft: 8,
+                                                    }}
+                                                />
+                                                <CmlButton
+                                                    title="Start Now"
+                                                    backgroundColor="#02b9db"
+                                                    style={{marginTop: 8}}
+                                                    onPress={() => {
+                                                        this.onStart();
+                                                    }}
+                                                />
+                                            </View>
+                                        </View>
+                                        <View
                                             style={[
-                                                styles.stepLabel,
+                                                styles.panel,
                                                 {
-                                                    color:
-                                                        this.state.step == 5
-                                                            ? 'black'
-                                                            : 'white',
+                                                    width: '70%',
+                                                    alignSelf: 'center',
+                                                    marginTop: 16,
                                                 },
                                             ]}>
-                                            6
-                                        </CmlText>
-                                    </View>
-                                </TouchableOpacity>
-
-                                <Image
-                                    source={require('../assets/images/create_campaign_seperator.png')}
-                                    style={{
-                                        height: 30,
-                                    }}
-                                    resizeMode="contain"
-                                />
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        if (this.state.finishStep >= 6)
-                                            this.setState({step: 6});
-                                    }}>
-                                    <View
-                                        style={
-                                            this.state.step == 6
-                                                ? styles.selectedStepContainer
-                                                : styles.stepContainer
-                                        }>
-                                        <CmlText
-                                            style={[
-                                                styles.stepLabel,
-                                                {
-                                                    color:
-                                                        this.state.step == 6
-                                                            ? 'black'
-                                                            : 'white',
-                                                },
-                                            ]}>
-                                            7
-                                        </CmlText>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
+                                            <View
+                                                style={[
+                                                    styles.panelBody,
+                                                    {padding: 8},
+                                                ]}>
+                                                <MaterialIcons
+                                                    name="access-time"
+                                                    size={70}
+                                                    color="#7b7b7b"
+                                                    style={{
+                                                        marginLeft: 8,
+                                                    }}
+                                                />
+                                                <CmlButton
+                                                    title="In The Future"
+                                                    backgroundColor="#ffa67a"
+                                                    style={{marginTop: 8}}
+                                                    onPress={() => {
+                                                        this.setState({
+                                                            startFuture: true,
+                                                            scheduleType: 2,
+                                                        });
+                                                    }}
+                                                />
+                                            </View>
+                                        </View>
+                                    </ScrollView>
+                                </View>
+                            )}
                         </View>
                     </View>
-                </TouchableWithoutFeedback>
+                    <View style={{width: 30}}>
+                        <View
+                            style={{
+                                alignItems: 'center',
+                                paddingTop: 100,
+                            }}>
+                            <TouchableOpacity
+                                onPress={() => this.setState({step: 0})}>
+                                <View
+                                    style={
+                                        this.state.step == 0
+                                            ? styles.selectedStepContainer
+                                            : styles.stepContainer
+                                    }>
+                                    <CmlText
+                                        style={[
+                                            styles.stepLabel,
+                                            {
+                                                color:
+                                                    this.state.step == 0
+                                                        ? 'black'
+                                                        : 'white',
+                                            },
+                                        ]}>
+                                        1
+                                    </CmlText>
+                                </View>
+                            </TouchableOpacity>
+
+                            <Image
+                                source={require('../assets/images/create_campaign_seperator.png')}
+                                style={{
+                                    height: 30,
+                                }}
+                                resizeMode="contain"
+                            />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (this.state.finishStep >= 1)
+                                        this.setState({step: 1});
+                                }}>
+                                <View
+                                    style={
+                                        this.state.step == 1
+                                            ? styles.selectedStepContainer
+                                            : styles.stepContainer
+                                    }>
+                                    <CmlText
+                                        style={[
+                                            styles.stepLabel,
+                                            {
+                                                color:
+                                                    this.state.step == 1
+                                                        ? 'black'
+                                                        : 'white',
+                                            },
+                                        ]}>
+                                        2
+                                    </CmlText>
+                                </View>
+                            </TouchableOpacity>
+
+                            <Image
+                                source={require('../assets/images/create_campaign_seperator.png')}
+                                style={{
+                                    height: 30,
+                                }}
+                                resizeMode="contain"
+                            />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (this.state.finishStep >= 2)
+                                        this.setState({step: 2});
+                                }}>
+                                <View
+                                    style={
+                                        this.state.step == 2
+                                            ? styles.selectedStepContainer
+                                            : styles.stepContainer
+                                    }>
+                                    <CmlText
+                                        style={[
+                                            styles.stepLabel,
+                                            {
+                                                color:
+                                                    this.state.step == 2
+                                                        ? 'black'
+                                                        : 'white',
+                                            },
+                                        ]}>
+                                        3
+                                    </CmlText>
+                                </View>
+                            </TouchableOpacity>
+
+                            <Image
+                                source={require('../assets/images/create_campaign_seperator.png')}
+                                style={{
+                                    height: 30,
+                                }}
+                                resizeMode="contain"
+                            />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (this.state.finishStep >= 3)
+                                        this.setState({step: 3});
+                                }}>
+                                <View
+                                    style={
+                                        this.state.step == 3
+                                            ? styles.selectedStepContainer
+                                            : styles.stepContainer
+                                    }>
+                                    <CmlText
+                                        style={[
+                                            styles.stepLabel,
+                                            {
+                                                color:
+                                                    this.state.step == 3
+                                                        ? 'black'
+                                                        : 'white',
+                                            },
+                                        ]}>
+                                        4
+                                    </CmlText>
+                                </View>
+                            </TouchableOpacity>
+
+                            <Image
+                                source={require('../assets/images/create_campaign_seperator.png')}
+                                style={{
+                                    height: 30,
+                                }}
+                                resizeMode="contain"
+                            />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (this.state.finishStep >= 4)
+                                        this.setState({step: 4});
+                                }}>
+                                <View
+                                    style={
+                                        this.state.step == 4
+                                            ? styles.selectedStepContainer
+                                            : styles.stepContainer
+                                    }>
+                                    <CmlText
+                                        style={[
+                                            styles.stepLabel,
+                                            {
+                                                color:
+                                                    this.state.step == 4
+                                                        ? 'black'
+                                                        : 'white',
+                                            },
+                                        ]}>
+                                        5
+                                    </CmlText>
+                                </View>
+                            </TouchableOpacity>
+
+                            <Image
+                                source={require('../assets/images/create_campaign_seperator.png')}
+                                style={{
+                                    height: 30,
+                                }}
+                                resizeMode="contain"
+                            />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (this.state.finishStep >= 5)
+                                        this.setState({step: 5});
+                                }}>
+                                <View
+                                    style={
+                                        this.state.step == 5
+                                            ? styles.selectedStepContainer
+                                            : styles.stepContainer
+                                    }>
+                                    <CmlText
+                                        style={[
+                                            styles.stepLabel,
+                                            {
+                                                color:
+                                                    this.state.step == 5
+                                                        ? 'black'
+                                                        : 'white',
+                                            },
+                                        ]}>
+                                        6
+                                    </CmlText>
+                                </View>
+                            </TouchableOpacity>
+
+                            <Image
+                                source={require('../assets/images/create_campaign_seperator.png')}
+                                style={{
+                                    height: 30,
+                                }}
+                                resizeMode="contain"
+                            />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (this.state.finishStep >= 6)
+                                        this.setState({step: 6});
+                                }}>
+                                <View
+                                    style={
+                                        this.state.step == 6
+                                            ? styles.selectedStepContainer
+                                            : styles.stepContainer
+                                    }>
+                                    <CmlText
+                                        style={[
+                                            styles.stepLabel,
+                                            {
+                                                color:
+                                                    this.state.step == 6
+                                                        ? 'black'
+                                                        : 'white',
+                                            },
+                                        ]}>
+                                        7
+                                    </CmlText>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+                {/* </TouchableWithoutFeedback> */}
                 <Modal
                     isVisible={this.state.startNow}
                     backdropOpacity={0}
