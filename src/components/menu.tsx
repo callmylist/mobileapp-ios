@@ -19,7 +19,6 @@ import {CmlButton} from '../components/button';
 import Modal from 'react-native-modal';
 import AppStyle from '../shared/styles';
 import {store} from '../redux/store';
-import stripe from 'tipsi-stripe';
 import {UserService} from '../service/user.service';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
@@ -113,6 +112,7 @@ class Menu extends Component<
         addFunds: boolean;
         billingInfo: any;
         expanded: boolean;
+        funds: string;
     }
 > {
     routes = [
@@ -133,6 +133,7 @@ class Menu extends Component<
             addFunds: false,
             billingInfo: null,
             expanded: false,
+            funds: '',
         };
     }
 
@@ -170,13 +171,14 @@ class Menu extends Component<
     };
 
     addFund = async () => {
-        console.log(this.state.billingInfo.payments.StripePublishableKey);
-        stripe.setOptions({
-            publishableKey: this.state.billingInfo.payments
-                .StripePublishableKey,
+        UserService.chargeCardByStripe({
+            amount: +this.state.funds,
+        }).subscribe((response: any) => {
+            this.props.navigation.push('StripeScreen', {
+                stripeKey: this.state.billingInfo.payments.StripePublishableKey,
+                sessionId: response.data.checkoutSessionId,
+            });
         });
-
-        const token = await stripe.paymentRequestWithCardForm();
     };
 
     render() {
@@ -540,17 +542,27 @@ class Menu extends Component<
                                     name="dollar"
                                     size={20}
                                     color={'#ffa67a'}
+                                    style={{
+                                        marginTop: 20,
+                                    }}
                                 />
                                 <CmlTextInput
                                     style={[
                                         AppStyle.dialogTimePlaceholder,
                                         {
                                             flex: 1,
-                                            fontSize: 14,
+                                            fontSize: 24,
                                             color: 'white',
                                             marginLeft: 8,
                                         },
-                                    ]}></CmlTextInput>
+                                    ]}
+                                    keyboardType="numeric"
+                                    value={this.state.funds}
+                                    onChangeText={(value: any) => {
+                                        this.setState({
+                                            funds: value,
+                                        });
+                                    }}></CmlTextInput>
                             </View>
 
                             <View

@@ -24,6 +24,8 @@ import ViewContactScreen from './screens/view_contact';
 import AddContactScreen from './screens/add_contact';
 import ContactListScreen from './screens/contact_list';
 import ContactsScreen from './screens/contacts';
+import StripeScreen from './screens/stripe';
+
 import Menu from './components/menu';
 import {View, StatusBar, Platform} from 'react-native';
 
@@ -97,6 +99,7 @@ const App = createStackNavigator(
         FilteredContactsScreen,
         AddContactScreen,
         ViewContactScreen,
+        StripeScreen,
     },
     {
         initialRouteName: 'Dashboard',

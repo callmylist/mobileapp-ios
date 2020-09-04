@@ -147,4 +147,8 @@ export class UserService {
 
         return RestClient.get(url);
     }
+
+    static chargeCardByStripe(body: any) {
+        return RestClient.post(constants.apiUrl.stripeCharge, body);
+    }
 }

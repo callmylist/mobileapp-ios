@@ -32,6 +32,7 @@ import MultiSelect from '../components/quick-select';
 import Utils from '../utils';
 import {and} from 'react-native-reanimated';
 import {AnonymousSubject} from 'rxjs/internal/Subject';
+import {UserService} from '../service/user.service';
 
 const styles = StyleSheet.create({
     container: {
@@ -168,6 +169,7 @@ class MessageCenter extends Component<
         followUpDialog: boolean;
         temp: any;
         deleteDialog: boolean;
+        subscribed: boolean;
     }
 > {
     constructor(props: any) {
@@ -190,6 +192,7 @@ class MessageCenter extends Component<
             followUpDialog: false,
             temp: null,
             deleteDialog: false,
+            subscribed: false,
         };
     }
 
@@ -208,6 +211,7 @@ class MessageCenter extends Component<
 
     didAppear = () => {
         this.getMessageInfo();
+        // this.checkSubscribed();
         this.onTab(1);
     };
 
@@ -223,6 +227,22 @@ class MessageCenter extends Component<
                     showOnboarding: false,
                 });
             }
+        });
+    };
+
+    checkSubscribed = () => {
+        UserService.getUserById().subscribe((response: any) => {
+            let user = response.data;
+
+            this.setState({
+                subscribed:
+                    user.messageSubscription &&
+                    user.messageSubscription !== null &&
+                    user.messageSubscription.subId &&
+                    user.messageSubscription.subId !== ''
+                        ? true
+                        : false,
+            });
         });
     };
 
@@ -431,433 +451,486 @@ class MessageCenter extends Component<
         );
     };
 
+    subscribe = () => {
+        
+    };
+
     render() {
         return (
             <SafeAreaView style={{flex: 1}}>
                 <Header onMenu={this.onMenu} menu={true} />
-                {/* <CmlSpinner visible={this.state.loading} /> */}
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        Keyboard.dismiss();
-                    }}>
+                {!this.state.subscribed && (
                     <>
-                        {this.state.showOnboarding && (
-                            <View
+                        <View
+                            style={{
+                                padding: 16,
+                            }}>
+                            <CmlText
                                 style={{
-                                    padding: 8,
+                                    fontSize: 16,
                                 }}>
-                                <CmlText
+                                A monthly subscription is required to start
+                                engaging with SMS message center. If you want to
+                                subscribe, please click the button below.
+                            </CmlText>
+
+                            <CmlButton
+                                title="Subscribe"
+                                backgroundColor="#02b9db"
+                                style={{
+                                    width: 160,
+                                    marginTop: 16,
+                                    alignSelf: 'center',
+                                }}
+                                onPress={this.subscribe}
+                            />
+                        </View>
+                    </>
+                )}
+                {this.state.subscribed && (
+                    <TouchableWithoutFeedback
+                        onPress={() => {
+                            Keyboard.dismiss();
+                        }}>
+                        <>
+                            {this.state.showOnboarding && (
+                                <View
                                     style={{
-                                        fontSize: 20,
-                                        textAlign: 'center',
-                                        marginVertical: 20,
+                                        padding: 8,
                                     }}>
-                                    Let's Add Your Phone Number
-                                </CmlText>
-                                <CmlText>
-                                    It won’t be a bigger problem to find one
-                                    video game lover in your neighbor. Since the
-                                    introduction of Virtual Game, it has been
-                                    achieving great heights so far as its
-                                    popularity and technological advancement are
-                                    concerned. The history of video game is as
-                                    interesting as a fairy tale.
-                                </CmlText>
-                                <CmlTextInput
-                                    style={styles.input}
-                                    placeholder="Phone no"
-                                    keyboardType="phone-pad"
-                                    onChangeText={(value: string) =>
-                                        this.setState({areaCodeTemp: value})
-                                    }
-                                />
-                                {this.state.gettingNumber &&
-                                    this.state.areaCode.length <= 0 && (
-                                        <CmlText>
-                                            Callmylist is securing your phone
-                                            number. it can take several minutes.
-                                        </CmlText>
-                                    )}
-                                {this.state.areaCode.length > 0 && (
                                     <CmlText
                                         style={{
-                                            alignSelf: 'center',
-                                            marginTop: 16,
+                                            fontSize: 20,
+                                            textAlign: 'center',
+                                            marginVertical: 20,
                                         }}>
-                                        Your Phone Number: {this.state.areaCode}
+                                        Let's Add Your Phone Number
                                     </CmlText>
-                                )}
-                                {this.state.areaCode.length == 0 && (
-                                    <CmlButton
-                                        title="GET PHONE NUMBER"
-                                        backgroundColor="#02b9db"
-                                        style={{
-                                            width: 200,
-                                            marginTop: 16,
-                                            marginRight: 16,
-                                            alignSelf: 'center',
-                                        }}
-                                        onPress={() => this.onGetPhoneNumber()}
-                                    />
-                                )}
-                                {this.state.areaCode.length > 0 && (
-                                    <CmlButton
-                                        title="GET STARTED"
-                                        backgroundColor="#02b9db"
-                                        style={{
-                                            width: 200,
-                                            marginTop: 16,
-                                            marginRight: 16,
-                                            alignSelf: 'center',
-                                        }}
-                                        onPress={() => this.onGetStartedPhone()}
-                                    />
-                                )}
-                            </View>
-                        )}
-                        {!this.state.showOnboarding && (
-                            <View
-                                style={{
-                                    flex: 1,
-                                    padding: 8,
-                                }}>
-                                <View
-                                    style={{
-                                        height: 60,
-                                        alignItems: 'flex-end',
-                                    }}>
-                                    <CmlButton
-                                        title="New Message"
-                                        backgroundColor="#ffa67a"
-                                        style={{marginTop: 16}}
-                                        onPress={() =>
-                                            this.setState({newMessage: true})
+                                    <CmlText>
+                                        It won’t be a bigger problem to find one
+                                        video game lover in your neighbor. Since
+                                        the introduction of Virtual Game, it has
+                                        been achieving great heights so far as
+                                        its popularity and technological
+                                        advancement are concerned. The history
+                                        of video game is as interesting as a
+                                        fairy tale.
+                                    </CmlText>
+                                    <CmlTextInput
+                                        style={styles.input}
+                                        placeholder="Phone no"
+                                        keyboardType="phone-pad"
+                                        onChangeText={(value: string) =>
+                                            this.setState({areaCodeTemp: value})
                                         }
                                     />
+                                    {this.state.gettingNumber &&
+                                        this.state.areaCode.length <= 0 && (
+                                            <CmlText>
+                                                Callmylist is securing your
+                                                phone number. it can take
+                                                several minutes.
+                                            </CmlText>
+                                        )}
+                                    {this.state.areaCode.length > 0 && (
+                                        <CmlText
+                                            style={{
+                                                alignSelf: 'center',
+                                                marginTop: 16,
+                                            }}>
+                                            Your Phone Number:{' '}
+                                            {this.state.areaCode}
+                                        </CmlText>
+                                    )}
+                                    {this.state.areaCode.length == 0 && (
+                                        <CmlButton
+                                            title="GET PHONE NUMBER"
+                                            backgroundColor="#02b9db"
+                                            style={{
+                                                width: 200,
+                                                marginTop: 16,
+                                                marginRight: 16,
+                                                alignSelf: 'center',
+                                            }}
+                                            onPress={() =>
+                                                this.onGetPhoneNumber()
+                                            }
+                                        />
+                                    )}
+                                    {this.state.areaCode.length > 0 && (
+                                        <CmlButton
+                                            title="GET STARTED"
+                                            backgroundColor="#02b9db"
+                                            style={{
+                                                width: 200,
+                                                marginTop: 16,
+                                                marginRight: 16,
+                                                alignSelf: 'center',
+                                            }}
+                                            onPress={() =>
+                                                this.onGetStartedPhone()
+                                            }
+                                        />
+                                    )}
                                 </View>
-                                <View style={styles.searchContainer}>
-                                    <CmlTextInput
-                                        placeholder="search"
-                                        style={styles.searchBox}
-                                        value={this.state.keyword}
-                                        onChangeText={(value: string) => {
-                                            this.setState({
-                                                keyword: value,
-                                            });
-                                        }}
-                                        onSubmitEditing={() => {
-                                            this.filter();
-                                        }}
-                                    />
-                                    <AntDesign
-                                        name="search1"
-                                        size={20}
-                                        color={'#a9afbb'}
-                                    />
-                                </View>
+                            )}
+                            {!this.state.showOnboarding && (
                                 <View
                                     style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'flex-end',
+                                        flex: 1,
+                                        padding: 8,
                                     }}>
-                                    <TouchableOpacity
-                                        style={{
-                                            marginTop: 16,
-                                            flex: 1,
-                                        }}
-                                        onPress={() => this.onTab(1)}>
-                                        <View
-                                            style={[
-                                                styles.tabButton,
-                                                {
-                                                    backgroundColor:
-                                                        this.state
-                                                            .contact_filter == 1
-                                                            ? 'white'
-                                                            : '#00b7d9',
-                                                    borderColor:
-                                                        this.state
-                                                            .contact_filter == 1
-                                                            ? '#9e9e9e'
-                                                            : '#00b7d9',
-                                                },
-                                            ]}>
-                                            <CmlText
-                                                style={{
-                                                    color:
-                                                        this.state
-                                                            .contact_filter == 1
-                                                            ? 'black'
-                                                            : 'white',
-                                                    fontSize: 14,
-                                                    fontWeight: '600',
-                                                }}>
-                                                Recent
-                                            </CmlText>
-                                        </View>
-                                    </TouchableOpacity>
                                     <View
                                         style={{
-                                            width: 8,
-                                            borderBottomWidth: 1,
-                                            borderColor: '#9e9e9e',
-                                        }}
-                                    />
-                                    <TouchableOpacity
+                                            height: 60,
+                                            alignItems: 'flex-end',
+                                        }}>
+                                        <CmlButton
+                                            title="New Message"
+                                            backgroundColor="#ffa67a"
+                                            style={{marginTop: 16}}
+                                            onPress={() =>
+                                                this.setState({
+                                                    newMessage: true,
+                                                })
+                                            }
+                                        />
+                                    </View>
+                                    <View style={styles.searchContainer}>
+                                        <CmlTextInput
+                                            placeholder="search"
+                                            style={styles.searchBox}
+                                            value={this.state.keyword}
+                                            onChangeText={(value: string) => {
+                                                this.setState({
+                                                    keyword: value,
+                                                });
+                                            }}
+                                            onSubmitEditing={() => {
+                                                this.filter();
+                                            }}
+                                        />
+                                        <AntDesign
+                                            name="search1"
+                                            size={20}
+                                            color={'#a9afbb'}
+                                        />
+                                    </View>
+                                    <View
                                         style={{
-                                            marginTop: 16,
-                                            flex: 1,
-                                        }}
-                                        onPress={() => this.onTab(2)}>
+                                            flexDirection: 'row',
+                                            alignItems: 'flex-end',
+                                        }}>
+                                        <TouchableOpacity
+                                            style={{
+                                                marginTop: 16,
+                                                flex: 1,
+                                            }}
+                                            onPress={() => this.onTab(1)}>
+                                            <View
+                                                style={[
+                                                    styles.tabButton,
+                                                    {
+                                                        backgroundColor:
+                                                            this.state
+                                                                .contact_filter ==
+                                                            1
+                                                                ? 'white'
+                                                                : '#00b7d9',
+                                                        borderColor:
+                                                            this.state
+                                                                .contact_filter ==
+                                                            1
+                                                                ? '#9e9e9e'
+                                                                : '#00b7d9',
+                                                    },
+                                                ]}>
+                                                <CmlText
+                                                    style={{
+                                                        color:
+                                                            this.state
+                                                                .contact_filter ==
+                                                            1
+                                                                ? 'black'
+                                                                : 'white',
+                                                        fontSize: 14,
+                                                        fontWeight: '600',
+                                                    }}>
+                                                    Recent
+                                                </CmlText>
+                                            </View>
+                                        </TouchableOpacity>
                                         <View
-                                            style={[
-                                                styles.tabButton,
-                                                {
-                                                    backgroundColor:
-                                                        this.state
-                                                            .contact_filter == 2
-                                                            ? 'white'
-                                                            : '#2c2d2d',
-                                                    borderColor:
-                                                        this.state
-                                                            .contact_filter == 2
-                                                            ? '#9e9e9e'
-                                                            : '#2c2d2d',
-                                                },
-                                            ]}>
-                                            <CmlText
-                                                style={{
-                                                    color:
-                                                        this.state
-                                                            .contact_filter == 2
-                                                            ? 'black'
-                                                            : 'white',
-                                                    fontSize: 14,
-                                                    fontWeight: '600',
-                                                }}>
-                                                Favorite
-                                            </CmlText>
-                                        </View>
-                                    </TouchableOpacity>
+                                            style={{
+                                                width: 8,
+                                                borderBottomWidth: 1,
+                                                borderColor: '#9e9e9e',
+                                            }}
+                                        />
+                                        <TouchableOpacity
+                                            style={{
+                                                marginTop: 16,
+                                                flex: 1,
+                                            }}
+                                            onPress={() => this.onTab(2)}>
+                                            <View
+                                                style={[
+                                                    styles.tabButton,
+                                                    {
+                                                        backgroundColor:
+                                                            this.state
+                                                                .contact_filter ==
+                                                            2
+                                                                ? 'white'
+                                                                : '#2c2d2d',
+                                                        borderColor:
+                                                            this.state
+                                                                .contact_filter ==
+                                                            2
+                                                                ? '#9e9e9e'
+                                                                : '#2c2d2d',
+                                                    },
+                                                ]}>
+                                                <CmlText
+                                                    style={{
+                                                        color:
+                                                            this.state
+                                                                .contact_filter ==
+                                                            2
+                                                                ? 'black'
+                                                                : 'white',
+                                                        fontSize: 14,
+                                                        fontWeight: '600',
+                                                    }}>
+                                                    Favorite
+                                                </CmlText>
+                                            </View>
+                                        </TouchableOpacity>
 
-                                    <View
-                                        style={{
-                                            width: 8,
-                                            borderBottomWidth: 1,
-                                            borderColor: '#9e9e9e',
-                                        }}
-                                    />
-                                    <TouchableOpacity
-                                        style={{
-                                            marginTop: 16,
-                                            flex: 1,
-                                        }}
-                                        onPress={() => this.onTab(3)}>
                                         <View
-                                            style={[
-                                                styles.tabButton,
-                                                {
-                                                    backgroundColor:
-                                                        this.state
-                                                            .contact_filter == 3
-                                                            ? 'white'
-                                                            : '#fa8c56',
-                                                    borderColor:
-                                                        this.state
-                                                            .contact_filter == 3
-                                                            ? '#9e9e9e'
-                                                            : '#fa8c56',
-                                                },
-                                            ]}>
-                                            <CmlText
-                                                style={{
-                                                    color:
-                                                        this.state
-                                                            .contact_filter == 3
-                                                            ? 'black'
-                                                            : 'white',
-                                                    fontSize: 14,
-                                                    fontWeight: '600',
-                                                }}>
-                                                Follow up
-                                            </CmlText>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.messageList}>
-                                    <FlatList
-                                        data={this.state.messages}
-                                        renderItem={(item: any) => {
-                                            return (
-                                                <>
-                                                    <TouchableOpacity
-                                                        onPress={() =>
-                                                            this.props.navigation.push(
-                                                                'MessageHistoryScreen',
-                                                                {
-                                                                    contact:
-                                                                        item.item,
-                                                                },
-                                                            )
-                                                        }>
-                                                        <View
-                                                            style={[
-                                                                styles.messageContainer,
-                                                                {
-                                                                    backgroundColor:
-                                                                        item.index %
-                                                                            2 ==
-                                                                        1
-                                                                            ? '#f7f7f7'
-                                                                            : 'white',
-                                                                },
-                                                            ]}>
-                                                            <AntDesign
-                                                                name={
-                                                                    item.item
-                                                                        .isFavourite
-                                                                        ? 'star'
-                                                                        : 'staro'
-                                                                }
-                                                                size={20}
-                                                                color={
-                                                                    '#fa8c56'
-                                                                }
-                                                                style={{
-                                                                    marginTop: 8,
-                                                                }}
-                                                            />
-                                                            <View
-                                                                style={
-                                                                    styles.messageInfoContainer
-                                                                }>
-                                                                <CmlText
-                                                                    style={
-                                                                        styles.messageName
-                                                                    }>
-                                                                    {item.item
-                                                                        .firstName +
-                                                                        ' ' +
-                                                                        (item
-                                                                            .item
-                                                                            .lastName
-                                                                            ? item
-                                                                                  .item
-                                                                                  .lastName
-                                                                            : '')}
-                                                                </CmlText>
-                                                                <CmlText
-                                                                    style={
-                                                                        styles.messagePhone
-                                                                    }>
+                                            style={{
+                                                width: 8,
+                                                borderBottomWidth: 1,
+                                                borderColor: '#9e9e9e',
+                                            }}
+                                        />
+                                        <TouchableOpacity
+                                            style={{
+                                                marginTop: 16,
+                                                flex: 1,
+                                            }}
+                                            onPress={() => this.onTab(3)}>
+                                            <View
+                                                style={[
+                                                    styles.tabButton,
+                                                    {
+                                                        backgroundColor:
+                                                            this.state
+                                                                .contact_filter ==
+                                                            3
+                                                                ? 'white'
+                                                                : '#fa8c56',
+                                                        borderColor:
+                                                            this.state
+                                                                .contact_filter ==
+                                                            3
+                                                                ? '#9e9e9e'
+                                                                : '#fa8c56',
+                                                    },
+                                                ]}>
+                                                <CmlText
+                                                    style={{
+                                                        color:
+                                                            this.state
+                                                                .contact_filter ==
+                                                            3
+                                                                ? 'black'
+                                                                : 'white',
+                                                        fontSize: 14,
+                                                        fontWeight: '600',
+                                                    }}>
+                                                    Follow up
+                                                </CmlText>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.messageList}>
+                                        <FlatList
+                                            data={this.state.messages}
+                                            renderItem={(item: any) => {
+                                                return (
+                                                    <>
+                                                        <TouchableOpacity
+                                                            onPress={() =>
+                                                                this.props.navigation.push(
+                                                                    'MessageHistoryScreen',
                                                                     {
-                                                                        item
-                                                                            .item
-                                                                            .phone
-                                                                    }
-                                                                </CmlText>
-                                                                <CmlText
-                                                                    style={
-                                                                        styles.messageTime
-                                                                    }>
-                                                                    {moment(
-                                                                        item
-                                                                            .item
-                                                                            .createDate,
-                                                                    ).format(
-                                                                        'MMM dd, YYYY',
-                                                                    )}
-                                                                </CmlText>
-                                                            </View>
+                                                                        contact:
+                                                                            item.item,
+                                                                    },
+                                                                )
+                                                            }>
                                                             <View
-                                                                style={{
-                                                                    flex: 1,
-                                                                }}>
-                                                                {item.item
-                                                                    .recentMessage && (
+                                                                style={[
+                                                                    styles.messageContainer,
+                                                                    {
+                                                                        backgroundColor:
+                                                                            item.index %
+                                                                                2 ==
+                                                                            1
+                                                                                ? '#f7f7f7'
+                                                                                : 'white',
+                                                                    },
+                                                                ]}>
+                                                                <AntDesign
+                                                                    name={
+                                                                        item
+                                                                            .item
+                                                                            .isFavourite
+                                                                            ? 'star'
+                                                                            : 'staro'
+                                                                    }
+                                                                    size={20}
+                                                                    color={
+                                                                        '#fa8c56'
+                                                                    }
+                                                                    style={{
+                                                                        marginTop: 8,
+                                                                    }}
+                                                                />
+                                                                <View
+                                                                    style={
+                                                                        styles.messageInfoContainer
+                                                                    }>
                                                                     <CmlText
                                                                         style={
-                                                                            styles.message
+                                                                            styles.messageName
+                                                                        }>
+                                                                        {item
+                                                                            .item
+                                                                            .firstName +
+                                                                            ' ' +
+                                                                            (item
+                                                                                .item
+                                                                                .lastName
+                                                                                ? item
+                                                                                      .item
+                                                                                      .lastName
+                                                                                : '')}
+                                                                    </CmlText>
+                                                                    <CmlText
+                                                                        style={
+                                                                            styles.messagePhone
                                                                         }>
                                                                         {
                                                                             item
                                                                                 .item
-                                                                                .recentMessage
-                                                                                .body
+                                                                                .phone
                                                                         }
                                                                     </CmlText>
-                                                                )}
-                                                            </View>
-                                                            <Menu>
-                                                                <MenuTrigger>
-                                                                    <Entypo
-                                                                        name="dots-three-vertical"
-                                                                        size={
-                                                                            20
-                                                                        }
-                                                                        color={
-                                                                            '#7b7b7b'
-                                                                        }
-                                                                        style={{
-                                                                            marginTop: 8,
-                                                                        }}
-                                                                    />
-                                                                </MenuTrigger>
-                                                                <MenuOptions
-                                                                    customStyles={{
-                                                                        optionText: {
-                                                                            padding: 4,
-                                                                        },
+                                                                    <CmlText
+                                                                        style={
+                                                                            styles.messageTime
+                                                                        }>
+                                                                        {moment(
+                                                                            item
+                                                                                .item
+                                                                                .createDate,
+                                                                        ).format(
+                                                                            'MMM dd, YYYY',
+                                                                        )}
+                                                                    </CmlText>
+                                                                </View>
+                                                                <View
+                                                                    style={{
+                                                                        flex: 1,
                                                                     }}>
-                                                                    {/* <MenuOption text="View Contact" /> */}
-                                                                    <MenuOption
-                                                                        text={
-                                                                            item
-                                                                                .item
-                                                                                .isFavourite
-                                                                                ? 'Unmark As Favorite'
-                                                                                : 'Mark As Favorite'
-                                                                        }
-                                                                        onSelect={() => {
-                                                                            this.markAsFavorite(
-                                                                                item.item,
-                                                                            );
-                                                                        }}
-                                                                    />
-                                                                    <MenuOption
-                                                                        text={
-                                                                            item
-                                                                                .item
-                                                                                .sendFollowUp
-                                                                                ? 'Cancel Follow Up Task'
-                                                                                : 'Create Follow Up Task'
-                                                                        }
-                                                                        onSelect={() => {
-                                                                            this.onFollow(
-                                                                                item.item,
-                                                                            );
-                                                                        }}
-                                                                    />
-                                                                    <MenuOption
-                                                                        text="Delete"
-                                                                        onSelect={() => {
-                                                                            this.onDelete(
-                                                                                item.item,
-                                                                            );
-                                                                        }}
-                                                                    />
-                                                                </MenuOptions>
-                                                            </Menu>
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                </>
-                                            );
-                                        }}></FlatList>
+                                                                    {item.item
+                                                                        .recentMessage && (
+                                                                        <CmlText
+                                                                            style={
+                                                                                styles.message
+                                                                            }>
+                                                                            {
+                                                                                item
+                                                                                    .item
+                                                                                    .recentMessage
+                                                                                    .body
+                                                                            }
+                                                                        </CmlText>
+                                                                    )}
+                                                                </View>
+                                                                <Menu>
+                                                                    <MenuTrigger>
+                                                                        <Entypo
+                                                                            name="dots-three-vertical"
+                                                                            size={
+                                                                                20
+                                                                            }
+                                                                            color={
+                                                                                '#7b7b7b'
+                                                                            }
+                                                                            style={{
+                                                                                marginTop: 8,
+                                                                            }}
+                                                                        />
+                                                                    </MenuTrigger>
+                                                                    <MenuOptions
+                                                                        customStyles={{
+                                                                            optionText: {
+                                                                                padding: 4,
+                                                                            },
+                                                                        }}>
+                                                                        {/* <MenuOption text="View Contact" /> */}
+                                                                        <MenuOption
+                                                                            text={
+                                                                                item
+                                                                                    .item
+                                                                                    .isFavourite
+                                                                                    ? 'Unmark As Favorite'
+                                                                                    : 'Mark As Favorite'
+                                                                            }
+                                                                            onSelect={() => {
+                                                                                this.markAsFavorite(
+                                                                                    item.item,
+                                                                                );
+                                                                            }}
+                                                                        />
+                                                                        <MenuOption
+                                                                            text={
+                                                                                item
+                                                                                    .item
+                                                                                    .sendFollowUp
+                                                                                    ? 'Cancel Follow Up Task'
+                                                                                    : 'Create Follow Up Task'
+                                                                            }
+                                                                            onSelect={() => {
+                                                                                this.onFollow(
+                                                                                    item.item,
+                                                                                );
+                                                                            }}
+                                                                        />
+                                                                        <MenuOption
+                                                                            text="Delete"
+                                                                            onSelect={() => {
+                                                                                this.onDelete(
+                                                                                    item.item,
+                                                                                );
+                                                                            }}
+                                                                        />
+                                                                    </MenuOptions>
+                                                                </Menu>
+                                                            </View>
+                                                        </TouchableOpacity>
+                                                    </>
+                                                );
+                                            }}></FlatList>
+                                    </View>
                                 </View>
-                            </View>
-                        )}
-                    </>
-                </TouchableWithoutFeedback>
+                            )}
+                        </>
+                    </TouchableWithoutFeedback>
+                )}
 
                 <Modal
                     isVisible={this.state.newMessage}
