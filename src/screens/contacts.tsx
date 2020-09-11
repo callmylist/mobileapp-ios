@@ -175,6 +175,7 @@ class ContactsScreen extends Component<
         followUpDialog: boolean;
         temp: any;
         deleteDialog: boolean;
+        searchText: string;
     }
 > {
     constructor(props: any) {
@@ -197,6 +198,7 @@ class ContactsScreen extends Component<
             followUpDialog: false,
             temp: null,
             deleteDialog: false,
+            searchText: '',
         };
     }
 
@@ -242,7 +244,43 @@ class ContactsScreen extends Component<
 
     sendMessage = () => {
         if (this.state.selectedContact.length == 0) {
-            Utils.presentToast('Please select the customer.');
+            if (Utils.validatePhoneNumber(this.state.searchText)) {
+                if (this.state.message.length == 0) {
+                    Utils.presentToast('Please enter message');
+                    return;
+                }
+                this.setState({
+                    newMessage: false,
+                    loading: true,
+                });
+
+                MessageCenterService.sendNewMessageWithNumberOnly(
+                    this.state.message,
+                    this.state.searchText,
+                ).subscribe((response: any) => {
+                    console.log(response);
+                    if (response.success) {
+                        this.setState({
+                            loading: false,
+                            message: '',
+                            selectedContact: '',
+                            searchText: '',
+                        });
+
+                        this.props.navigation.push('MessageHistoryScreen', {
+                            contact: this.state.contacts.filter(
+                                (contact) =>
+                                    contact.id == this.state.selectedContact,
+                            )[0],
+                        });
+                    }
+                });
+            } else {
+                Utils.presentToast(
+                    'Please select the customer or enter valid number.',
+                );
+            }
+
             return;
         }
 
@@ -265,6 +303,7 @@ class ContactsScreen extends Component<
                     loading: false,
                     message: '',
                     selectedContact: '',
+                    searchText: '',
                 });
 
                 this.props.navigation.push('MessageHistoryScreen', {
@@ -628,6 +667,7 @@ class ContactsScreen extends Component<
                             newMessage: false,
                             message: '',
                             selectedContact: '',
+                            searchText: '',
                         })
                     }>
                     <View style={AppStyle.dialogContainer}>
@@ -707,6 +747,11 @@ class ContactsScreen extends Component<
                                     <MultiSelect
                                         items={this.state.contacts}
                                         uniqueKey="id"
+                                        onSearchTextChange={(value: any) => {
+                                            this.setState({
+                                                searchText: value,
+                                            });
+                                        }}
                                         onSelectedItemsChange={(value: any) => {
                                             this.setState({
                                                 selectedContact: value,

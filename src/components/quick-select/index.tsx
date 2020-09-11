@@ -32,6 +32,7 @@ export default class MultiSelect extends Component {
         fontFamily: PropTypes.string,
         tagRemoveIconColor: PropTypes.string,
         onSelectedItemsChange: PropTypes.func.isRequired,
+        onSearchTextChange: PropTypes.func,
         selectedItemFontFamily: PropTypes.string,
         selectedItemTextColor: PropTypes.string,
         itemFontFamily: PropTypes.string,
@@ -59,6 +60,7 @@ export default class MultiSelect extends Component {
         fontFamily: '',
         tagRemoveIconColor: colorPack.danger,
         onSelectedItemsChange: () => {},
+        onSearchTextChange: () => {},
         selectedItemFontFamily: '',
         selectedItemTextColor: colorPack.primary,
         itemFontFamily: '',
@@ -437,9 +439,10 @@ export default class MultiSelect extends Component {
                                 style={{marginRight: 10}}
                             />
                             <TextInput
-                                onChangeText={(searchTerm) =>
-                                    this.setState({searchTerm})
-                                }
+                                onChangeText={(searchTerm) => {
+                                    this.props.onSearchTextChange(searchTerm);
+                                    this.setState({searchTerm});
+                                }}
                                 placeholder={searchInputPlaceholderText}
                                 placeholderTextColor={
                                     colorPack.placeholderTextColor
@@ -447,7 +450,6 @@ export default class MultiSelect extends Component {
                                 underlineColorAndroid="transparent"
                                 style={[searchInputStyle, {flex: 1}]}
                                 ref={(input) => {
-                                    console.log('input', input);
                                     this.searchInput = input;
                                 }}
                                 onSubmitEditing={() => {

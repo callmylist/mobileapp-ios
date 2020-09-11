@@ -253,7 +253,7 @@ class RegisterScreen extends Component<
                             ]}>
                             <CmlTextInput
                                 style={styles.input}
-                                placeholder="Phone no"
+                                placeholder="(xxx)xxx-xxxx"
                                 keyboardType="phone-pad"
                                 value={this.state.phone}
                                 onChangeText={(value: string) =>

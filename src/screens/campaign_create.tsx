@@ -2231,7 +2231,7 @@ class CampaignCreate extends Component<
                                                     <TouchableOpacity
                                                         onPress={() => {
                                                             Utils.presentToast(
-                                                                "This audio file will be played if the recipient doens't answer live.",
+                                                                'This audio will he played while the caller is being transferred.',
                                                             );
                                                         }}>
                                                         <AntDesign
