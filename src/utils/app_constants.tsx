@@ -1,6 +1,10 @@
-const API_URL = 'https://core1stg.callmylist.com:8443/v1';
-const HOST_NAME = 'portalstg.callmylist.com';
+// const API_URL = 'https://core1stg.callmylist.com:8443/v1';
+// const HOST_NAME = 'portalstg.callmylist.com';
+// const RESOURCE_URL = 'https://resourcesstg.callmylist.com';
+const API_URL = 'https://core1.callmylist.com:8443/v1';
+const HOST_NAME = 'portal.trustedcampaigns.com';
 const RESOURCE_URL = 'https://resourcesstg.callmylist.com';
+
 const timeZones = [
     {
         label: 'US/Pacific Time (PST)',
