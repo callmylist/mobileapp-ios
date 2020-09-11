@@ -194,13 +194,7 @@ class AddContactScreen extends Component<
                             />
                         </View>
 
-                        <View
-                            style={[
-                                styles.inputContainer,
-                                !this.state.lastName &&
-                                    this.state.showValidate &&
-                                    styles.highlight,
-                            ]}>
+                        <View style={styles.inputContainer}>
                             <CmlTextInput
                                 style={styles.input}
                                 placeholder="Last name"
@@ -213,13 +207,7 @@ class AddContactScreen extends Component<
                                 }
                             />
                         </View>
-                        <View
-                            style={[
-                                styles.inputContainer,
-                                !this.state.companyName &&
-                                    this.state.showValidate &&
-                                    styles.highlight,
-                            ]}>
+                        <View style={styles.inputContainer}>
                             <CmlTextInput
                                 style={styles.input}
                                 placeholder="Company name"
@@ -233,14 +221,7 @@ class AddContactScreen extends Component<
                             />
                         </View>
 
-                        <View
-                            style={[
-                                styles.inputContainer,
-                                (!Utils.validateEmail(this.state.email) ||
-                                    !this.state.email) &&
-                                    this.state.showValidate &&
-                                    styles.highlight,
-                            ]}>
+                        <View style={styles.inputContainer}>
                             <CmlTextInput
                                 style={styles.input}
                                 placeholder="Email address"
@@ -255,12 +236,6 @@ class AddContactScreen extends Component<
                                 }
                             />
                         </View>
-                        {!Utils.validateEmail(this.state.email) &&
-                            this.state.showValidate && (
-                                <CmlText style={styles.errorLabel}>
-                                    Email format is invalid
-                                </CmlText>
-                            )}
 
                         <View
                             style={[
@@ -284,13 +259,7 @@ class AddContactScreen extends Component<
                             />
                         </View>
 
-                        <View
-                            style={[
-                                styles.inputContainer,
-                                !this.state.note &&
-                                    this.state.showValidate &&
-                                    styles.highlight,
-                            ]}>
+                        <View style={styles.inputContainer}>
                             <CmlTextInput
                                 style={[
                                     styles.input,
