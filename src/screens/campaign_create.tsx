@@ -46,6 +46,7 @@ import {store} from '../redux/store';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
+import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 
 const items = [
     {
@@ -341,6 +342,8 @@ class CampaignCreate extends Component<
         scheduleType: number;
         maxCPM: number;
         finishStep: number;
+        sendTestCall: boolean;
+        testCallNumber: string;
     }
 > {
     ALPHABETS: Array<string> = [
@@ -526,6 +529,8 @@ class CampaignCreate extends Component<
             scheduleStartDatePicker: false,
             scheduleType: 0,
             maxCPM: 50,
+            sendTestCall: false,
+            testCallNumber: '',
         };
     }
 
@@ -1141,6 +1146,70 @@ class CampaignCreate extends Component<
         });
     };
 
+    sendTestCall = () => {
+        Keyboard.dismiss();
+
+        if (!Utils.validatePhoneNumber(this.state.testCallNumber)) {
+            Utils.presentToast('Please enter valid phone number.');
+            return;
+        }
+
+        this.setState({
+            sendTestCall: false,
+        });
+
+        const payload: any = {
+            number: this.state.sendTestCall,
+            callerId: this.state.campaign.call.callerId,
+        };
+
+        if (this.state.campaign.call.voicemail.isRingless) {
+            payload['voicemail'] = this.state.campaign.call.voicemail;
+        } else if (
+            !this.state.campaign.call.voicemail.isRingless &&
+            !this.state.campaign.call.transfer &&
+            !this.state.campaign.call.dnc
+        ) {
+            payload['voicemail'] = this.state.campaign.call.voicemail;
+            payload['liveanswer'] = this.state.campaign.call.liveanswer;
+        } else if (
+            this.state.campaign.call.transfer &&
+            this.state.campaign.call.dnc
+        ) {
+            payload['voicemail'] = this.state.campaign.call.voicemail;
+            payload['liveanswer'] = this.state.campaign.call.liveanswer;
+            payload['transfer'] = this.state.campaign.call.transfer;
+            payload['dnc'] = this.state.campaign.call.dnc;
+        } else if (
+            this.state.campaign.call.transfer &&
+            !this.state.campaign.call.dnc
+        ) {
+            payload['voicemail'] = this.state.campaign.call.voicemail;
+            payload['liveanswer'] = this.state.campaign.call.liveanswer;
+            payload['transfer'] = this.state.campaign.call.transfer;
+        } else if (
+            !this.state.campaign.call.transfer &&
+            this.state.campaign.call.dnc
+        ) {
+            payload['voicemail'] = this.state.campaign.call.voicemail;
+            payload['liveanswer'] = this.state.campaign.call.liveanswer;
+            payload['dnc'] = this.state.campaign.call.dnc;
+        }
+        this.setState({
+            loading: true,
+        });
+        CampaignService.sendTestCall(payload).subscribe((response: any) => {
+            this.setState({
+                loading: false,
+            });
+            if (response.success) {
+                Utils.presentToast('Call sent successfully.');
+            } else {
+                Utils.presentToast('Error :' + response.message);
+            }
+        });
+    };
+
     render() {
         return (
             <SafeAreaView style={{flex: 1}}>
@@ -1149,9 +1218,14 @@ class CampaignCreate extends Component<
 
                 <View style={styles.container}>
                     <View style={{flex: 1, alignItems: 'center'}}>
-                        <CmlText style={styles.campaignLabel}>
-                            New Campaign
-                        </CmlText>
+                        <View
+                            style={{
+                                width: '100%',
+                            }}>
+                            <CmlText style={styles.campaignLabel}>
+                                New Campaign
+                            </CmlText>
+                        </View>
                         <View
                             style={{
                                 width: '80%',
@@ -1328,7 +1402,107 @@ class CampaignCreate extends Component<
                                         Select all options you would like for
                                         your campaign
                                     </CmlText>
-                                    <ScrollView style={styles.panelContainer}>
+                                    {((this.state.step == 3 &&
+                                        !this.state.isDNC &&
+                                        !this.state.isTransfer) ||
+                                        this.state.step > 3) &&
+                                        Utils.validatePhoneNumber(
+                                            this.state.campaign.call.callerId,
+                                        ) &&
+                                        ((this.state.campaign.call.voicemail
+                                            .isRingless &&
+                                            this.state.campaign.call.voicemail
+                                                .soundFileId) ||
+                                            (!this.state.isDNC &&
+                                                !this.state.isTransfer &&
+                                                !this.state.campaign.call
+                                                    .voicemail.isRingless &&
+                                                this.state.campaign.call
+                                                    .voicemail.soundFileId &&
+                                                this.state.campaign.call
+                                                    .liveanswer.soundFileId) ||
+                                            (this.state.isTransfer &&
+                                                Utils.validatePhoneNumber(
+                                                    this.state.campaign.call
+                                                        .transfer.number,
+                                                ) &&
+                                                !this.state.isDNC &&
+                                                this.state.campaign.call
+                                                    .liveanswer.soundFileId &&
+                                                this.state.campaign.call
+                                                    .voicemail.soundFileId &&
+                                                (this.state.campaign.call
+                                                    .transfer.defaultAudio ||
+                                                    this.state.campaign.call
+                                                        .transfer
+                                                        .soundFileId)) ||
+                                            (this.state.isDNC &&
+                                                !this.state.isTransfer &&
+                                                this.state.campaign.call
+                                                    .liveanswer.soundFileId &&
+                                                this.state.campaign.call
+                                                    .voicemail.soundFileId &&
+                                                (this.state.campaign.call.dnc
+                                                    .defaultAudio ||
+                                                    this.state.campaign.call.dnc
+                                                        .soundFileId)) ||
+                                            (Utils.validatePhoneNumber(
+                                                this.state.campaign.call
+                                                    .transfer.number,
+                                            ) &&
+                                                this.state.isDNC &&
+                                                this.state.isTransfer &&
+                                                this.state.campaign.call
+                                                    .liveanswer.soundFileId &&
+                                                this.state.campaign.call
+                                                    .voicemail.soundFileId &&
+                                                (this.state.campaign.call
+                                                    .transfer.defaultAudio ||
+                                                    this.state.campaign.call
+                                                        .transfer
+                                                        .soundFileId) &&
+                                                (this.state.campaign.call.dnc
+                                                    .defaultAudio ||
+                                                    this.state.campaign.call.dnc
+                                                        .soundFileId))) && (
+                                            <View
+                                                style={{
+                                                    height: 32,
+                                                    alignItems: 'flex-end',
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'flex-end',
+                                                    width: '100%',
+                                                    marginTop: 8,
+                                                }}>
+                                                <TouchableOpacity
+                                                    style={{
+                                                        alignSelf: 'flex-end',
+                                                        borderColor: '#979797',
+                                                        borderWidth: 1,
+                                                        borderRadius: 8,
+                                                        height: '100%',
+                                                        justifyContent:
+                                                            'center',
+                                                        paddingHorizontal: 16,
+                                                    }}
+                                                    onPress={() => {
+                                                        this.setState({
+                                                            sendTestCall: true,
+                                                            testCallNumber: '',
+                                                        });
+                                                    }}>
+                                                    <CmlText
+                                                        style={{
+                                                            color: '#444444',
+                                                        }}>
+                                                        Send A Test Call
+                                                    </CmlText>
+                                                </TouchableOpacity>
+                                            </View>
+                                        )}
+
+                                    <KeyboardAvoidingScrollView
+                                        containerStyle={styles.panelContainer}>
                                         {this.state.isLiveAnswer && (
                                             <View style={styles.panel}>
                                                 <View
@@ -3378,7 +3552,7 @@ class CampaignCreate extends Component<
                                                 />
                                             </View>
                                         </TouchableOpacity>
-                                    </ScrollView>
+                                    </KeyboardAvoidingScrollView>
                                 </View>
                             )}
                             {this.state.step == 4 && (
@@ -5358,6 +5532,62 @@ class CampaignCreate extends Component<
                                     marginLeft: 16,
                                 }}
                             />
+                        </View>
+                    </View>
+                </Modal>
+
+                <Modal
+                    isVisible={this.state.sendTestCall}
+                    backdropOpacity={0}
+                    onBackdropPress={() =>
+                        this.setState({sendTestCall: false})
+                    }>
+                    <View style={AppStyle.dialogContainer}>
+                        <View>
+                            <CmlText
+                                style={[
+                                    AppStyle.dialogTitle,
+                                    {
+                                        textAlign: 'center',
+                                        fontSize: 16,
+                                    },
+                                ]}>
+                                Please enter the number you would like to
+                                receive the test call
+                            </CmlText>
+
+                            <View style={AppStyle.dialogTimeContainer}>
+                                <CmlTextInput
+                                    value={this.state.testCallNumber}
+                                    onChangeText={(value: string) =>
+                                        this.setState({
+                                            testCallNumber: value,
+                                        })
+                                    }
+                                    keyboardType="phone-pad"
+                                    style={[
+                                        AppStyle.dialogTimePlaceholder,
+                                        {
+                                            flex: 1,
+                                            fontSize: 14,
+                                        },
+                                    ]}></CmlTextInput>
+                            </View>
+
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    height: 32,
+                                    justifyContent: 'flex-end',
+                                }}>
+                                <CmlButton
+                                    title="Send Test Call"
+                                    backgroundColor="#ffa67a"
+                                    style={{marginTop: 16}}
+                                    onPress={() => this.sendTestCall()}
+                                />
+                            </View>
                         </View>
                     </View>
                 </Modal>
