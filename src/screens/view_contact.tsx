@@ -119,7 +119,6 @@ class ViewContactScreen extends Component<
 
     componentDidMount() {
         let contact = this.props.navigation.state.params.contact;
-        console.log(contact);
         this.setState({
             firstName: contact.firstName ? contact.firstName : '',
             lastName: contact.lastName ? contact.lastName : '',
@@ -164,7 +163,6 @@ class ViewContactScreen extends Component<
             //         this.onLogin()
             //     }
             // })
-            console.log(data);
             MessageCenterService.updateContact(data, this.state.id).subscribe(
                 (response: any) => {
                     this.setState({loading: false});

@@ -254,7 +254,6 @@ class SettingsScreen extends Component<
                 );
             });
 
-            console.log(scheduleList);
             this.setState({
                 settingsInfo: data,
                 scheduleList: scheduleList,

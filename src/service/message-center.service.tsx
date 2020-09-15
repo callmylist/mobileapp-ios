@@ -23,7 +23,6 @@ export class MessageCenterService {
             .replace('{limit}', PageLimit)
             .replace('{search}', value);
 
-        console.log(url);
         return RestClient.get(url);
     }
 
@@ -97,8 +96,6 @@ export class MessageCenterService {
             '{conatctID}',
             contactID,
         );
-
-        console.log(url);
 
         return RestClient.put(url, data);
     }

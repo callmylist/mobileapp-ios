@@ -77,7 +77,6 @@ class Utils {
 
         if (contractTypeId) {
             for (let contractType of contractTypes) {
-                console.log(contractType);
                 if (contractType.id === contractTypeId) {
                     return contractType;
                 }
@@ -89,10 +88,8 @@ class Utils {
     public static getBillingTypeById(billingTypeId: any): any {
         const billingTypes = constants.billingTypes;
 
-        console.log(billingTypes);
         if (billingTypeId) {
             for (let billingType of billingTypes) {
-                console.log(billingType);
                 if (billingType.id === billingTypeId) {
                     return billingType;
                 }

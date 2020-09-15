@@ -398,7 +398,6 @@ class AccountScreen extends Component<
                     if (response.success) {
                         let billingDetails = response.data;
 
-                        console.log(billingDetails);
                         billingDetails.contract.contractTypeName = Utils.getContractTypeById(
                             billingDetails.contract.contractType,
                         ).name;

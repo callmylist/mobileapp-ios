@@ -9,6 +9,7 @@ import {
     Keyboard,
     KeyboardAvoidingView,
     Platform,
+    Dimensions,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -305,6 +306,11 @@ class MessageCenter extends Component<
         Keyboard.dismiss();
         if (this.state.selectedContact.length == 0) {
             if (Utils.validatePhoneNumber(this.state.searchText)) {
+                if (this.state.message.length == 0) {
+                    Utils.presentToast('Please enter message');
+                    return;
+                }
+
                 this.setState({
                     loading: true,
                 });
@@ -312,7 +318,6 @@ class MessageCenter extends Component<
                     this.state.message,
                     this.state.searchText,
                 ).subscribe((response: any) => {
-                    console.log(response);
                     if (response.success) {
                         this.setState({
                             newMessage: false,
@@ -469,6 +474,8 @@ class MessageCenter extends Component<
         return (
             <SafeAreaView style={{flex: 1}}>
                 <Header onMenu={this.onMenu} menu={true} />
+                <CmlSpinner visible={this.state.loading} />
+
                 {!this.state.subscribed && (
                     <>
                         <View
@@ -953,144 +960,155 @@ class MessageCenter extends Component<
                             searchText: '',
                         })
                     }>
-                    <View style={AppStyle.dialogContainer}>
-                        <TouchableWithoutFeedback
-                            onPress={() => {
-                                Keyboard.dismiss();
-                            }}>
-                            <KeyboardAvoidingView>
-                                <View>
-                                    <CmlText style={AppStyle.dialogSmallTitle}>
-                                        New Message
-                                    </CmlText>
-                                    <View
-                                        style={[
-                                            {
-                                                height: 70,
-                                            },
-                                        ]}></View>
-                                    <View style={AppStyle.dialogTimeContainer}>
-                                        <CmlTextInput
+                    <View style={{flex: 1, paddingTop: 32}}>
+                        <View style={AppStyle.dialogContainer}>
+                            <TouchableWithoutFeedback
+                                onPress={() => {
+                                    Keyboard.dismiss();
+                                }}>
+                                <KeyboardAvoidingView>
+                                    <View>
+                                        <CmlText
+                                            style={AppStyle.dialogSmallTitle}>
+                                            New Message
+                                        </CmlText>
+                                        <View
                                             style={[
-                                                AppStyle.dialogTimePlaceholder,
                                                 {
-                                                    height: 100,
-                                                    textAlignVertical: 'top',
-                                                    fontSize: 14,
-                                                    width: '100%',
+                                                    height: 70,
                                                 },
-                                            ]}
-                                            placeholderTextColor="white"
-                                            placeholder="Message"
-                                            multiline={true}
-                                            value={this.state.message}
-                                            onChangeText={(value: string) => {
-                                                this.setState({
-                                                    message: value,
-                                                });
-                                            }}
-                                        />
-                                    </View>
-                                    <View
-                                        style={{
-                                            flexDirection: 'row',
-                                            marginTop: 16,
-                                        }}>
-                                        <CmlButton
-                                            title="Send"
-                                            backgroundColor="#02b9db"
+                                            ]}></View>
+                                        <View
+                                            style={
+                                                AppStyle.dialogTimeContainer
+                                            }>
+                                            <CmlTextInput
+                                                style={[
+                                                    AppStyle.dialogTimePlaceholder,
+                                                    {
+                                                        height: 180,
+                                                        textAlignVertical:
+                                                            'top',
+                                                        fontSize: 14,
+                                                        width: '100%',
+                                                    },
+                                                ]}
+                                                placeholderTextColor="white"
+                                                placeholder="Message"
+                                                multiline={true}
+                                                value={this.state.message}
+                                                onChangeText={(
+                                                    value: string,
+                                                ) => {
+                                                    this.setState({
+                                                        message: value,
+                                                    });
+                                                }}
+                                            />
+                                        </View>
+                                        <View
                                             style={{
-                                                width: 100,
+                                                flexDirection: 'row',
                                                 marginTop: 16,
-                                            }}
-                                            onPress={() => {
-                                                this.sendMessage();
-                                            }}
-                                        />
-                                        <View style={{flex: 1}} />
-                                        <CmlButton
-                                            title="Cancel"
-                                            backgroundColor="#ffa67a"
+                                            }}>
+                                            <CmlButton
+                                                title="Send"
+                                                backgroundColor="#02b9db"
+                                                style={{
+                                                    width: 100,
+                                                    marginTop: 16,
+                                                }}
+                                                onPress={() => {
+                                                    this.sendMessage();
+                                                }}
+                                            />
+                                            <View style={{flex: 1}} />
+                                            <CmlButton
+                                                title="Cancel"
+                                                backgroundColor="#ffa67a"
+                                                style={{
+                                                    width: 100,
+                                                    marginTop: 16,
+                                                    marginLeft: 16,
+                                                }}
+                                                onPress={() => {
+                                                    this.setState({
+                                                        newMessage: false,
+                                                        message: '',
+                                                        selectedContact: '',
+                                                    });
+                                                }}
+                                            />
+                                        </View>
+                                        <View
                                             style={{
-                                                width: 100,
-                                                marginTop: 16,
-                                                marginLeft: 16,
-                                            }}
-                                            onPress={() => {
-                                                this.setState({
-                                                    newMessage: false,
-                                                    message: '',
-                                                    selectedContact: '',
-                                                });
-                                            }}
-                                        />
+                                                position: 'absolute',
+                                                top: 60,
+                                                width: '100%',
+                                            }}>
+                                            <MultiSelect
+                                                items={this.state.contacts}
+                                                uniqueKey="id"
+                                                onSearchTextChange={(
+                                                    value: any,
+                                                ) => {
+                                                    this.setState({
+                                                        searchText: value,
+                                                    });
+                                                }}
+                                                onSelectedItemsChange={(
+                                                    value: any,
+                                                ) => {
+                                                    this.setState({
+                                                        selectedContact: value,
+                                                    });
+                                                }}
+                                                selectText={
+                                                    this.state.contacts.filter(
+                                                        (contact) =>
+                                                            contact.id ==
+                                                            this.state
+                                                                .selectedContact,
+                                                    ).length > 0
+                                                        ? this.state.contacts.filter(
+                                                              (contact) =>
+                                                                  contact.id ==
+                                                                  this.state
+                                                                      .selectedContact,
+                                                          )[0].firstName +
+                                                          ' ' +
+                                                          this.state.contacts.filter(
+                                                              (contact) =>
+                                                                  contact.id ==
+                                                                  this.state
+                                                                      .selectedContact,
+                                                          )[0].lastName
+                                                        : this.state
+                                                              .selectedContact
+                                                              .length > 0
+                                                        ? this.state
+                                                              .selectedContact
+                                                        : 'Contact'
+                                                }
+                                                searchInputPlaceholderText="Search Contacts..."
+                                                tagRemoveIconColor="#CCC"
+                                                tagBorderColor="#CCC"
+                                                tagTextColor="#CCC"
+                                                selectedItemTextColor="#CCC"
+                                                selectedItemIconColor="#CCC"
+                                                itemTextColor="#000"
+                                                searchInputStyle={{
+                                                    color: '#CCC',
+                                                }}
+                                                submitButtonColor="#CCC"
+                                                submitButtonText="Submit"
+                                                single={true}
+                                            />
+                                        </View>
                                     </View>
-                                    <View
-                                        style={{
-                                            position: 'absolute',
-                                            top: 60,
-                                            width: '100%',
-                                        }}>
-                                        <MultiSelect
-                                            items={this.state.contacts}
-                                            uniqueKey="id"
-                                            onSearchTextChange={(
-                                                value: any,
-                                            ) => {
-                                                this.setState({
-                                                    searchText: value,
-                                                });
-                                            }}
-                                            onSelectedItemsChange={(
-                                                value: any,
-                                            ) => {
-                                                this.setState({
-                                                    selectedContact: value,
-                                                });
-                                            }}
-                                            selectText={
-                                                this.state.contacts.filter(
-                                                    (contact) =>
-                                                        contact.id ==
-                                                        this.state
-                                                            .selectedContact,
-                                                ).length > 0
-                                                    ? this.state.contacts.filter(
-                                                          (contact) =>
-                                                              contact.id ==
-                                                              this.state
-                                                                  .selectedContact,
-                                                      )[0].firstName +
-                                                      ' ' +
-                                                      this.state.contacts.filter(
-                                                          (contact) =>
-                                                              contact.id ==
-                                                              this.state
-                                                                  .selectedContact,
-                                                      )[0].lastName
-                                                    : this.state.selectedContact
-                                                          .length > 0
-                                                    ? this.state.selectedContact
-                                                    : 'Contact'
-                                            }
-                                            searchInputPlaceholderText="Search Contacts..."
-                                            tagRemoveIconColor="#CCC"
-                                            tagBorderColor="#CCC"
-                                            tagTextColor="#CCC"
-                                            selectedItemTextColor="#CCC"
-                                            selectedItemIconColor="#CCC"
-                                            itemTextColor="#000"
-                                            searchInputStyle={{
-                                                color: '#CCC',
-                                            }}
-                                            submitButtonColor="#CCC"
-                                            submitButtonText="Submit"
-                                            single={true}
-                                        />
-                                    </View>
-                                </View>
-                            </KeyboardAvoidingView>
-                        </TouchableWithoutFeedback>
+                                </KeyboardAvoidingView>
+                            </TouchableWithoutFeedback>
+                        </View>
                     </View>
                 </Modal>
 

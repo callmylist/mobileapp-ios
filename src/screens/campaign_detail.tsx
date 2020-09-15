@@ -117,7 +117,6 @@ class CampaignDetail extends Component<
                 contactListName: response.data.name,
             });
         });
-        console.log(this.props.navigation.state.params.campaign);
         this.setState(
             {
                 campaign: this.props.navigation.state.params.campaign,

@@ -204,7 +204,6 @@ class ContactList extends Component<
                     currentPage: this.state.page,
                     pageSize: this.PAGE_SIZE,
                 }).subscribe((response: any) => {
-                    console.log(response.data);
                     this.setState({
                         pageLoading: false,
                         sounds: this.state.sounds.concat(response.data),
@@ -235,7 +234,6 @@ class ContactList extends Component<
     download = (item: any) => {
         let dirs = RNFetchBlob.fs.dirs;
         this.setState({loading: true});
-        console.log(dirs.DocumentDir + '/' + item.fileName);
         RNFetchBlob.config({
             // response data will be saved to this path if it has access right.
             path: dirs.DocumentDir + '/' + item.fileName,
@@ -253,9 +251,7 @@ class ContactList extends Component<
                 Utils.presentToast('File downloaded to application folder.');
                 this.setState({loading: false});
             })
-            .catch((err: any) => {
-                console.log(err);
-            });
+            .catch((err: any) => {});
     };
 
     uploadList = async () => {

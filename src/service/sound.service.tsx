@@ -21,7 +21,6 @@ export class SoundService {
                 '?page=' + options.currentPage + '&limit=' + options.pageSize;
         }
 
-        console.log(url);
         return RestClient.get(url);
     }
 

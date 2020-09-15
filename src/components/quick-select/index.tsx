@@ -189,7 +189,6 @@ export default class MultiSelect extends Component {
     }
 
     _handleSelectedItemsChange = (newItems, newText) => {
-        console.log(newItems);
         this.props.onSelectedItemsChange(newItems);
         const label = this._getSelectLabel(this.props);
         this.setState({

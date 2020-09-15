@@ -33,14 +33,7 @@ const styles = StyleSheet.create({
 class StripeScreen extends Component<{
     navigation: any;
 }> {
-    componentDidMount() {
-        console.log(
-            stripeCheckoutRedirectHTML(
-                this.props.navigation.state.params.stripeKey,
-                this.props.navigation.state.params.sessionId,
-            ),
-        );
-    }
+    componentDidMount() {}
 
     onBack = () => {
         this.props.navigation.pop();

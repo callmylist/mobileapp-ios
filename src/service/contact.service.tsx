@@ -22,12 +22,6 @@ export class ContactService {
     }
 
     static getContactList(options: any) {
-        console.log(
-            constants.apiUrl.getContactList
-                .replace('{isDoNotContactList}', 'false')
-                .replace('{number}', options.currentPage)
-                .replace('{limit}', options.pageSize),
-        );
         return RestClient.get(
             constants.apiUrl.getContactList
                 .replace('{isDoNotContactList}', 'false')
