@@ -14,6 +14,17 @@ class Utils {
         return new RegExp(/^[0-9]{10}$/g).test(phone);
     }
 
+    static correctPhoneNumber(phone: string) {
+        if (
+            new RegExp(/^[0-9]{11}$/g).test(phone) &&
+            phone.substr(0, 1) == '1'
+        ) {
+            return phone.substr(1);
+        } else {
+            return phone;
+        }
+    }
+
     static presentToast(message: string) {
         Toast.show(message, {
             duration: Toast.durations.LONG,

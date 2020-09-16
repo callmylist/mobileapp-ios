@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconIonic from 'react-native-vector-icons/Ionicons';
 
 import styles, {colorPack} from './styles';
+import Utils from '../../utils';
 
 export default class MultiSelect extends Component {
     searchInput = null;
@@ -431,16 +432,26 @@ export default class MultiSelect extends Component {
                 {selector ? (
                     <View style={styles.selectorView(fixedHeight)}>
                         <View style={styles.inputGroup}>
-                            <IconIonic
-                                name="ios-search"
-                                size={20}
-                                color={colorPack.placeholderTextColor}
-                                style={{marginRight: 10}}
-                            />
+                            {!Utils.validatePhoneNumber(
+                                this.state.searchTerm,
+                            ) && (
+                                <IconIonic
+                                    name="ios-search"
+                                    size={20}
+                                    color={colorPack.placeholderTextColor}
+                                    style={{marginRight: 10}}
+                                />
+                            )}
+
                             <TextInput
                                 onChangeText={(searchTerm) => {
-                                    this.props.onSearchTextChange(searchTerm);
-                                    this.setState({searchTerm});
+                                    let temp = Utils.correctPhoneNumber(
+                                        searchTerm,
+                                    );
+                                    this.props.onSearchTextChange(temp);
+                                    this.setState({
+                                        searchTerm: temp,
+                                    });
                                 }}
                                 placeholder={searchInputPlaceholderText}
                                 placeholderTextColor={
@@ -451,12 +462,14 @@ export default class MultiSelect extends Component {
                                 ref={(input) => {
                                     this.searchInput = input;
                                 }}
+                                value={this.state.searchTerm}
                                 onSubmitEditing={() => {
                                     this.props.onSelectedItemsChange(
                                         this.state.searchTerm,
                                     );
                                     this.setState({
-                                        itemSelectedText: this.state.searchTerm,
+                                        itemSelectedText:
+                                            this.state.searchTerm + '123123',
                                     });
                                     this._submitSelection();
                                 }}

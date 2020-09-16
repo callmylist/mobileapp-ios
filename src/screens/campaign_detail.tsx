@@ -700,10 +700,13 @@ class CampaignDetail extends Component<
                                             value={this.state.testCallNumber}
                                             onChangeText={(value: string) =>
                                                 this.setState({
-                                                    testCallNumber: value,
+                                                    testCallNumber: Utils.correctPhoneNumber(
+                                                        value,
+                                                    ),
                                                 })
                                             }
                                             keyboardType="phone-pad"
+                                            maxLength={11}
                                             style={[
                                                 AppStyle.dialogTimePlaceholder,
                                                 {

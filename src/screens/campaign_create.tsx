@@ -1356,6 +1356,7 @@ class CampaignCreate extends Component<
                                             placeholder="Please add caller id"
                                             style={styles.input}
                                             keyboardType="phone-pad"
+                                            maxLength={11}
                                             value={
                                                 this.state.campaign.call
                                                     .callerId
@@ -1367,7 +1368,9 @@ class CampaignCreate extends Component<
                                                         call: {
                                                             ...this.state
                                                                 .campaign.call,
-                                                            callerId: val,
+                                                            callerId: Utils.correctPhoneNumber(
+                                                                val,
+                                                            ),
                                                         },
                                                     },
                                                 });
@@ -5561,10 +5564,13 @@ class CampaignCreate extends Component<
                                     value={this.state.testCallNumber}
                                     onChangeText={(value: string) =>
                                         this.setState({
-                                            testCallNumber: value,
+                                            testCallNumber: Utils.correctPhoneNumber(
+                                                value,
+                                            ),
                                         })
                                     }
                                     keyboardType="phone-pad"
+                                    maxLength={11}
                                     style={[
                                         AppStyle.dialogTimePlaceholder,
                                         {

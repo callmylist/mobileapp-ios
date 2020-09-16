@@ -402,6 +402,7 @@ class SettingsScreen extends Component<
                                             marginLeft: 8,
                                         }}
                                         keyboardType="phone-pad"
+                                        maxLength={11}
                                         value={
                                             this.state.settingsInfo.phoneNumber
                                         }

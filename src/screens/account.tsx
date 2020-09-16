@@ -322,7 +322,7 @@ class AccountScreen extends Component<
             this.state.user.phone.length == 0 ||
             !Utils.validatePhoneNumber(this.state.user.phone)
         ) {
-            Utils.presentToast('Please enter valid email');
+            Utils.presentToast('Please enter valid phone number');
             return;
         }
         if (!this.state.restrictions.timeZone) {
@@ -803,7 +803,9 @@ class AccountScreen extends Component<
                                             this.setState({
                                                 user: {
                                                     ...this.state.user,
-                                                    phone: value,
+                                                    phone: Utils.correctPhoneNumber(
+                                                        value,
+                                                    ),
                                                 },
                                             });
                                         }}></CmlTextInput>
@@ -1038,7 +1040,7 @@ class AccountScreen extends Component<
                                 Child Accounts
                             </CmlText>
 
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 style={{
                                     position: 'absolute',
                                     top: 8,
@@ -1054,7 +1056,7 @@ class AccountScreen extends Component<
                                     size={32}
                                     color="#767676"
                                 />
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
 
                         <View

@@ -340,10 +340,11 @@ class ViewContactScreen extends Component<
                                 editable={this.state.edit}
                                 placeholder="(xxx)xxx-xxxx"
                                 keyboardType="phone-pad"
+                                maxLength={11}
                                 value={this.state.phone}
                                 onChangeText={(value: string) =>
                                     this.setState({
-                                        phone: value,
+                                        phone: Utils.correctPhoneNumber(value),
                                         showValidate: false,
                                     })
                                 }

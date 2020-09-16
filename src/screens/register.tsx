@@ -258,7 +258,7 @@ class RegisterScreen extends Component<
                                 value={this.state.phone}
                                 onChangeText={(value: string) =>
                                     this.setState({
-                                        phone: value,
+                                        phone: Utils.correctPhoneNumber(value),
                                         showValidate: false,
                                     })
                                 }

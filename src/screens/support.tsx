@@ -180,9 +180,14 @@ class SupportScreen extends Component<
                                     style={styles.input}
                                     placeholder="Phone Number"
                                     keyboardType="phone-pad"
+                                    maxLength={11}
                                     value={this.state.phoneNumber}
                                     onChangeText={(value: string) =>
-                                        this.setState({phoneNumber: value})
+                                        this.setState({
+                                            phoneNumber: Utils.correctPhoneNumber(
+                                                value,
+                                            ),
+                                        })
                                     }
                                 />
                             </View>
