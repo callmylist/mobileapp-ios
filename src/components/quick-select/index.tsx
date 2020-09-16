@@ -468,8 +468,7 @@ export default class MultiSelect extends Component {
                                         this.state.searchTerm,
                                     );
                                     this.setState({
-                                        itemSelectedText:
-                                            this.state.searchTerm + '123123',
+                                        itemSelectedText: this.state.searchTerm,
                                     });
                                     this._submitSelection();
                                 }}
