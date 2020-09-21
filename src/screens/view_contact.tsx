@@ -97,6 +97,7 @@ class ViewContactScreen extends Component<
         edit: boolean;
         id: string;
         contact: any;
+        create: boolean;
     }
 > {
     constructor(props: any) {
@@ -114,11 +115,13 @@ class ViewContactScreen extends Component<
             edit: false,
             id: '',
             contact: null,
+            create: false,
         };
     }
 
     componentDidMount() {
         let contact = this.props.navigation.state.params.contact;
+
         this.setState({
             firstName: contact.firstName ? contact.firstName : '',
             lastName: contact.lastName ? contact.lastName : '',
@@ -128,6 +131,8 @@ class ViewContactScreen extends Component<
             note: contact.note ? contact.note : '',
             id: contact.id,
             contact: contact,
+            create: this.props.navigation.state.params.create,
+            edit: this.props.navigation.state.params.create ? true : false,
         });
     }
 
@@ -137,13 +142,9 @@ class ViewContactScreen extends Component<
 
     update = () => {
         if (
-            this.state.firstName ||
-            this.state.lastName ||
-            this.state.email ||
-            this.state.phone ||
-            this.state.companyName ||
-            Utils.validatePhoneNumber(this.state.phone) ||
-            Utils.validateEmail(this.state.email)
+            this.state.firstName &&
+            (Utils.validateUsaPhoneNumber(this.state.phone) ||
+                Utils.validatePhoneNumber(this.state.phone))
         ) {
             let data = {
                 ...this.state.contact,
@@ -168,6 +169,39 @@ class ViewContactScreen extends Component<
                     this.setState({loading: false});
                     if (response.success) {
                         Utils.presentToast('Successfully updated contact');
+                        this.props.navigation.pop();
+                    } else {
+                        Utils.presentToast(
+                            response.message + '. ' + response.submessage,
+                        );
+                    }
+                },
+            );
+        }
+    };
+
+    addContact = () => {
+        if (
+            this.state.firstName &&
+            (Utils.validateUsaPhoneNumber(this.state.phone) ||
+                Utils.validatePhoneNumber(this.state.phone))
+        ) {
+            let data = {
+                ...this.state.contact,
+                company: this.state.companyName,
+                email: this.state.email,
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                phoneNumber: this.state.phone,
+            };
+
+            this.setState({loading: true});
+
+            MessageCenterService.saveContact(data).subscribe(
+                (response: any) => {
+                    this.setState({loading: false});
+                    if (response.success) {
+                        Utils.presentToast('Successfully created contact');
                         this.props.navigation.pop();
                     } else {
                         Utils.presentToast(
@@ -383,7 +417,7 @@ class ViewContactScreen extends Component<
                                 }
                             />
                         </View>
-                        {this.state.edit && (
+                        {this.state.edit && !this.state.create && (
                             <View
                                 style={{
                                     width: '80%',
@@ -409,6 +443,26 @@ class ViewContactScreen extends Component<
                                     </CmlText>
                                 </TouchableOpacity>
                             </View>
+                        )}
+
+                        {this.state.create && (
+                            <TouchableOpacity
+                                style={[
+                                    styles.button,
+                                    {
+                                        backgroundColor: '#00b7d9',
+                                    },
+                                ]}
+                                onPress={() => this.addContact()}>
+                                <CmlText
+                                    style={{
+                                        color: 'white',
+                                        fontSize: 18,
+                                        fontWeight: '600',
+                                    }}>
+                                    Add Contact
+                                </CmlText>
+                            </TouchableOpacity>
                         )}
                     </View>
                 </KeyboardAvoidingScrollView>

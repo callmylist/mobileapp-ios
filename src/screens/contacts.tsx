@@ -724,21 +724,11 @@ class ContactsScreen extends Component<
                                             marginTop: 16,
                                         }}>
                                         <CmlButton
-                                            title="Send"
-                                            backgroundColor="#02b9db"
-                                            style={{width: 100, marginTop: 16}}
-                                            onPress={() => {
-                                                this.sendMessage();
-                                            }}
-                                        />
-                                        <View style={{flex: 1}} />
-                                        <CmlButton
                                             title="Cancel"
                                             backgroundColor="#ffa67a"
                                             style={{
                                                 width: 100,
                                                 marginTop: 16,
-                                                marginLeft: 16,
                                             }}
                                             onPress={() => {
                                                 this.setState({
@@ -746,6 +736,19 @@ class ContactsScreen extends Component<
                                                     message: '',
                                                     selectedContact: '',
                                                 });
+                                            }}
+                                        />
+                                        <View style={{flex: 1}} />
+                                        <CmlButton
+                                            title="Send"
+                                            backgroundColor="#02b9db"
+                                            style={{
+                                                width: 100,
+                                                marginTop: 16,
+                                                marginLeft: 16,
+                                            }}
+                                            onPress={() => {
+                                                this.sendMessage();
                                             }}
                                         />
                                     </View>
@@ -763,6 +766,7 @@ class ContactsScreen extends Component<
                                             ) => {
                                                 this.setState({
                                                     searchText: value,
+                                                    selectedContact: '',
                                                 });
                                             }}
                                             onSelectedItemsChange={(

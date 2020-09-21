@@ -432,9 +432,7 @@ export default class MultiSelect extends Component {
                 {selector ? (
                     <View style={styles.selectorView(fixedHeight)}>
                         <View style={styles.inputGroup}>
-                            {!Utils.validatePhoneNumber(
-                                this.state.searchTerm,
-                            ) && (
+                            {this.state.searchTerm.length == 0 && (
                                 <IconIonic
                                     name="ios-search"
                                     size={20}

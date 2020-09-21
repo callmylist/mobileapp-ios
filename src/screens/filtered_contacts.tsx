@@ -89,6 +89,17 @@ class FilteredContactsScreen extends Component<
         this.setState({messages: this.props.navigation.state.params.contacts});
     }
 
+    viewContact = (contact: any) => {
+        this.props.navigation.push('ViewContactScreen', {contact: contact});
+    };
+
+    editContact = (contact: any) => {
+        this.props.navigation.push('ViewContactScreen', {
+            contact: contact,
+            create: true,
+        });
+    };
+
     render() {
         return (
             <SafeAreaView style={{flex: 1}}>
@@ -171,7 +182,7 @@ class FilteredContactsScreen extends Component<
                                                         </CmlText>
                                                     )}
                                                 </View>
-                                                <Menu>
+                                                {/* <Menu>
                                                     <MenuTrigger>
                                                         <Entypo
                                                             name="dots-three-vertical"
@@ -188,12 +199,66 @@ class FilteredContactsScreen extends Component<
                                                                 padding: 4,
                                                             },
                                                         }}>
-                                                        <MenuOption text="View Contact" />
-                                                        <MenuOption text="Mark As Favorite" />
-                                                        <MenuOption text="Create Follow Up Task" />
-                                                        <MenuOption text="Delete" />
+                                                        <MenuOption
+                                                            text={
+                                                                item.item
+                                                                    .status ===
+                                                                1
+                                                                    ? 'Create New Contact'
+                                                                    : 'View Contact'
+                                                            }
+                                                            onSelect={() => {
+                                                                if (
+                                                                    item.item
+                                                                        .status ===
+                                                                    1
+                                                                ) {
+                                                                    this.editContact(
+                                                                        item.item,
+                                                                    );
+                                                                } else {
+                                                                    this.viewContact(
+                                                                        item.item,
+                                                                    );
+                                                                }
+                                                            }}
+                                                        />
+                                                        <MenuOption
+                                                            text={
+                                                                item.item
+                                                                    .isFavourite
+                                                                    ? 'Unmark As Favorite'
+                                                                    : 'Mark As Favorite'
+                                                            }
+                                                            onSelect={() => {
+                                                                this.markAsFavorite(
+                                                                    item.item,
+                                                                );
+                                                            }}
+                                                        />
+                                                        <MenuOption
+                                                            text={
+                                                                item.item
+                                                                    .sendFollowUp
+                                                                    ? 'Cancel Follow Up Task'
+                                                                    : 'Create Follow Up Task'
+                                                            }
+                                                            onSelect={() => {
+                                                                this.onFollow(
+                                                                    item.item,
+                                                                );
+                                                            }}
+                                                        />
+                                                        <MenuOption
+                                                            text="Delete"
+                                                            onSelect={() => {
+                                                                this.onDelete(
+                                                                    item.item,
+                                                                );
+                                                            }}
+                                                        />
                                                     </MenuOptions>
-                                                </Menu>
+                                                </Menu> */}
                                             </View>
                                         </TouchableOpacity>
                                     </>

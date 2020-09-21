@@ -296,6 +296,7 @@ class CampaignDetail extends Component<
     };
 
     sendTestCall = () => {
+        console.log(this.state);
         Keyboard.dismiss();
 
         if (!Utils.validatePhoneNumber(this.state.testCallNumber)) {
@@ -308,45 +309,51 @@ class CampaignDetail extends Component<
         });
 
         const payload: any = {
-            number: this.state.sendTestCall,
+            number: this.state.testCallNumber,
             callerId: this.state.campaign.call.callerId,
+            voicemail: this.state.campaign.call.voicemail,
+            liveanswer: this.state.campaign.call.liveanswer,
+            transfer: this.state.campaign.call.transfer,
+            dnc: this.state.campaign.call.dnc,
         };
 
-        if (this.state.campaign.call.voicemail.isRingless) {
-            payload['voicemail'] = this.state.campaign.call.voicemail;
-        } else if (
-            !this.state.campaign.call.voicemail.isRingless &&
-            !this.state.campaign.call.transfer &&
-            !this.state.campaign.call.dnc
-        ) {
-            payload['voicemail'] = this.state.campaign.call.voicemail;
-            payload['liveanswer'] = this.state.campaign.call.liveanswer;
-        } else if (
-            this.state.campaign.call.transfer &&
-            this.state.campaign.call.dnc
-        ) {
-            payload['voicemail'] = this.state.campaign.call.voicemail;
-            payload['liveanswer'] = this.state.campaign.call.liveanswer;
-            payload['transfer'] = this.state.campaign.call.transfer;
-            payload['dnc'] = this.state.campaign.call.dnc;
-        } else if (
-            this.state.campaign.call.transfer &&
-            !this.state.campaign.call.dnc
-        ) {
-            payload['voicemail'] = this.state.campaign.call.voicemail;
-            payload['liveanswer'] = this.state.campaign.call.liveanswer;
-            payload['transfer'] = this.state.campaign.call.transfer;
-        } else if (
-            !this.state.campaign.call.transfer &&
-            this.state.campaign.call.dnc
-        ) {
-            payload['voicemail'] = this.state.campaign.call.voicemail;
-            payload['liveanswer'] = this.state.campaign.call.liveanswer;
-            payload['dnc'] = this.state.campaign.call.dnc;
-        }
+        // if (this.state.campaign.call.voicemail.isRingless) {
+        //     payload['voicemail'] = this.state.campaign.call.voicemail;
+        // } else if (
+        //     !this.state.campaign.call.voicemail.isRingless &&
+        //     !this.state.campaign.call.transfer &&
+        //     !this.state.campaign.call.dnc
+        // ) {
+        //     payload['voicemail'] = this.state.campaign.call.voicemail;
+        //     payload['liveanswer'] = this.state.campaign.call.liveanswer;
+        // } else if (
+        //     this.state.campaign.call.transfer &&
+        //     this.state.campaign.call.dnc
+        // ) {
+        //     payload['voicemail'] = this.state.campaign.call.voicemail;
+        //     payload['liveanswer'] = this.state.campaign.call.liveanswer;
+        //     payload['transfer'] = this.state.campaign.call.transfer;
+        //     payload['dnc'] = this.state.campaign.call.dnc;
+        // } else if (
+        //     this.state.campaign.call.transfer &&
+        //     !this.state.campaign.call.dnc
+        // ) {
+        //     payload['voicemail'] = this.state.campaign.call.voicemail;
+        //     payload['liveanswer'] = this.state.campaign.call.liveanswer;
+        //     payload['transfer'] = this.state.campaign.call.transfer;
+        // } else if (
+        //     !this.state.campaign.call.transfer &&
+        //     this.state.campaign.call.dnc
+        // ) {
+        //     payload['voicemail'] = this.state.campaign.call.voicemail;
+        //     payload['liveanswer'] = this.state.campaign.call.liveanswer;
+        //     payload['dnc'] = this.state.campaign.call.dnc;
+        // }
         this.setState({
             loading: true,
         });
+
+        console.log(payload);
         CampaignService.sendTestCall(payload).subscribe((response: any) => {
             this.setState({
                 loading: false,

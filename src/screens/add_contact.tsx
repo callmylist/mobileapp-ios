@@ -119,12 +119,7 @@ class AddContactScreen extends Component<
     signUp = () => {
         if (
             !this.state.firstName ||
-            !this.state.lastName ||
-            !this.state.email ||
-            !this.state.phone ||
-            !this.state.companyName ||
-            !Utils.validatePhoneNumber(this.state.phone) ||
-            !Utils.validateEmail(this.state.email)
+            !Utils.validatePhoneNumber(this.state.phone)
         ) {
             this.setState({
                 showValidate: true,
@@ -134,11 +129,12 @@ class AddContactScreen extends Component<
         }
 
         let data = {
-            company: this.state.companyName,
-            email: this.state.email,
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            phoneNumber: this.state.phone,
+            CompanyName: this.state.companyName,
+            Email: this.state.email,
+            FirstName: this.state.firstName,
+            LastName: this.state.lastName,
+            Phone: this.state.phone,
+            Notes: this.state.note,
         };
 
         this.setState({loading: true});

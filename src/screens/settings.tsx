@@ -39,6 +39,38 @@ import {queueScheduler} from 'rxjs';
 import {ScrollView} from 'react-native-gesture-handler';
 import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import PickerCheckBox from '../components/check-select/PickerCheckbox';
+
+const items = [
+    {
+        itemKey: 'sun',
+        itemDescription: 'Sunday',
+    },
+    {
+        itemKey: 'mon',
+        itemDescription: 'Monday',
+    },
+    {
+        itemKey: 'tue',
+        itemDescription: 'Tuesday',
+    },
+    {
+        itemKey: 'wed',
+        itemDescription: 'Wednesday',
+    },
+    {
+        itemKey: 'thu',
+        itemDescription: 'Thursday',
+    },
+    {
+        itemKey: 'fri',
+        itemDescription: 'Friday',
+    },
+    {
+        itemKey: 'sat',
+        itemDescription: 'Saturday',
+    },
+];
 
 const styles = StyleSheet.create({
     container: {
@@ -174,7 +206,7 @@ class SettingsScreen extends Component<
         startTime: string;
         endTimepicker: boolean;
         endTime: string;
-        weekDay: number;
+        weekDay: number[];
         responderName: string;
         responderMessage: string;
         editIndex: number;
@@ -231,7 +263,7 @@ class SettingsScreen extends Component<
             startTime: '09:00',
             endTimepicker: false,
             endTime: '18:00',
-            weekDay: 0,
+            weekDay: [],
             responderMessage: '',
             responderName: '',
             editIndex: -1,
@@ -242,21 +274,92 @@ class SettingsScreen extends Component<
         MessageCenterService.getMessageInfo().subscribe((response: any) => {
             let data = response.data;
 
-            let scheduleList = data.schedule;
-            scheduleList.forEach((element: any) => {
-                element.startTime = Utils.SetTime(
-                    element.startTime[0],
-                    element.startTime[1],
-                );
-                element.endTime = Utils.SetTime(
-                    element.endTime[0],
-                    element.endTime[1],
-                );
+            console.log(data);
+            const groupedData = data.schedule.reduce(
+                (r, {name, startTime, message, endTime, ...rest}) => {
+                    const key = `${name}-${startTime}-${message}-${endTime}`;
+                    r[key] = r[key] || {
+                        name,
+                        startTime,
+                        message,
+                        endTime,
+                        days: [],
+                    };
+                    r[key]['days'].push(rest.day);
+                    return r;
+                },
+                {},
+            );
+            const newSchArr = [];
+            Object.keys(groupedData).forEach(function (key, index) {
+                newSchArr.push(groupedData[key]);
             });
 
+            if (newSchArr.length >= 1) {
+                newSchArr.forEach((element) => {
+                    element.day = [];
+
+                    element.startTime = Utils.SetTime(
+                        element.startTime[0],
+                        element.startTime[1],
+                    );
+
+                    element.endTime = Utils.SetTime(
+                        element.endTime[0],
+                        element.endTime[1],
+                    );
+
+                    element.days.forEach((elementDay) => {
+                        switch (elementDay) {
+                            case 1: {
+                                element.day.push('mon');
+                                break;
+                            }
+
+                            case 2: {
+                                element.day.push('tue');
+                                break;
+                            }
+
+                            case 3: {
+                                element.day.push('wed');
+                                break;
+                            }
+
+                            case 4: {
+                                element.day.push('thu');
+                                break;
+                            }
+
+                            case 5: {
+                                element.day.push('fri');
+
+                                break;
+                            }
+
+                            case 6: {
+                                element.day.push('sat');
+                                break;
+                            }
+
+                            case 7: {
+                                element.day.push('sun');
+                                break;
+                            }
+
+                            default: {
+                                element.day.push('');
+                                break;
+                            }
+                        }
+                    });
+                });
+            }
+
+            console.log(newSchArr);
             this.setState({
                 settingsInfo: data,
-                scheduleList: scheduleList,
+                scheduleList: newSchArr,
             });
         });
     }
@@ -293,7 +396,7 @@ class SettingsScreen extends Component<
         this.setState({
             scheduleList: scheduleList,
             addResponder: false,
-            weekDay: 0,
+            weekDay: [],
             responderMessage: '',
             responderName: '',
             startTime: '09:00',
@@ -323,13 +426,14 @@ class SettingsScreen extends Component<
             startTime: this.state.startTime,
         };
 
+        console.log(schedule);
         let scheduleList = this.state.scheduleList;
         scheduleList[this.state.editIndex] = schedule;
 
         this.setState({
             scheduleList: scheduleList,
             addResponder: false,
-            weekDay: 0,
+            weekDay: [],
             responderMessage: '',
             responderName: '',
             startTime: '09:00',
@@ -339,21 +443,85 @@ class SettingsScreen extends Component<
     };
 
     update = () => {
-        MessageCenterService.saveMessageSettings(
-            this.state.scheduleList.map((schedule: any) => {
-                return {
-                    ...schedule,
-                    startTime: Utils.convertTime12toString(schedule.startTime),
-                    endTime: Utils.convertTime12toString(schedule.endTime),
+        let scheduleArr: any[] = [];
+
+        this.state.scheduleList.forEach((element) => {
+            element.day.forEach((elementDay: any) => {
+                const newObj = {
+                    name: '',
+                    message: '',
+                    starttime: '',
+                    endtime: '',
+                    day: 0,
                 };
-            }),
-        ).subscribe((response: any) => {
-            if (response.success) {
-                Utils.presentToast('Schedule Update Succesful');
-            } else {
-                Utils.presentToast('Schedule Update Unsuccesful');
-            }
+
+                newObj.name = element.name;
+
+                newObj.message = element.message;
+
+                newObj.starttime = Utils.convertTime12toString(
+                    element.startTime,
+                );
+
+                newObj.endtime = Utils.convertTime12toString(element.endTime);
+
+                switch (elementDay) {
+                    case 'mon': {
+                        newObj.day = 1;
+                        break;
+                    }
+
+                    case 'tue': {
+                        newObj.day = 2;
+                        break;
+                    }
+
+                    case 'wed': {
+                        newObj.day = 3;
+                        break;
+                    }
+
+                    case 'thu': {
+                        newObj.day = 4;
+                        break;
+                    }
+
+                    case 'fri': {
+                        newObj.day = 5;
+                        break;
+                    }
+
+                    case 'sat': {
+                        newObj.day = 6;
+                        break;
+                    }
+
+                    case 'sun': {
+                        newObj.day = 7;
+                        break;
+                    }
+
+                    default: {
+                        newObj.day = 0;
+                        break;
+                    }
+                }
+
+                scheduleArr.push(newObj);
+            });
         });
+
+        console.log(scheduleArr);
+
+        MessageCenterService.saveMessageSettings(scheduleArr).subscribe(
+            (response: any) => {
+                if (response.success) {
+                    Utils.presentToast('Schedule Update Succesful');
+                } else {
+                    Utils.presentToast('Schedule Update Unsuccesful');
+                }
+            },
+        );
     };
 
     render() {
@@ -421,7 +589,7 @@ class SettingsScreen extends Component<
                                         onPress={() => {
                                             this.setState({
                                                 addResponder: true,
-                                                weekDay: 0,
+                                                weekDay: [],
                                                 responderMessage: '',
                                                 responderName: '',
                                                 startTime: '09:00',
@@ -437,6 +605,7 @@ class SettingsScreen extends Component<
                                 </View>
                                 <FlatList
                                     data={this.state.scheduleList}
+                                    key={Utils.randomString()}
                                     renderItem={(item: any) => {
                                         let schedule = item.item;
                                         return (
@@ -548,13 +717,29 @@ class SettingsScreen extends Component<
                                                                         'center',
                                                                     marginTop: 4,
                                                                 }}>
-                                                                {
-                                                                    this
-                                                                        .WEEKDAYS[
-                                                                        schedule.day -
-                                                                            1
-                                                                    ]
-                                                                }
+                                                                {schedule.day.map(
+                                                                    (
+                                                                        value: number,
+                                                                    ) => {
+                                                                        console.log(
+                                                                            value,
+                                                                        );
+                                                                        return (
+                                                                            ' ' +
+                                                                            items.filter(
+                                                                                (
+                                                                                    day,
+                                                                                ) => {
+                                                                                    return (
+                                                                                        day.itemKey ===
+                                                                                        value
+                                                                                    );
+                                                                                },
+                                                                            )[0]
+                                                                                .itemDescription
+                                                                        );
+                                                                    },
+                                                                )}
                                                             </CmlText>
                                                         </View>
                                                     </View>
@@ -839,18 +1024,33 @@ class SettingsScreen extends Component<
                                             marginBottom: 16,
                                         },
                                     ]}>
-                                    Time Zone
+                                    Day of Week
                                 </CmlText>
 
-                                <RNPickerSelect
-                                    style={bigPickerSelectStyles}
-                                    value={this.state.weekDay}
-                                    onValueChange={(value) =>
-                                        this.setState({
-                                            weekDay: value,
-                                        })
+                                <PickerCheckBox
+                                    data={items}
+                                    headerComponent={
+                                        <CmlText style={{fontSize: 16}}>
+                                            Select the days for your campaign to
+                                            run.
+                                        </CmlText>
                                     }
-                                    items={this.WEEKDAY_SELECTS}
+                                    checkedItems={this.state.weekDay}
+                                    OnConfirm={(pItems: any) => {
+                                        console.log(pItems);
+                                        this.setState({
+                                            weekDay: pItems.map(
+                                                (item) => item.itemKey,
+                                            ),
+                                        });
+                                    }}
+                                    ConfirmButtonTitle="OK"
+                                    DescriptionField="itemDescription"
+                                    KeyField="itemKey"
+                                    placeholder="Please select days"
+                                    arrowColor="#FFD740"
+                                    arrowSize={10}
+                                    placeholderSelectedItems="$count selected item(s)"
                                 />
                             </View>
                         </View>

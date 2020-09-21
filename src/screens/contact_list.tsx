@@ -531,13 +531,6 @@ class ContactList extends Component<
                                 marginTop: 16,
                             }}>
                             <CmlButton
-                                title="Upload"
-                                backgroundColor="#02b9db"
-                                style={{width: 100, marginTop: 16}}
-                                onPress={() => this.upload()}
-                            />
-                            <View style={{flex: 1}} />
-                            <CmlButton
                                 title="Cancel"
                                 backgroundColor="#ffa67a"
                                 onPress={() =>
@@ -551,8 +544,18 @@ class ContactList extends Component<
                                 style={{
                                     width: 100,
                                     marginTop: 16,
+                                }}
+                            />
+                            <View style={{flex: 1}} />
+                            <CmlButton
+                                title="Upload"
+                                backgroundColor="#02b9db"
+                                style={{
+                                    width: 100,
+                                    marginTop: 16,
                                     marginLeft: 16,
                                 }}
+                                onPress={() => this.upload()}
                             />
                         </View>
                     </View>

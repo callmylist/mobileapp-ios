@@ -7,6 +7,7 @@ import {
     SafeAreaView,
     Linking,
     TouchableWithoutFeedback,
+    Text,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
@@ -370,23 +371,55 @@ class SoundScreen extends Component<
                         onPress={() => {
                             Linking.openURL('tel:1-317-552-0035');
                         }}>
-                        <CmlText
-                            style={[
-                                styles.campaignLabel,
-                                {
-                                    fontSize: 12,
-                                    width: '90%',
-                                    alignSelf: 'center',
-                                    marginBottom: 24,
-                                },
-                            ]}>
-                            IT’s Simple. Add and review your audio files here.
-                            We have given you 3 easy ways to add sounds. You may
-                            record sound files using our recording interface.
-                            All sound files will be listed below. Please call
-                            1-317-552-0035. When prompted enter Id: 92632# and
-                            Password: 9559#
-                        </CmlText>
+                        <Text
+                            style={{
+                                flexWrap: 'wrap',
+                                paddingHorizontal: 16,
+                                marginTop: 24,
+                                marginBottom: 24,
+                            }}>
+                            <CmlText
+                                style={[
+                                    styles.campaignLabel,
+                                    {
+                                        fontSize: 12,
+                                        alignSelf: 'center',
+                                    },
+                                ]}>
+                                IT’s Simple. Add and review your audio files
+                                here. We have given you 3 easy ways to add
+                                sounds. You may record sound files using our
+                                recording interface. All sound files will be
+                                listed below. Please call
+                            </CmlText>
+                            <CmlText
+                                style={[
+                                    styles.campaignLabel,
+                                    {
+                                        fontSize: 12,
+                                        alignSelf: 'center',
+                                        fontWeight: 'bold',
+                                        fontStyle: 'italic',
+                                        marginTop: 0,
+                                    },
+                                ]}>
+                                {' '}
+                                1-317-552-0035{' '}
+                            </CmlText>
+                            <CmlText
+                                style={[
+                                    styles.campaignLabel,
+                                    {
+                                        fontSize: 12,
+                                        alignSelf: 'center',
+                                        marginBottom: 24,
+                                        marginTop: 0,
+                                    },
+                                ]}>
+                                . When prompted enter Id: 92632# and Password:
+                                9559#
+                            </CmlText>
+                        </Text>
                     </TouchableWithoutFeedback>
 
                     {this.state.noSounds && (
@@ -555,19 +588,11 @@ class SoundScreen extends Component<
                                     marginTop: 16,
                                 }}>
                                 <CmlButton
-                                    title="Use Text"
-                                    backgroundColor="#02b9db"
-                                    style={{width: 100, marginTop: 16}}
-                                    onPress={() => this.useText()}
-                                />
-                                <View style={{flex: 1}} />
-                                <CmlButton
                                     title="Cancel"
                                     backgroundColor="#ffa67a"
                                     style={{
                                         width: 100,
                                         marginTop: 16,
-                                        marginLeft: 16,
                                     }}
                                     onPress={() =>
                                         this.setState({
@@ -577,75 +602,17 @@ class SoundScreen extends Component<
                                         })
                                     }
                                 />
+                                <View style={{flex: 1}} />
+                                <CmlButton
+                                    title="Use Text"
+                                    backgroundColor="#02b9db"
+                                    style={{width: 100, marginTop: 16}}
+                                    onPress={() => this.useText()}
+                                />
                             </View>
                         </View>
                     </View>
                 </Modal>
-
-                <Dialog
-                    visible={this.state.textToSpeech}
-                    onTouchOutside={() => {
-                        this.setState({textToSpeech: false});
-                    }}
-                    dialogStyle={styles.dialogContainer}
-                    overlayOpacity={0}>
-                    <DialogContent>
-                        <View style={{paddingVertical: 0}}>
-                            <View>
-                                <CmlText style={styles.dialogSmallTitle}>
-                                    Please enter the text and select void gender
-                                    below.
-                                </CmlText>
-                                <View style={styles.dialogTimeContainer}>
-                                    <CmlTextInput
-                                        style={[
-                                            styles.dialogTimePlaceholder,
-                                            {
-                                                height: 100,
-                                                textAlignVertical: 'top',
-                                            },
-                                        ]}
-                                        placeholderTextColor="white"
-                                        placeholder="Enter Text To Speech"
-                                        multiline={true}
-                                    />
-                                </View>
-
-                                <CmlText style={styles.dialogDescription}>
-                                    Voice Gender
-                                </CmlText>
-                                <View style={styles.dialogTimeContainer}>
-                                    <CmlText
-                                        style={styles.dialogTimePlaceholder}>
-                                        Male Voice
-                                    </CmlText>
-                                </View>
-
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        marginTop: 16,
-                                    }}>
-                                    <CmlButton
-                                        title="Use Text"
-                                        backgroundColor="#02b9db"
-                                        style={{width: 100, marginTop: 16}}
-                                    />
-                                    <View style={{flex: 1}} />
-                                    <CmlButton
-                                        title="Cancel"
-                                        backgroundColor="#ffa67a"
-                                        style={{
-                                            width: 100,
-                                            marginTop: 16,
-                                            marginLeft: 16,
-                                        }}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                    </DialogContent>
-                </Dialog>
 
                 <Modal
                     isVisible={this.state.deleteConfirm}

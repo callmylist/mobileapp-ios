@@ -73,8 +73,11 @@ class MessageHistory extends Component<
             (response: any) => {
                 if (response.success) {
                     this.setState({
-                        messageList: response.data,
+                        messageList: response.data.reverse(),
                     });
+                    setTimeout(() => {
+                        if (this.flatList) this.flatList.scrollToEnd();
+                    }, 30);
                 }
             },
         );
@@ -109,6 +112,38 @@ class MessageHistory extends Component<
                 <Header back={true} onBack={this.onBack} menu={false} />
 
                 <View style={styles.container}>
+                    {this.state.contact && (
+                        <View
+                            style={{
+                                marginBottom: 8,
+                            }}>
+                            {this.state.contact.lastName ? (
+                                <>
+                                    <CmlText
+                                        style={{
+                                            fontSize: 18,
+                                            fontWeight: 'bold',
+                                            textAlign: 'center',
+                                        }}>
+                                        {this.state.contact.firstName}{' '}
+                                        {this.state.contact.lastName}
+                                    </CmlText>
+                                </>
+                            ) : (
+                                <>
+                                    <CmlText
+                                        style={{
+                                            fontSize: 18,
+                                            fontWeight: 'bold',
+                                            textAlign: 'center',
+                                        }}>
+                                        {this.state.contact.firstName}
+                                    </CmlText>
+                                </>
+                            )}
+                        </View>
+                    )}
+
                     <KeyboardAvoidingView
                         behavior="padding"
                         keyboardVerticalOffset={
@@ -118,7 +153,7 @@ class MessageHistory extends Component<
                             flex: 1,
                         }}>
                         <FlatList
-                            inverted
+                            // inverted
                             data={this.state.messageList}
                             ref={(ref) => (this.flatList = ref)}
                             renderItem={(item: any) => (

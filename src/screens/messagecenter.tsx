@@ -34,6 +34,8 @@ import Utils from '../utils';
 import {and} from 'react-native-reanimated';
 import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {UserService} from '../service/user.service';
+import {store} from '../redux/store';
+import {SCREEN_INDEX_SET} from '../redux/actionTypes/dashboard';
 
 const styles = StyleSheet.create({
     container: {
@@ -215,7 +217,7 @@ class MessageCenter extends Component<
     didAppear = () => {
         this.getMessageInfo();
         // this.checkSubscribed();
-        this.onTab(1);
+        this.onTab(this.state.contact_filter);
     };
 
     getMessageInfo = () => {
@@ -304,6 +306,7 @@ class MessageCenter extends Component<
 
     sendMessage = () => {
         Keyboard.dismiss();
+
         if (this.state.selectedContact.length == 0) {
             if (Utils.validatePhoneNumber(this.state.searchText)) {
                 if (this.state.message.length == 0) {
@@ -470,6 +473,17 @@ class MessageCenter extends Component<
 
     subscribe = () => {};
 
+    viewContact = (contact: any) => {
+        this.props.navigation.push('ViewContactScreen', {contact: contact});
+    };
+
+    editContact = (contact: any) => {
+        this.props.navigation.push('ViewContactScreen', {
+            contact: contact,
+            create: true,
+        });
+    };
+
     render() {
         return (
             <SafeAreaView style={{flex: 1}}>
@@ -601,7 +615,29 @@ class MessageCenter extends Component<
                                         style={{
                                             height: 60,
                                             alignItems: 'flex-end',
+                                            flexDirection: 'row',
+                                            paddingBottom: 8,
                                         }}>
+                                        <CmlButton
+                                            title="Contacts"
+                                            backgroundColor="#02b9db"
+                                            style={{
+                                                marginTop: 16,
+                                                marginLeft: 8,
+                                            }}
+                                            onPress={() => {
+                                                store.dispatch({
+                                                    type: SCREEN_INDEX_SET,
+                                                    payload: {
+                                                        screenIndex: 8,
+                                                    },
+                                                });
+                                                this.props.navigation.navigate(
+                                                    'Contacts',
+                                                );
+                                            }}
+                                        />
+                                        <View style={{flex: 1}} />
                                         <CmlButton
                                             title="New Message"
                                             backgroundColor="#ffa67a"
@@ -854,7 +890,7 @@ class MessageCenter extends Component<
                                                                                 .item
                                                                                 .createDate,
                                                                         ).format(
-                                                                            'MMM dd, YYYY',
+                                                                            'MMM DD, YYYY',
                                                                         )}
                                                                     </CmlText>
                                                                 </View>
@@ -898,7 +934,32 @@ class MessageCenter extends Component<
                                                                                 padding: 4,
                                                                             },
                                                                         }}>
-                                                                        {/* <MenuOption text="View Contact" /> */}
+                                                                        <MenuOption
+                                                                            text={
+                                                                                item
+                                                                                    .item
+                                                                                    .status ===
+                                                                                1
+                                                                                    ? 'Create New Contact'
+                                                                                    : 'View Contact'
+                                                                            }
+                                                                            onSelect={() => {
+                                                                                if (
+                                                                                    item
+                                                                                        .item
+                                                                                        .status ===
+                                                                                    1
+                                                                                ) {
+                                                                                    this.editContact(
+                                                                                        item.item,
+                                                                                    );
+                                                                                } else {
+                                                                                    this.viewContact(
+                                                                                        item.item,
+                                                                                    );
+                                                                                }
+                                                                            }}
+                                                                        />
                                                                         <MenuOption
                                                                             text={
                                                                                 item
@@ -1012,24 +1073,11 @@ class MessageCenter extends Component<
                                                 marginTop: 16,
                                             }}>
                                             <CmlButton
-                                                title="Send"
-                                                backgroundColor="#02b9db"
-                                                style={{
-                                                    width: 100,
-                                                    marginTop: 16,
-                                                }}
-                                                onPress={() => {
-                                                    this.sendMessage();
-                                                }}
-                                            />
-                                            <View style={{flex: 1}} />
-                                            <CmlButton
                                                 title="Cancel"
                                                 backgroundColor="#ffa67a"
                                                 style={{
                                                     width: 100,
                                                     marginTop: 16,
-                                                    marginLeft: 16,
                                                 }}
                                                 onPress={() => {
                                                     this.setState({
@@ -1037,6 +1085,19 @@ class MessageCenter extends Component<
                                                         message: '',
                                                         selectedContact: '',
                                                     });
+                                                }}
+                                            />
+                                            <View style={{flex: 1}} />
+                                            <CmlButton
+                                                title="Send"
+                                                backgroundColor="#02b9db"
+                                                style={{
+                                                    width: 100,
+                                                    marginTop: 16,
+                                                    marginLeft: 16,
+                                                }}
+                                                onPress={() => {
+                                                    this.sendMessage();
                                                 }}
                                             />
                                         </View>
@@ -1054,6 +1115,7 @@ class MessageCenter extends Component<
                                                 ) => {
                                                     this.setState({
                                                         searchText: value,
+                                                        selectedContact: '',
                                                     });
                                                 }}
                                                 onSelectedItemsChange={(
