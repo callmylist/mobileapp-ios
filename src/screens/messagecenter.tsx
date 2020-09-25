@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     StyleSheet,
     FlatList,
@@ -15,27 +15,27 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Header from '../components/header';
-import {CmlText} from '../components/text';
-import {CmlTextInput} from '../components/textinput';
+import { CmlText } from '../components/text';
+import { CmlTextInput } from '../components/textinput';
 import {
     Menu,
     MenuTrigger,
     MenuOptions,
     MenuOption,
 } from 'react-native-popup-menu';
-import {CmlButton} from '../components/button';
+import { CmlButton } from '../components/button';
 import Modal from 'react-native-modal';
 import AppStyle from '../shared/styles';
-import {MessageCenterService} from '../service/message-center.service';
+import { MessageCenterService } from '../service/message-center.service';
 import moment from 'moment';
-import {CmlSpinner} from '../components/loading';
+import { CmlSpinner } from '../components/loading';
 import MultiSelect from '../components/quick-select';
 import Utils from '../utils';
-import {and} from 'react-native-reanimated';
-import {AnonymousSubject} from 'rxjs/internal/Subject';
-import {UserService} from '../service/user.service';
-import {store} from '../redux/store';
-import {SCREEN_INDEX_SET} from '../redux/actionTypes/dashboard';
+import { and } from 'react-native-reanimated';
+import { AnonymousSubject } from 'rxjs/internal/Subject';
+import { UserService } from '../service/user.service';
+import { store } from '../redux/store';
+import { SCREEN_INDEX_SET } from '../redux/actionTypes/dashboard';
 
 const styles = StyleSheet.create({
     container: {
@@ -175,7 +175,7 @@ class MessageCenter extends Component<
         subscribed: boolean;
         searchText: string;
     }
-> {
+    > {
     constructor(props: any) {
         super(props);
 
@@ -242,9 +242,9 @@ class MessageCenter extends Component<
             this.setState({
                 subscribed:
                     user.messageSubscription &&
-                    user.messageSubscription !== null &&
-                    user.messageSubscription.subId &&
-                    user.messageSubscription.subId !== ''
+                        user.messageSubscription !== null &&
+                        user.messageSubscription.subId &&
+                        user.messageSubscription.subId !== ''
                         ? true
                         : false,
             });
@@ -330,6 +330,9 @@ class MessageCenter extends Component<
                             searchText: '',
                         });
                         this.onTab(this.state.contact_filter);
+                        Utils.presentToast(
+                            "Message sent successfully."
+                        );
                     } else {
                         Utils.presentToast(
                             response.message + '.' + response.submessage,
@@ -371,6 +374,9 @@ class MessageCenter extends Component<
                         searchText: '',
                     });
                     this.onTab(this.state.contact_filter);
+                    Utils.presentToast(
+                        "Message sent successfully."
+                    );
                 } else {
                     Utils.presentToast(
                         response.message + '.' + response.submessage,
@@ -471,10 +477,10 @@ class MessageCenter extends Component<
         );
     };
 
-    subscribe = () => {};
+    subscribe = () => { };
 
     viewContact = (contact: any) => {
-        this.props.navigation.push('ViewContactScreen', {contact: contact});
+        this.props.navigation.push('ViewContactScreen', { contact: contact });
     };
 
     editContact = (contact: any) => {
@@ -486,7 +492,7 @@ class MessageCenter extends Component<
 
     render() {
         return (
-            <SafeAreaView style={{flex: 1}}>
+            <SafeAreaView style={{ flex: 1 }}>
                 <Header onMenu={this.onMenu} menu={true} />
                 <CmlSpinner visible={this.state.loading} />
 
@@ -552,7 +558,7 @@ class MessageCenter extends Component<
                                         placeholder="(xxx)xxx-xxxx"
                                         keyboardType="phone-pad"
                                         onChangeText={(value: string) =>
-                                            this.setState({areaCodeTemp: value})
+                                            this.setState({ areaCodeTemp: value })
                                         }
                                     />
                                     {this.state.gettingNumber &&
@@ -637,11 +643,11 @@ class MessageCenter extends Component<
                                                 );
                                             }}
                                         />
-                                        <View style={{flex: 1}} />
+                                        <View style={{ flex: 1 }} />
                                         <CmlButton
                                             title="New Message"
                                             backgroundColor="#ffa67a"
-                                            style={{marginTop: 16}}
+                                            style={{ marginTop: 16 }}
                                             onPress={() =>
                                                 this.setState({
                                                     newMessage: true,
@@ -687,13 +693,13 @@ class MessageCenter extends Component<
                                                         backgroundColor:
                                                             this.state
                                                                 .contact_filter ==
-                                                            1
+                                                                1
                                                                 ? 'white'
                                                                 : '#00b7d9',
                                                         borderColor:
                                                             this.state
                                                                 .contact_filter ==
-                                                            1
+                                                                1
                                                                 ? '#9e9e9e'
                                                                 : '#00b7d9',
                                                     },
@@ -703,7 +709,7 @@ class MessageCenter extends Component<
                                                         color:
                                                             this.state
                                                                 .contact_filter ==
-                                                            1
+                                                                1
                                                                 ? 'black'
                                                                 : 'white',
                                                         fontSize: 14,
@@ -733,13 +739,13 @@ class MessageCenter extends Component<
                                                         backgroundColor:
                                                             this.state
                                                                 .contact_filter ==
-                                                            2
+                                                                2
                                                                 ? 'white'
                                                                 : '#2c2d2d',
                                                         borderColor:
                                                             this.state
                                                                 .contact_filter ==
-                                                            2
+                                                                2
                                                                 ? '#9e9e9e'
                                                                 : '#2c2d2d',
                                                     },
@@ -749,7 +755,7 @@ class MessageCenter extends Component<
                                                         color:
                                                             this.state
                                                                 .contact_filter ==
-                                                            2
+                                                                2
                                                                 ? 'black'
                                                                 : 'white',
                                                         fontSize: 14,
@@ -780,13 +786,13 @@ class MessageCenter extends Component<
                                                         backgroundColor:
                                                             this.state
                                                                 .contact_filter ==
-                                                            3
+                                                                3
                                                                 ? 'white'
                                                                 : '#fa8c56',
                                                         borderColor:
                                                             this.state
                                                                 .contact_filter ==
-                                                            3
+                                                                3
                                                                 ? '#9e9e9e'
                                                                 : '#fa8c56',
                                                     },
@@ -796,7 +802,7 @@ class MessageCenter extends Component<
                                                         color:
                                                             this.state
                                                                 .contact_filter ==
-                                                            3
+                                                                3
                                                                 ? 'black'
                                                                 : 'white',
                                                         fontSize: 14,
@@ -830,7 +836,7 @@ class MessageCenter extends Component<
                                                                         backgroundColor:
                                                                             item.index %
                                                                                 2 ==
-                                                                            1
+                                                                                1
                                                                                 ? '#f7f7f7'
                                                                                 : 'white',
                                                                     },
@@ -867,8 +873,8 @@ class MessageCenter extends Component<
                                                                                 .item
                                                                                 .lastName
                                                                                 ? item
-                                                                                      .item
-                                                                                      .lastName
+                                                                                    .item
+                                                                                    .lastName
                                                                                 : '')}
                                                                     </CmlText>
                                                                     <CmlText
@@ -900,18 +906,18 @@ class MessageCenter extends Component<
                                                                     }}>
                                                                     {item.item
                                                                         .recentMessage && (
-                                                                        <CmlText
-                                                                            style={
-                                                                                styles.message
-                                                                            }>
-                                                                            {
-                                                                                item
-                                                                                    .item
-                                                                                    .recentMessage
-                                                                                    .body
-                                                                            }
-                                                                        </CmlText>
-                                                                    )}
+                                                                            <CmlText
+                                                                                style={
+                                                                                    styles.message
+                                                                                }>
+                                                                                {
+                                                                                    item
+                                                                                        .item
+                                                                                        .recentMessage
+                                                                                        .body
+                                                                                }
+                                                                            </CmlText>
+                                                                        )}
                                                                 </View>
                                                                 <Menu>
                                                                     <MenuTrigger>
@@ -939,7 +945,7 @@ class MessageCenter extends Component<
                                                                                 item
                                                                                     .item
                                                                                     .status ===
-                                                                                1
+                                                                                    1
                                                                                     ? 'Create New Contact'
                                                                                     : 'View Contact'
                                                                             }
@@ -1021,7 +1027,7 @@ class MessageCenter extends Component<
                             searchText: '',
                         })
                     }>
-                    <View style={{flex: 1, paddingTop: 32}}>
+                    <View style={{ flex: 1, paddingTop: 32 }}>
                         <View style={AppStyle.dialogContainer}>
                             <TouchableWithoutFeedback
                                 onPress={() => {
@@ -1087,7 +1093,7 @@ class MessageCenter extends Component<
                                                     });
                                                 }}
                                             />
-                                            <View style={{flex: 1}} />
+                                            <View style={{ flex: 1 }} />
                                             <CmlButton
                                                 title="Send"
                                                 backgroundColor="#02b9db"
@@ -1133,24 +1139,24 @@ class MessageCenter extends Component<
                                                                 .selectedContact,
                                                     ).length > 0
                                                         ? this.state.contacts.filter(
-                                                              (contact) =>
-                                                                  contact.id ==
-                                                                  this.state
-                                                                      .selectedContact,
-                                                          )[0].firstName +
-                                                          ' ' +
-                                                          this.state.contacts.filter(
-                                                              (contact) =>
-                                                                  contact.id ==
-                                                                  this.state
-                                                                      .selectedContact,
-                                                          )[0].lastName
+                                                            (contact) =>
+                                                                contact.id ==
+                                                                this.state
+                                                                    .selectedContact,
+                                                        )[0].firstName +
+                                                        ' ' +
+                                                        this.state.contacts.filter(
+                                                            (contact) =>
+                                                                contact.id ==
+                                                                this.state
+                                                                    .selectedContact,
+                                                        )[0].lastName
                                                         : this.state
-                                                              .selectedContact
-                                                              .length > 0
-                                                        ? this.state
-                                                              .selectedContact
-                                                        : 'Contact'
+                                                            .selectedContact
+                                                            .length > 0
+                                                            ? this.state
+                                                                .selectedContact
+                                                            : 'Contact'
                                                 }
                                                 searchInputPlaceholderText="Search Contacts..."
                                                 tagRemoveIconColor="#CCC"
@@ -1178,7 +1184,7 @@ class MessageCenter extends Component<
                     isVisible={this.state.followUpDialog}
                     backdropOpacity={0}
                     onBackdropPress={() =>
-                        this.setState({followUpDialog: false})
+                        this.setState({ followUpDialog: false })
                     }>
                     <View style={AppStyle.dialogContainer}>
                         <View>
@@ -1216,7 +1222,7 @@ class MessageCenter extends Component<
                                 <CmlButton
                                     title="No"
                                     backgroundColor="#02b9db"
-                                    style={{marginTop: 16}}
+                                    style={{ marginTop: 16 }}
                                     onPress={() =>
                                         this.setState({
                                             followUpDialog: false,
@@ -1232,7 +1238,7 @@ class MessageCenter extends Component<
                     isVisible={this.state.deleteDialog}
                     backdropOpacity={0}
                     onBackdropPress={() =>
-                        this.setState({deleteDialog: false})
+                        this.setState({ deleteDialog: false })
                     }>
                     <View style={AppStyle.dialogContainer}>
                         <View>
@@ -1268,7 +1274,7 @@ class MessageCenter extends Component<
                                 <CmlButton
                                     title="No"
                                     backgroundColor="#02b9db"
-                                    style={{marginTop: 16}}
+                                    style={{ marginTop: 16 }}
                                     onPress={() =>
                                         this.setState({
                                             deleteDialog: false,
