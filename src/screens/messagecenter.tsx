@@ -1018,7 +1018,7 @@ class MessageCenter extends Component<
 
                 <Modal
                     isVisible={this.state.newMessage}
-                    backdropOpacity={0}
+                    backdropOpacity={0.8}
                     onBackdropPress={() =>
                         this.setState({
                             newMessage: false,
@@ -1028,7 +1028,9 @@ class MessageCenter extends Component<
                         })
                     }>
                     <View style={{ flex: 1, paddingTop: 32 }}>
-                        <View style={AppStyle.dialogContainer}>
+                        <View style={[AppStyle.dialogContainer, {
+                            backgroundColor: 'white'
+                        }]}>
                             <TouchableWithoutFeedback
                                 onPress={() => {
                                     Keyboard.dismiss();
@@ -1036,7 +1038,9 @@ class MessageCenter extends Component<
                                 <KeyboardAvoidingView>
                                     <View>
                                         <CmlText
-                                            style={AppStyle.dialogSmallTitle}>
+                                            style={[AppStyle.dialogSmallTitle, {
+                                                color: 'black'
+                                            }]}>
                                             New Message
                                         </CmlText>
                                         <View
@@ -1058,9 +1062,14 @@ class MessageCenter extends Component<
                                                             'top',
                                                         fontSize: 14,
                                                         width: '100%',
+                                                        color: 'black',
+                                                        borderWidth: 1,
+                                                        borderColor: 'grey',
+                                                        padding: 8,
+                                                        borderRadius: 4
                                                     },
                                                 ]}
-                                                placeholderTextColor="white"
+                                                placeholderTextColor="grey"
                                                 placeholder="Message"
                                                 multiline={true}
                                                 value={this.state.message}
@@ -1112,6 +1121,9 @@ class MessageCenter extends Component<
                                                 position: 'absolute',
                                                 top: 60,
                                                 width: '100%',
+                                                borderBottomWidth: 1,
+                                                borderColor: 'grey',
+                                                height: 42
                                             }}>
                                             <MultiSelect
                                                 items={this.state.contacts}
@@ -1159,16 +1171,16 @@ class MessageCenter extends Component<
                                                             : 'Contact'
                                                 }
                                                 searchInputPlaceholderText="Search Contacts..."
-                                                tagRemoveIconColor="#CCC"
-                                                tagBorderColor="#CCC"
-                                                tagTextColor="#CCC"
-                                                selectedItemTextColor="#CCC"
-                                                selectedItemIconColor="#CCC"
+                                                tagRemoveIconColor="#222"
+                                                tagBorderColor="#222"
+                                                tagTextColor="#222"
+                                                selectedItemTextColor="#222"
+                                                selectedItemIconColor="#222"
                                                 itemTextColor="#000"
                                                 searchInputStyle={{
-                                                    color: '#CCC',
+                                                    color: '#222',
                                                 }}
-                                                submitButtonColor="#CCC"
+                                                submitButtonColor="#222"
                                                 submitButtonText="Submit"
                                                 single={true}
                                             />

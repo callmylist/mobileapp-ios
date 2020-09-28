@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     Text,
     View,
@@ -17,7 +17,7 @@ import get from 'lodash/get';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconIonic from 'react-native-vector-icons/Ionicons';
 
-import styles, {colorPack} from './styles';
+import styles, { colorPack } from './styles';
 import Utils from '../../utils';
 
 export default class MultiSelect extends Component {
@@ -60,15 +60,15 @@ export default class MultiSelect extends Component {
         tagTextColor: colorPack.primary,
         fontFamily: '',
         tagRemoveIconColor: colorPack.danger,
-        onSelectedItemsChange: () => {},
-        onSearchTextChange: () => {},
+        onSelectedItemsChange: () => { },
+        onSearchTextChange: () => { },
         selectedItemFontFamily: '',
         selectedItemTextColor: colorPack.primary,
         itemFontFamily: '',
         itemTextColor: colorPack.textPrimary,
         selectedItemIconColor: colorPack.primary,
         searchInputPlaceholderText: 'Search',
-        searchInputStyle: {color: colorPack.textPrimary},
+        searchInputStyle: { color: colorPack.textPrimary },
         textColor: colorPack.textPrimary,
         selectText: 'Select',
         altFontFamily: '',
@@ -98,7 +98,7 @@ export default class MultiSelect extends Component {
     }
 
     _findItem = (itemKey) => {
-        const {items, uniqueKey, single} = this.props;
+        const { items, uniqueKey, single } = this.props;
         var key = itemKey;
         if (single) {
             key = itemKey[0];
@@ -109,7 +109,7 @@ export default class MultiSelect extends Component {
     };
 
     _getSelectLabel = (props) => {
-        const {selectText, single, items, selectedItems} = props;
+        const { selectText, single, items, selectedItems } = props;
         if (!selectedItems || selectedItems.length === 0) {
             return selectText;
         } else if (single) {
@@ -158,7 +158,7 @@ export default class MultiSelect extends Component {
                                     color: tagTextColor,
                                     fontSize: 15,
                                 },
-                                fontFamily ? {fontFamily} : {},
+                                fontFamily ? { fontFamily } : {},
                             ]}>
                             {item.name}
                         </Text>
@@ -198,7 +198,7 @@ export default class MultiSelect extends Component {
     };
 
     _removeItem = (item) => {
-        const {uniqueKey, selectedItems} = this.props;
+        const { uniqueKey, selectedItems } = this.props;
         const newItems = reject(
             selectedItems,
             (singleItem) => item[uniqueKey] === singleItem,
@@ -231,11 +231,11 @@ export default class MultiSelect extends Component {
     _submitSelection = () => {
         this._toggleSelector();
         // reset searchTerm
-        this.setState({searchTerm: ''});
+        this.setState({ searchTerm: '' });
     };
 
     _itemSelected = (item) => {
-        const {uniqueKey, selectedItems} = this.props;
+        const { uniqueKey, selectedItems } = this.props;
         return !!find(
             selectedItems,
             (singleItem) => item[uniqueKey] === singleItem,
@@ -243,7 +243,7 @@ export default class MultiSelect extends Component {
     };
 
     _toggleItem = (item) => {
-        const {single, uniqueKey, selectedItems} = this.props;
+        const { single, uniqueKey, selectedItems } = this.props;
         if (single) {
             this._submitSelection();
             this._handleSelectedItemsChange([item[uniqueKey]]);
@@ -278,8 +278,8 @@ export default class MultiSelect extends Component {
             fontFamily.fontFamily = itemFontFamily;
         }
         const color = isSelected
-            ? {color: selectedItemTextColor}
-            : {color: itemTextColor};
+            ? { color: selectedItemTextColor }
+            : { color: itemTextColor };
         return {
             ...fontFamily,
             ...color,
@@ -287,13 +287,13 @@ export default class MultiSelect extends Component {
     };
 
     _getRow = (item) => {
-        const {selectedItemIconColor} = this.props;
+        const { selectedItemIconColor } = this.props;
         return (
             <TouchableOpacity
                 onPress={() => this._toggleItem(item)}
-                style={{paddingLeft: 20, paddingRight: 20, height: 40}}>
+                style={{ paddingLeft: 20, paddingRight: 20, height: 40 }}>
                 <View>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text
                             style={[
                                 {
@@ -334,7 +334,7 @@ export default class MultiSelect extends Component {
     };
 
     _filterItems = (searchTerm) => {
-        const {items} = this.props;
+        const { items } = this.props;
         const filteredItems = [];
         items.forEach((item) => {
             const parts = searchTerm.trim().split(/[ \-:]+/);
@@ -351,8 +351,8 @@ export default class MultiSelect extends Component {
     };
 
     _renderItems = () => {
-        const {items, fontFamily, uniqueKey, selectedItems} = this.props;
-        const {searchTerm} = this.state;
+        const { items, fontFamily, uniqueKey, selectedItems } = this.props;
+        const { searchTerm } = this.state;
         let component = null;
         const renderItems = searchTerm
             ? this._filterItems(searchTerm.trim())
@@ -413,10 +413,10 @@ export default class MultiSelect extends Component {
             fixedHeight,
         } = this.props;
 
-        const {selector, itemSelectedText} = this.state;
+        const { selector, itemSelectedText } = this.state;
 
-        const {items, uniqueKey} = this.props;
-        const {searchTerm} = this.state;
+        const { items, uniqueKey } = this.props;
+        const { searchTerm } = this.state;
         let component = null;
         const renderItems = searchTerm
             ? this._filterItems(searchTerm.trim())
@@ -437,7 +437,7 @@ export default class MultiSelect extends Component {
                                     name="ios-search"
                                     size={20}
                                     color={colorPack.placeholderTextColor}
-                                    style={{marginRight: 10}}
+                                    style={{ marginRight: 10 }}
                                 />
                             )}
 
@@ -456,7 +456,7 @@ export default class MultiSelect extends Component {
                                     colorPack.placeholderTextColor
                                 }
                                 underlineColorAndroid="transparent"
-                                style={[searchInputStyle, {flex: 1}]}
+                                style={[searchInputStyle, { flex: 1 }]}
                                 ref={(input) => {
                                     this.searchInput = input;
                                 }}
@@ -478,7 +478,7 @@ export default class MultiSelect extends Component {
                                         name="md-arrow-dropdown"
                                         style={[
                                             styles.indicator,
-                                            {paddingRight: 15},
+                                            { paddingRight: 15 },
                                         ]}
                                     />
                                 </TouchableOpacity>
@@ -511,7 +511,7 @@ export default class MultiSelect extends Component {
                                             }}>
                                             Name
                                         </Text>
-                                        <Text style={{flex: 1, padding: 8}}>
+                                        <Text style={{ flex: 1, padding: 8 }}>
                                             Phone
                                         </Text>
                                     </View>
@@ -536,7 +536,7 @@ export default class MultiSelect extends Component {
                                                 style={[
                                                     styles.buttonText,
                                                     fontFamily
-                                                        ? {fontFamily}
+                                                        ? { fontFamily }
                                                         : {},
                                                 ]}>
                                                 {submitButtonText}
@@ -547,40 +547,40 @@ export default class MultiSelect extends Component {
                             )}
                     </View>
                 ) : (
-                    <View>
-                        <View style={styles.dropdownView}>
-                            <View
-                                style={[
-                                    styles.subSection,
-                                    {paddingTop: 10, paddingBottom: 10},
-                                ]}>
-                                <TouchableWithoutFeedback
-                                    onPress={this._toggleSelector}>
-                                    <View
-                                        style={{
-                                            flex: 1,
-                                            flexDirection: 'row',
-                                            alignItems: 'center',
-                                        }}>
-                                        <Text
-                                            style={[
-                                                {
-                                                    flex: 1,
-                                                    fontSize: fontSize || 16,
-                                                    color: 'white',
-                                                    marginTop: 3,
-                                                },
-                                                altFontFamily
-                                                    ? {
-                                                          fontFamily: altFontFamily,
-                                                      }
-                                                    : fontFamily
-                                                    ? {fontFamily}
-                                                    : {},
-                                            ]}>
-                                            {itemSelectedText}
-                                        </Text>
-                                        {/* <IconIonic
+                        <View>
+                            <View style={styles.dropdownView}>
+                                <View
+                                    style={[
+                                        styles.subSection,
+                                        { paddingTop: 10, paddingBottom: 10 },
+                                    ]}>
+                                    <TouchableWithoutFeedback
+                                        onPress={this._toggleSelector}>
+                                        <View
+                                            style={{
+                                                flex: 1,
+                                                flexDirection: 'row',
+                                                alignItems: 'center',
+                                            }}>
+                                            <Text
+                                                style={[
+                                                    {
+                                                        flex: 1,
+                                                        fontSize: fontSize || 16,
+                                                        color: 'black',
+                                                        marginTop: 3,
+                                                    },
+                                                    altFontFamily
+                                                        ? {
+                                                            fontFamily: altFontFamily,
+                                                        }
+                                                        : fontFamily
+                                                            ? { fontFamily }
+                                                            : {},
+                                                ]}>
+                                                {itemSelectedText}
+                                            </Text>
+                                            {/* <IconIonic
                                             name={
                                                 hideSubmitButton
                                                     ? 'md-arrow-dropright'
@@ -588,21 +588,21 @@ export default class MultiSelect extends Component {
                                             }
                                             style={styles.indicator}
                                         /> */}
-                                    </View>
-                                </TouchableWithoutFeedback>
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                </View>
                             </View>
+                            {!single && selectedItems.length ? (
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        flexWrap: 'wrap',
+                                    }}>
+                                    {this._displaySelectedItems()}
+                                </View>
+                            ) : null}
                         </View>
-                        {!single && selectedItems.length ? (
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    flexWrap: 'wrap',
-                                }}>
-                                {this._displaySelectedItems()}
-                            </View>
-                        ) : null}
-                    </View>
-                )}
+                    )}
             </View>
         );
     }

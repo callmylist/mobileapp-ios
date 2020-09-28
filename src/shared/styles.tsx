@@ -1,9 +1,9 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     dialogContainer: {
         padding: 16,
-        backgroundColor: '#000000cc',
+        backgroundColor: '#000000ee',
         paddingBottom: 32,
         borderRadius: 16,
     },

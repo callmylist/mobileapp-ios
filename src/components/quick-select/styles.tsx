@@ -5,7 +5,7 @@ export const colorPack = {
     textPrimary: '#525966',
     placeholderTextColor: '#cccccc',
     danger: '#C62828',
-    borderColor: '#e9e9e9',
+    borderColor: 'grey',
     backgroundColor: '#b1b1b1',
 };
 
@@ -21,7 +21,7 @@ export default {
     },
     subSection: {
         backgroundColor: 'transparent',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0,
         borderColor: colorPack.borderColor,
         paddingLeft: 20,
         paddingRight: 20,
