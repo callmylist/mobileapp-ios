@@ -46,7 +46,8 @@ class WelcomeScreen extends Component<
         if (this.props.assets) {
             if (store.getState().authReducer.loggedInContact != null) {
                 this.props.navigation.navigate('App');
-            } else {
+            } 
+            else {
                 this.props.navigation.navigate('AuthNavigator');
             }
         }

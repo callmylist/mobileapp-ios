@@ -23,7 +23,7 @@ import {UserService} from '../service/user.service';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
 import {SCREEN_INDEX_SET} from '../redux/actionTypes/dashboard';
-import {CLEAR_PROFILE} from '../redux/actionTypes/auth';
+import {CLEAR_PROFILE, SAVE_CREDENTIAL} from '../redux/actionTypes/auth';
 
 const styles = StyleSheet.create({
     container: {
@@ -166,6 +166,13 @@ class Menu extends Component<
             type: CLEAR_PROFILE,
             payload: {},
         });
+        store.dispatch({
+            type: SAVE_CREDENTIAL,
+            payload: {
+                username: null,
+                password: null,
+            },
+        });
         this.props.navigation.closeDrawer();
         this.props.navigation.navigate('AuthNavigator');
     };
@@ -201,8 +208,8 @@ class Menu extends Component<
                             <CmlText style={styles.name}>
                                 Mr.
                                 {
-                                    store.getState().authReducer.loggedInContact
-                                        .firstName
+                                    store.getState().authReducer.loggedInContact?
+                                    store.getState().authReducer.loggedInContact.firstName:''
                                 }
                             </CmlText>
                             <TouchableOpacity

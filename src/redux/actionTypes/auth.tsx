@@ -12,3 +12,5 @@ export const RESET_TOKEN = 'RESET_TOKEN';
 
 export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 export const CLEAR_PROFILE = 'CLEAR_PROFILE';
+
+export const SAVE_CREDENTIAL = 'SAVE_CREDENTIAL';

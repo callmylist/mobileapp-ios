@@ -4,6 +4,7 @@ import {
     USER_LOGIN_FAILED,
     LOAD_ASSETS_REQUEST,
     LOAD_ASSETS_SUCCESS,
+    SAVE_CREDENTIAL,
 } from '../actionTypes/auth';
 
 import Utils from '../../utils';
@@ -74,12 +75,26 @@ export const signIn = (params: any) => {
                 );
 
                 dispatch({
+                    type: SAVE_CREDENTIAL,
+                    payload: {
+                        username: params.username,
+                        password: params.password,
+                    },
+                });
+                dispatch({
                     type: USER_LOGIN_SUCCESS,
                     payload: {
                         loggedInContact: loginUser,
                     },
                 });
             } else {
+                dispatch({
+                    type: SAVE_CREDENTIAL,
+                    payload: {
+                        username: null,
+                        password: null,
+                    },
+                });
                 dispatch({
                     type: USER_LOGIN_FAILED,
                     payload: {

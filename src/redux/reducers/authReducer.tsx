@@ -7,6 +7,7 @@ import {
     RESET_TOKEN,
     UPDATE_PROFILE,
     CLEAR_PROFILE,
+    SAVE_CREDENTIAL,
 } from '../actionTypes/auth';
 import {defaultIfEmpty} from 'rxjs/operators';
 import {LoginUser} from '../../shared/models/loginuser.model';
@@ -20,6 +21,8 @@ const initialState = {
     },
     loggedInContact: null,
     authToken: null,
+    username: null,
+    password: null,
 };
 
 const reducer = (state = initialState, action: any) => {
@@ -79,6 +82,13 @@ const reducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 loggedInContact: null,
+            };
+        }
+        case SAVE_CREDENTIAL: {
+            return {
+                ...state,
+                username: action.payload.username,
+                password: action.payload.password,
             };
         }
         default: {

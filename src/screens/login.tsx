@@ -89,6 +89,8 @@ class LoginScreen extends React.Component<
         loading: boolean;
         error: string;
         loggedInContact: LoginUser;
+        username: string;
+        password: string;
     },
     {
         username: string;
@@ -99,11 +101,28 @@ class LoginScreen extends React.Component<
         super(props);
 
         this.state = {
-            username: 'bilal0018@yopmail.com',
-            password: 'Lmkt@ptcl1234',
-            // username: 'jay@jay.com',
-            // password: '12345678',
+            username: '',
+            password: '',
         };
+    }
+
+    componentDidMount() {
+        if (
+            this.props.username !== null &&
+            this.props.username !== undefined &&
+            this.props.password !== null &&
+            this.props.password !== undefined
+        ) {
+            this.setState(
+                {
+                    username: this.props.username,
+                    password: this.props.password,
+                },
+                () => {
+                    this.onLogin();
+                },
+            );
+        }
     }
 
     onLogin = () => {
@@ -250,6 +269,8 @@ const mapStateToProps = (state: any) => {
         loading: state.authReducer.loading,
         error: state.authReducer.error,
         loggedInContact: state.authReducer.loggedInContact,
+        username: state.authReducer.username,
+        password: state.authReducer.password,
     };
 };
 
