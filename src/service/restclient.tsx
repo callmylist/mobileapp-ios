@@ -214,7 +214,7 @@ class RestClient {
                             };
                         }
 
-                        let result = await axios.get(Constants.API_URL + url, {
+                        let result = await axios.delete(Constants.API_URL + url, {
                             headers: headers,
                         });
 
@@ -331,7 +331,7 @@ class RestClient {
                             };
                         }
 
-                        let result = await axios.get(Constants.API_URL + url, {
+                        let result = await axios.post(Constants.API_URL + url, data, {
                             headers: headers,
                         });
 
@@ -448,7 +448,7 @@ class RestClient {
                             };
                         }
 
-                        let result = await axios.get(Constants.API_URL + url, {
+                        let result = await axios.patch(Constants.API_URL + url, data, {
                             headers: headers,
                         });
 
@@ -565,7 +565,7 @@ class RestClient {
                             };
                         }
 
-                        let result = await axios.get(Constants.API_URL + url, {
+                        let result = await axios.put(Constants.API_URL + url, data, {
                             headers: headers,
                         });
 
