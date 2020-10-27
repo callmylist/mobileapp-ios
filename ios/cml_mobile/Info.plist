@@ -84,6 +84,11 @@
 		<string>Poppins-BlackItalic.ttf</string>
 		<string>Poppins-Black.ttf</string>
 	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

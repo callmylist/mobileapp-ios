@@ -50,7 +50,7 @@ const CreatCampaignNavigator = createStackNavigator(
     },
 );
 
-const Dashboard = createDrawerNavigator(
+const Main = createDrawerNavigator(
     {
         Dashboard: {
             screen: DashboardScreen,
@@ -77,7 +77,7 @@ const Dashboard = createDrawerNavigator(
         },
     },
     {
-        initialRouteName: 'Dashboard',
+        initialRouteName: 'MessageCenter',
         contentComponent: Menu,
         drawerPosition: 'left',
         drawerWidth: 300,
@@ -91,7 +91,7 @@ const Dashboard = createDrawerNavigator(
 
 const App = createStackNavigator(
     {
-        Dashboard,
+        Main,
         CreatCampaignNavigator,
         CampaignDetailScreen,
         MessageHistoryScreen,
@@ -102,7 +102,7 @@ const App = createStackNavigator(
         StripeScreen,
     },
     {
-        initialRouteName: 'Dashboard',
+        initialRouteName: 'Main',
         headerMode: 'none',
         navigationOptions: {header: null},
         gestureEnabled: false,

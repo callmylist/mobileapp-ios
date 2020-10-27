@@ -138,8 +138,8 @@ class LoginScreen extends React.Component<
         }
     };
 
-    gotoDashboard = () => {
-        this.props.navigation.navigate('Dashboard');
+    gotoMain = () => {
+        this.props.navigation.navigate('Main');
     };
 
     onRegister = () => {
@@ -156,7 +156,7 @@ class LoginScreen extends React.Component<
         }
 
         if (this.props.loggedInContact) {
-            this.gotoDashboard();
+            this.gotoMain();
         }
     }
 

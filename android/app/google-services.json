@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "282836346606",
+    "firebase_url": "https://trusted-campaigns.firebaseio.com",
+    "project_id": "trusted-campaigns",
+    "storage_bucket": "trusted-campaigns.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282836346606:android:c4b874dc9a2bc38748b5ff",
+        "android_client_info": {
+          "package_name": "com.trustedcampaigns.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "282836346606-9g9jh038o9og3jnhbi5m70fnqaul7m29.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAy8ouRZ-oPPhoHOL8mFoNWi6Wf59aUDK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "282836346606-9g9jh038o9og3jnhbi5m70fnqaul7m29.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "282836346606-ebds4nqi45emvns6qefehffj6sq8spsk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.trustedcampaigns.ios"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -9,7 +9,7 @@ import {LoginUser} from '../../shared/models/loginuser.model';
 const initialState = {
     account: null,
     campaignList: [],
-    screenIndex: 0,
+    screenIndex: 1,
 };
 
 const reducer = (state = initialState, action: any) => {
