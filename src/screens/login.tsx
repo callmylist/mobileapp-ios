@@ -101,8 +101,8 @@ class LoginScreen extends React.Component<
         super(props);
 
         this.state = {
-            username: '',
-            password: '',
+            username: 'bilal0018@yopmail.com',
+            password: 'Lmkt@ptcl1234',
         };
     }
 

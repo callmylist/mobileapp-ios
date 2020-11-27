@@ -3,11 +3,11 @@ import {
     createSwitchNavigator,
     SafeAreaView,
 } from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
-import {MenuProvider} from 'react-native-popup-menu';
+import { createStackNavigator } from 'react-navigation-stack';
+import { MenuProvider } from 'react-native-popup-menu';
 
-import {createDrawerNavigator} from 'react-navigation-drawer';
-import React, {Component} from 'react';
+import { createDrawerNavigator } from 'react-navigation-drawer';
+import React, { Component } from 'react';
 import WelcomeScreen from './screens/welcome';
 import LoginScreen from './screens/login';
 import ForgotPasswordScreen from './screens/forgot_password';
@@ -27,7 +27,7 @@ import ContactsScreen from './screens/contacts';
 import StripeScreen from './screens/stripe';
 
 import Menu from './components/menu';
-import {View, StatusBar, Platform} from 'react-native';
+import { View, StatusBar, Platform } from 'react-native';
 
 import CampaignCreateScreen from './screens/campaign_create';
 import ScheduleScreen from './screens/popup/schedule';
@@ -35,9 +35,13 @@ import CampaignDetailScreen from './screens/campaign_detail';
 import MessageHistoryScreen from './screens/message_history';
 import FilteredContactsScreen from './screens/filtered_contacts';
 
-import {persistor, store} from './redux/store';
-import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/integration/react';
+import { persistor, store } from './redux/store';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import firebase from 'react-native-firebase';
+
+import AsyncStorage from '@react-native-community/async-storage';
+
 const CreatCampaignNavigator = createStackNavigator(
     {
         CampaignCreateScreen,
@@ -46,7 +50,7 @@ const CreatCampaignNavigator = createStackNavigator(
     {
         initialRouteName: 'CampaignCreateScreen',
         headerMode: 'none',
-        navigationOptions: {header: null},
+        navigationOptions: { header: null },
     },
 );
 
@@ -58,8 +62,8 @@ const Main = createDrawerNavigator(
         MessageCenter: {
             screen: MessageCenterScreen,
         },
-        Settings: {screen: SettingsScreen},
-        Contacts: {screen: ContactsScreen},
+        Settings: { screen: SettingsScreen },
+        Contacts: { screen: ContactsScreen },
         Sound: {
             screen: SoundScreen,
         },
@@ -104,7 +108,7 @@ const App = createStackNavigator(
     {
         initialRouteName: 'Main',
         headerMode: 'none',
-        navigationOptions: {header: null},
+        navigationOptions: { header: null },
         gestureEnabled: false,
     },
 );
@@ -118,7 +122,7 @@ const AuthNavigator = createSwitchNavigator(
     {
         initialRouteName: 'LoginScreen',
         headerMode: 'none',
-        navigationOptions: {header: null},
+        navigationOptions: { header: null },
     },
 );
 
@@ -131,7 +135,7 @@ const MainNavigator = createSwitchNavigator(
     {
         initialRouteName: 'WelcomeScreen',
         headerMode: 'none',
-        navigationOptions: {header: null},
+        navigationOptions: { header: null },
     },
 );
 
@@ -140,8 +144,66 @@ const AppNav = createAppContainer(MainNavigator);
 console.disableYellowBox = true;
 
 export default class MainApp extends Component {
+
+    onUnsubscribeNotificaitonListener: any = null
+
     constructor(props: any) {
         super(props);
+    }
+
+    getToken = async () => {
+        let fcmToken = await AsyncStorage.getItem('fcmToken');
+        if (!fcmToken) {
+            fcmToken = await firebase.messaging().getToken();
+            console.log(fcmToken);
+            if (fcmToken) {
+                await AsyncStorage.setItem('fcmToken', fcmToken);
+            }
+        }
+    };
+
+    checkPermission = async () => {
+        const enabled = await firebase.messaging().hasPermission();
+        if (enabled) {
+            this.getToken();
+        } else {
+            this.requestPermission();
+        }
+    };
+
+    requestPermission = async () => {
+        try {
+            await firebase.messaging().requestPermission();
+            this.getToken();
+        } catch (error) {
+            console.log('permission rejected');
+        }
+    };
+
+    createNotificationListeners = () => {
+        this.onUnsubscribeNotificaitonListener = firebase
+            .notifications()
+            // .onNotificationOpened(notification => {
+            //     console.log(notification)
+            // })
+
+            .onNotification(notification => {
+                console.log(notification)
+                firebase.notifications().displayNotification(notification);
+            });
+        firebase.notifications().getInitialNotification().then((initialNotification) => {
+            console.log("initialNotification", initialNotification);
+        })
+    };
+
+    removeNotificationListeners = () => {
+        this.onUnsubscribeNotificaitonListener();
+    };
+
+    componentDidMount() {
+        // firebase.notifications().android.createChannel(channel);
+        this.checkPermission();
+        this.createNotificationListeners();
     }
 
     render() {
@@ -150,9 +212,9 @@ export default class MainApp extends Component {
                 <PersistGate loading={null} persistor={persistor}></PersistGate>
                 <MenuProvider>
                     <SafeAreaView
-                        style={{flex: 0, backgroundColor: '#242536'}}
+                        style={{ flex: 0, backgroundColor: '#242536' }}
                     />
-                    <AppNav style={{flex: 1}} />
+                    <AppNav style={{ flex: 1 }} />
                 </MenuProvider>
             </Provider>
         );

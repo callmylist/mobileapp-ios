@@ -151,4 +151,12 @@ export class UserService {
     static chargeCardByStripe(body: any) {
         return RestClient.post(constants.apiUrl.stripeCharge, body);
     }
+
+    static sendToken(fcmToken: string) {
+        console.log(constants.apiUrl.fcm)
+        return RestClient.post(constants.apiUrl.fcm, {
+            deviceType: "2",
+            fcmToken
+        });
+    }
 }

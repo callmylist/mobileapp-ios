@@ -7,6 +7,7 @@ import {loadAssets} from '../redux/actions/authActions';
 import reducer from '../redux/reducers/authReducer';
 import {store} from '../redux/store';
 import RestClient from '../service/restclient';
+import messaging from '@react-native-firebase/messaging';
 
 const styles = StyleSheet.create({
     container: {

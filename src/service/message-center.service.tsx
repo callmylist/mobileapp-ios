@@ -1,11 +1,11 @@
 import constants from '../utils/constants';
 import Constants from '../utils/app_constants';
 import axios from 'axios';
-import {from, throwError as observableThrowError, Observable} from 'rxjs';
-import {map, catchError} from 'rxjs/operators';
+import { from, throwError as observableThrowError, Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import RestClient from './restclient';
-import {store} from '../redux/store';
-import {RectButton} from 'react-native-gesture-handler';
+import { store } from '../redux/store';
+import { RectButton } from 'react-native-gesture-handler';
 
 export class MessageCenterService {
     static GetAllContacts(options: string) {

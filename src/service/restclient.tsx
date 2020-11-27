@@ -281,6 +281,7 @@ class RestClient {
                 };
             }),
             catchError( async (error: any) => {
+                console.log(error)
                 if (error.response.status == 401) {
                     store.dispatch({
                         type: RESET_TOKEN,

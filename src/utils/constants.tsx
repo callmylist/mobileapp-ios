@@ -46,6 +46,7 @@ export default {
         getCampaignDetail: '/campaign/{campaignId}/detail',
         stripeKey: '/stripe/key',
         stripeCharge: '/stripe/charge',
+        fcm: '/fcm',
         getUserById: '/userinfo',
         getRequestApiKeyByUserId: '/apitoken',
         textToSpeach: '/soundfile/tts',

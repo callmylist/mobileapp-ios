@@ -17,6 +17,7 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* cml_mobileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* cml_mobileTests.m */; };
+		37047CF32548667F005CC9EF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37047CF22548667F005CC9EF /* GoogleService-Info.plist */; };
 		4007A14E69F05C84FC7FCC65 /* libPods-cml_mobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5188E44D2CC8E9F3E176208B /* libPods-cml_mobile.a */; };
 		52795C0D2464FD8300957C9D /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52795C012464FD5E00957C9D /* Poppins-Black.ttf */; };
 		52795C0E2464FD8300957C9D /* Poppins-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52795BFB2464FD5D00957C9D /* Poppins-BlackItalic.ttf */; };
@@ -77,6 +78,7 @@
 		2FE01521774722E3721D9300 /* Pods-cml_mobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cml_mobile.release.xcconfig"; path = "Target Support Files/Pods-cml_mobile/Pods-cml_mobile.release.xcconfig"; sourceTree = "<group>"; };
 		304D84543204CE75B2AA81D7 /* Pods-cml_mobile-cml_mobileTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cml_mobile-cml_mobileTests.release.xcconfig"; path = "Target Support Files/Pods-cml_mobile-cml_mobileTests/Pods-cml_mobile-cml_mobileTests.release.xcconfig"; sourceTree = "<group>"; };
 		32CEEDE8D6818970385FFF97 /* Pods-cml_mobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cml_mobile.debug.xcconfig"; path = "Target Support Files/Pods-cml_mobile/Pods-cml_mobile.debug.xcconfig"; sourceTree = "<group>"; };
+		37047CF22548667F005CC9EF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "cml_mobile/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		3EBCEB3B25B74E7E80948CAD /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		414F75281E3B428EB39D401B /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		45A2F72661644137B8C8D946 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 		13B07FAE1A68108700A75B9A /* cml_mobile */ = {
 			isa = PBXGroup;
 			children = (
+				37047CF22548667F005CC9EF /* GoogleService-Info.plist */,
 				5299CAAA2486B1F10099DC76 /* cml_mobile.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -457,6 +460,7 @@
 				52795C1E2464FD8300957C9D /* Poppins-ThinItalic.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				37047CF32548667F005CC9EF /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -3,7 +3,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 def add_flipper_pods!(versions = {})
-  versions['Flipper'] ||= '~> 0.33.1'
+  versions['Flipper'] ||= '> 0.49.1'
   versions['DoubleConversion'] ||= '1.1.7'
   versions['Flipper-Folly'] ||= '~> 2.1'
   versions['Flipper-Glog'] ||= '0.3.6'
@@ -79,7 +79,7 @@ target 'cml_mobile' do
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
-
+  pod 'Firebase/Messaging', '~> 6.4.0'
   target 'cml_mobileTests' do
     inherit! :complete
     # Pods for testing

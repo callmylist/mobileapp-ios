@@ -37,6 +37,10 @@ import { UserService } from '../service/user.service';
 import { store } from '../redux/store';
 import { SCREEN_INDEX_SET } from '../redux/actionTypes/dashboard';
 
+import RestClient from 'src/service/restclient';
+import AsyncStorage from '@react-native-community/async-storage';
+
+
 const styles = StyleSheet.create({
     container: {
         marginTop: 50,
@@ -212,6 +216,9 @@ class MessageCenter extends Component<
                 });
             },
         );
+
+        this.sendToken()
+        
     }
 
     didAppear = () => {
@@ -219,6 +226,17 @@ class MessageCenter extends Component<
         // this.checkSubscribed();
         this.onTab(this.state.contact_filter);
     };
+
+    sendToken = async () => {
+        console.log("send token")
+        let fcmToken = await AsyncStorage.getItem('fcmToken');
+        console.log(fcmToken)
+        if (fcmToken) {
+            UserService.sendToken(fcmToken).subscribe((response: any) => {
+                console.log(response);
+            });
+        }
+    }
 
     getMessageInfo = () => {
         MessageCenterService.getMessageInfo().subscribe((response: any) => {
@@ -273,6 +291,7 @@ class MessageCenter extends Component<
         MessageCenterService.GetAllContacts(
             this.state.contact_filter + '',
         ).subscribe((response: any) => {
+            console.log(response)
             this.setState({
                 loading: false,
             });
