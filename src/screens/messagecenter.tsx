@@ -40,6 +40,8 @@ import { SCREEN_INDEX_SET } from '../redux/actionTypes/dashboard';
 import RestClient from 'src/service/restclient';
 import AsyncStorage from '@react-native-community/async-storage';
 
+import {compose} from 'redux';
+import {connect} from 'react-redux';
 
 const styles = StyleSheet.create({
     container: {
@@ -158,6 +160,7 @@ const styles = StyleSheet.create({
 class MessageCenter extends Component<
     {
         navigation: any;
+        refreshValue: number;
     },
     {
         contact_filter: number;
@@ -226,6 +229,12 @@ class MessageCenter extends Component<
         // this.checkSubscribed();
         this.onTab(this.state.contact_filter);
     };
+
+    componentDidUpdate(prevProps: any) {
+        if(this.props.refreshValue != prevProps.refreshValue) {
+            this.onTab(this.state.contact_filter);
+        }
+    }
 
     sendToken = async () => {
         console.log("send token")
@@ -1321,4 +1330,10 @@ class MessageCenter extends Component<
     }
 }
 
-export default MessageCenter;
+const mapStateToProps = (state: any) => {
+    return {
+        refreshValue: state.dashboardReducer.refreshValue,
+    };
+};
+
+export default compose(connect(mapStateToProps, {}))(MessageCenter);

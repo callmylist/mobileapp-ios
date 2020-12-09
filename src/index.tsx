@@ -39,6 +39,7 @@ import { persistor, store } from './redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import firebase from 'react-native-firebase';
+import {REFRESH_VALUE} from './redux/actionTypes/dashboard';
 
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -189,6 +190,12 @@ export default class MainApp extends Component {
 
             .onNotification(notification => {
                 console.log(notification)
+                store.dispatch({
+                    type: REFRESH_VALUE,
+                    payload: {
+                        contactId: notification.data.contact_id
+                    }
+                });
                 firebase.notifications().displayNotification(notification);
             });
         firebase.notifications().getInitialNotification().then((initialNotification) => {
@@ -197,13 +204,19 @@ export default class MainApp extends Component {
     };
 
     removeNotificationListeners = () => {
-        this.onUnsubscribeNotificaitonListener();
+        if(this.onUnsubscribeNotificaitonListener)
+            this.onUnsubscribeNotificaitonListener();
     };
 
     componentDidMount() {
         // firebase.notifications().android.createChannel(channel);
         this.checkPermission();
+        this.removeNotificationListeners();
         this.createNotificationListeners();
+    }
+
+    componentWillUnmount() {
+        this.removeNotificationListeners();
     }
 
     render() {

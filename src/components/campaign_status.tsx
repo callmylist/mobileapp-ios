@@ -15,9 +15,8 @@ const styles = StyleSheet.create({
 
 export const StatusIcon = (props: any) => {
     var schedule =
-        props.campaign.status != 2 &&
-        props.campaign.call.schedule.id.length > 0 &&
-        !props.campaign.call.schedule.stopped;
+        props.campaign.status != 2 && (props.campaign.call && props.campaign.call.schedule && (props.campaign.call.schedule.id.length > 0 &&
+            !props.campaign.call.schedule.stopped));
     return (
         <>
             {schedule && (
