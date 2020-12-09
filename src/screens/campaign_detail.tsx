@@ -310,10 +310,10 @@ class CampaignDetail extends Component<
 
         const payload: any = {
             number: this.state.testCallNumber,
-            callerId: this.state.campaign.call.callerId,
-            voicemail: this.state.campaign.call.voicemail,
-            liveanswer: this.state.campaign.call.liveanswer,
-            transfer: this.state.campaign.call.transfer,
+            callerId: this.state.campaign.call? this.state.campaign.call.callerId: "",
+            voicemail: this.state.campaign.call? this.state.campaign.call.voicemail: "",
+            liveanswer: this.state.campaign.call? this.state.campaign.call.liveanswer: "",
+            transfer: this.state.campaign.call? this.state.campaign.call.transfer: "",
             dnc: this.state.campaign.call.dnc,
         };
 

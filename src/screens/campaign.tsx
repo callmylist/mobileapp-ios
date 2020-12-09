@@ -159,13 +159,14 @@ class Campaign extends Component<
                             renderItem={(item: any) => {
                                 return (
                                     <TouchableOpacity
-                                        onPress={() =>
+                                        onPress={() => {
                                             this.props.navigation.push(
                                                 'CampaignDetailScreen',
                                                 {
-                                                    campaign: item.item,
+                                                    campaign: {...item.item, call: item.item.call? item.item.call: {stats: {}, settings: {}, voicemail: {}}},
                                                 },
                                             )
+                                        }
                                         }>
                                         <View
                                             style={[
@@ -186,13 +187,12 @@ class Campaign extends Component<
                                             <CmlText style={styles.itemName}>
                                                 {item.item.name}
                                             </CmlText>
-
                                             <CmlText style={styles.itemContact}>
-                                                {item.item.call.stats.total}
+                                                {item.item.call ? item.item.call.stats.total: 0}
                                             </CmlText>
 
                                             <CmlText style={styles.itemDial}>
-                                                {item.item.call.stats.dialed}
+                                                {item.item.call ? item.item.call.stats.dialed: 0}
                                             </CmlText>
                                         </View>
                                     </TouchableOpacity>

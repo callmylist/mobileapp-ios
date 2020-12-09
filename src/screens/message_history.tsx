@@ -38,6 +38,8 @@ class MessageHistory extends Component<
     {
         navigation: any;
         loggedInContact: any;
+        refreshValue: number;
+        contactId: string;
     },
     {
         contact: any;
@@ -68,16 +70,25 @@ class MessageHistory extends Component<
         );
     }
 
+    componentDidUpdate(prevProps: any) {
+        console.log(this.props.contactId)
+        console.log(this.state.contact.id)
+        if(this.props.refreshValue != prevProps.refreshValue ) {
+            this.loadMessages();
+        }
+    }
+
     loadMessages = () => {
+        console.log("loading new messages")
         MessageCenterService.getMessageList(this.state.contact.id).subscribe(
             (response: any) => {
                 if (response.success) {
                     this.setState({
-                        messageList: response.data.reverse(),
+                        messageList: response.data,
                     });
-                    setTimeout(() => {
-                        if (this.flatList) this.flatList.scrollToEnd();
-                    }, 30);
+                    // setTimeout(() => {
+                    //     if (this.flatList) this.flatList.scrollToEnd();
+                    // }, 3000);
                 }
             },
         );
@@ -153,7 +164,7 @@ class MessageHistory extends Component<
                             flex: 1,
                         }}>
                         <FlatList
-                            // inverted
+                            inverted
                             data={this.state.messageList}
                             ref={(ref) => (this.flatList = ref)}
                             renderItem={(item: any) => (
@@ -280,7 +291,12 @@ class MessageHistory extends Component<
                                         </View>
                                     )}
                                 </>
-                            )}></FlatList>
+                            )}
+                            onContentSizeChange={() => {
+                                // setTimeout(() => {
+                                //     this.flatList.scrollToEnd({animated: false})
+                                // }, 200);
+                            }}></FlatList>
                         <View
                             style={{
                                 width: '100%',
@@ -329,6 +345,8 @@ class MessageHistory extends Component<
 const mapStateToProps = (state: any) => {
     return {
         loggedInContact: state.authReducer.loggedInContact,
+        refreshValue: state.dashboardReducer.refreshValue,
+        contactId: state.dashboardReducer.contactId,
     };
 };
 

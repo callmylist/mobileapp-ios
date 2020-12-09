@@ -32,6 +32,9 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import { store } from '../redux/store';
 import { SCREEN_INDEX_SET } from '../redux/actionTypes/dashboard';
 
+import {compose} from 'redux';
+import {connect} from 'react-redux';
+
 const styles = StyleSheet.create({
     container: {
         marginTop: 50,
@@ -156,7 +159,8 @@ const styles = StyleSheet.create({
 
 class ContactsScreen extends Component<
     {
-        navigation: any;
+        navigation: any;        
+        refreshValue: number;
     },
     {
         contact_filter: number;
@@ -216,6 +220,11 @@ class ContactsScreen extends Component<
             },
         );
     };
+
+    componentDidUpdate(prevProps: any) {
+        if(this.props.refreshValue != prevProps.refreshValue) {
+        }
+    }
 
     onMenu = () => {
         this.props.navigation.openDrawer();
@@ -953,4 +962,11 @@ class ContactsScreen extends Component<
     }
 }
 
-export default ContactsScreen;
+
+const mapStateToProps = (state: any) => {
+    return {
+        refreshValue: state.dashboardReducer.refreshValue,
+    };
+};
+
+export default compose(connect(mapStateToProps, {}))(ContactsScreen);
