@@ -5,6 +5,7 @@ import {
     View,
     TouchableOpacity,
     SafeAreaView,
+    AppState
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -22,8 +23,11 @@ import {store} from '../redux/store';
 import {UserService} from '../service/user.service';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
-import {SCREEN_INDEX_SET} from '../redux/actionTypes/dashboard';
+import {SCREEN_INDEX_SET, SET_UNREAD_COUNT} from '../redux/actionTypes/dashboard';
 import {CLEAR_PROFILE, SAVE_CREDENTIAL} from '../redux/actionTypes/auth';
+import AsyncStorage from '@react-native-community/async-storage';
+import {MessageCenterService} from '../service/message-center.service';
+import PushNotificationIOS from '@react-native-community/push-notification-ios'
 
 const styles = StyleSheet.create({
     container: {
@@ -106,13 +110,14 @@ const styles = StyleSheet.create({
 });
 
 class Menu extends Component<
-    {navigation: any; screenIndex: number},
+    {navigation: any; screenIndex: number, unreadCount: number},
     {
         currentMenu: number;
         addFunds: boolean;
         billingInfo: any;
         expanded: boolean;
         funds: string;
+        appState: string;
     }
 > {
     routes = [
@@ -134,7 +139,12 @@ class Menu extends Component<
             billingInfo: null,
             expanded: false,
             funds: '',
+            appState: AppState.currentState
         };
+    }
+
+    componentDidUpdate(prevProps: any) {
+        PushNotificationIOS.setApplicationIconBadgeNumber(this.props.unreadCount);
     }
 
     componentDidMount() {
@@ -143,7 +153,39 @@ class Menu extends Component<
                 this.setState({billingInfo: response.data});
             },
         );
+        MessageCenterService.getUnreadCount().subscribe((response) => {
+            if(response.success) {
+                store.dispatch({
+                    type: SET_UNREAD_COUNT,
+                    payload: {
+                        unreadCount: response.count,
+                    },
+                });
+            }
+        })
+        AppState.addEventListener("change", this._handleAppStateChange);
+        PushNotificationIOS.setApplicationIconBadgeNumber(this.props.unreadCount);
     }
+
+    _handleAppStateChange = (nextAppState: any) => {
+        if (
+          this.state.appState.match(/inactive|background/) &&
+          nextAppState === "active"
+        ) {
+            MessageCenterService.getUnreadCount().subscribe((response) => {
+                if(response.success) {
+                    store.dispatch({
+                        type: SET_UNREAD_COUNT,
+                        payload: {
+                            unreadCount: response.count,
+                        },
+                    });
+                }
+            })
+        }
+        PushNotificationIOS.setApplicationIconBadgeNumber(this.props.unreadCount);
+        this.setState({ appState: nextAppState });
+    };
 
     onMenuItem = (index: number) => {
         store.dispatch({
@@ -161,7 +203,13 @@ class Menu extends Component<
         this.props.navigation.push('CreatCampaignNavigator');
     };
 
-    logout = () => {
+    logout = async () => {
+
+        let fcmToken = await AsyncStorage.getItem('fcmToken');
+        if(fcmToken) {
+            UserService.signOut(fcmToken);
+        }
+
         store.dispatch({
             type: CLEAR_PROFILE,
             payload: {},
@@ -173,6 +221,7 @@ class Menu extends Component<
                 password: null,
             },
         });
+
         this.props.navigation.closeDrawer();
         this.props.navigation.navigate('AuthNavigator');
     };
@@ -301,6 +350,21 @@ class Menu extends Component<
                                     Titan
                                 </CmlText>
                                 <View style={{flex: 1}} />
+                                {
+                                    this.props.unreadCount !== 0 &&  <CmlText style={{
+                                        width: 20,
+                                        height: 20,
+                                        backgroundColor: '#7ecee4',
+                                        borderRadius: 4,
+                                        overflow: 'hidden',
+                                        textAlign: 'center',
+                                        paddingTop: 2,
+                                        fontSize: 14
+                                    }}>
+                                        {this.props.unreadCount}
+                                    </CmlText>
+                                }
+
                                 <TouchableOpacity
                                     onPress={() => {
                                         this.setState({
@@ -599,6 +663,7 @@ class Menu extends Component<
 const mapStateToProps = (state: any) => {
     return {
         screenIndex: state.dashboardReducer.screenIndex,
+        unreadCount: state.dashboardReducer.unreadCount,
     };
 };
 

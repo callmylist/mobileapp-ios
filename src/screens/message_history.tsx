@@ -8,6 +8,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     Keyboard,
+    AppState
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -45,6 +46,7 @@ class MessageHistory extends Component<
         contact: any;
         messageList: any[];
         message: string;
+        appState: string;
     }
 > {
     flatList: any = null;
@@ -55,6 +57,7 @@ class MessageHistory extends Component<
             contact: null,
             messageList: [],
             message: '',
+            appState: AppState.currentState
         };
     }
 
@@ -67,8 +70,23 @@ class MessageHistory extends Component<
             () => {
                 this.loadMessages();
             },
-        );
+        );        
+        AppState.addEventListener("change", this._handleAppStateChange);
     }
+
+    componentWillUnmount() {
+        AppState.removeEventListener("change", this._handleAppStateChange);
+    }
+
+    _handleAppStateChange = (nextAppState: any) => {
+        if (
+          this.state.appState.match(/inactive|background/) &&
+          nextAppState === "active"
+        ) {
+            this.loadMessages();
+        }
+        this.setState({ appState: nextAppState });
+    };
 
     componentDidUpdate(prevProps: any) {
         console.log(this.props.contactId)

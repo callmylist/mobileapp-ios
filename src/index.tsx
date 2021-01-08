@@ -42,6 +42,8 @@ import firebase from 'react-native-firebase';
 import {REFRESH_VALUE} from './redux/actionTypes/dashboard';
 
 import AsyncStorage from '@react-native-community/async-storage';
+import { MessageCenterService } from './service/message-center.service';
+import { SET_UNREAD_COUNT } from './redux/actionTypes/dashboard';
 
 const CreatCampaignNavigator = createStackNavigator(
     {
@@ -189,7 +191,16 @@ export default class MainApp extends Component {
             // })
 
             .onNotification(notification => {
-                console.log(notification)
+                MessageCenterService.getUnreadCount().subscribe((response) => {
+                    if(response.success) {
+                        store.dispatch({
+                            type: SET_UNREAD_COUNT,
+                            payload: {
+                                unreadCount: response.count,
+                            },
+                        });
+                    }
+                })
                 store.dispatch({
                     type: REFRESH_VALUE,
                     payload: {
@@ -200,6 +211,17 @@ export default class MainApp extends Component {
             });
         firebase.notifications().getInitialNotification().then((initialNotification) => {
             console.log("initialNotification", initialNotification);
+
+            MessageCenterService.getUnreadCount().subscribe((response) => {
+                if(response.success) {
+                    store.dispatch({
+                        type: SET_UNREAD_COUNT,
+                        payload: {
+                            unreadCount: response.count,
+                        },
+                    });
+                }
+            })
         })
     };
 

@@ -99,4 +99,18 @@ export class MessageCenterService {
 
         return RestClient.put(url, data);
     }
+
+    static ReadUnreadMsg(contactID: any, status: any) {
+        let url = constants.apiUrl.ReadUnreadMsg
+            .replace('{contactID}', contactID)
+            .replace('{status}', status);
+        
+        return RestClient.get(url);
+    }
+
+    static getUnreadCount() {
+        let url = constants.apiUrl.unreadCount;
+
+        return RestClient.get(url);
+    }
 }
