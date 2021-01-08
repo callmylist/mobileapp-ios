@@ -2,7 +2,8 @@ import {
     LOAD_USER_INFO_SUCCESS,
     LOAD_CAMPAIGN_LIST_SUCCESS,
     SCREEN_INDEX_SET,
-    REFRESH_VALUE
+    REFRESH_VALUE,
+    SET_UNREAD_COUNT
 } from '../actionTypes/dashboard';
 import {defaultIfEmpty} from 'rxjs/operators';
 import {LoginUser} from '../../shared/models/loginuser.model';
@@ -12,7 +13,8 @@ const initialState = {
     campaignList: [],
     screenIndex: 1,
     refreshValue: 0,
-    contactId: ''
+    contactId: '',
+    unreadCount: 0,
 };
 
 const reducer = (state = initialState, action: any) => {
@@ -43,6 +45,13 @@ const reducer = (state = initialState, action: any) => {
                 ...state,
                 refreshValue: Math.random(),
                 contactId: action.payload.contactId
+            };
+        }
+
+        case SET_UNREAD_COUNT: {
+            return {
+                ...state,
+                unreadCount: action.payload.unreadCount
             };
         }
 

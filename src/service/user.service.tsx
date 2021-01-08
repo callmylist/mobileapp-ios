@@ -28,6 +28,24 @@ export class UserService {
         );
     }
 
+    static signOut(token: string) {
+        var headers = {};
+        var loggedInContact = store.getState().authReducer.loggedInContact;
+        if (loggedInContact != null) {
+            headers = {
+                Authorization: 'Bearer ' + loggedInContact.token,
+                fcm: token
+            };
+        }
+        console.log(headers)
+        axios.post(Constants.API_URL + "/logout", {}, { headers }).then((response: any) => {
+            console.log(response)
+        })
+        .catch((ex: any) => {
+            console.log(ex)
+        });
+    }
+
     static forgotPassword(userId: string, email: string) {
         return RestClient.get(
             constants.apiUrl.sendForgot

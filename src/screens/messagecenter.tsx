@@ -10,6 +10,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     Dimensions,
+    AppState
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -35,7 +36,7 @@ import { and } from 'react-native-reanimated';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 import { UserService } from '../service/user.service';
 import { store } from '../redux/store';
-import { SCREEN_INDEX_SET } from '../redux/actionTypes/dashboard';
+import { SCREEN_INDEX_SET, SET_UNREAD_COUNT } from '../redux/actionTypes/dashboard';
 
 import RestClient from 'src/service/restclient';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -181,6 +182,7 @@ class MessageCenter extends Component<
         deleteDialog: boolean;
         subscribed: boolean;
         searchText: string;
+        appState: string;
     }
     > {
     constructor(props: any) {
@@ -205,6 +207,7 @@ class MessageCenter extends Component<
             deleteDialog: false,
             subscribed: true,
             searchText: '',
+            appState: AppState.currentState
         };
     }
 
@@ -221,8 +224,22 @@ class MessageCenter extends Component<
         );
 
         this.sendToken()
-        
+        AppState.addEventListener("change", this._handleAppStateChange);
     }
+
+    componentWillUnmount() {
+        AppState.removeEventListener("change", this._handleAppStateChange);
+    }
+
+    _handleAppStateChange = (nextAppState: any) => {
+        if (
+          this.state.appState.match(/inactive|background/) &&
+          nextAppState === "active"
+        ) {
+            this.didAppear();
+        }
+        this.setState({ appState: nextAppState });
+    };
 
     didAppear = () => {
         this.getMessageInfo();
@@ -250,14 +267,16 @@ class MessageCenter extends Component<
     getMessageInfo = () => {
         MessageCenterService.getMessageInfo().subscribe((response: any) => {
             let data = response.data;
-            if (data.phoneNumber == '') {
-                this.setState({
-                    showOnboarding: true,
-                });
-            } else {
-                this.setState({
-                    showOnboarding: false,
-                });
+            if(data) {
+                if (data.phoneNumber == '') {
+                    this.setState({
+                        showOnboarding: true,
+                    });
+                } else {
+                    this.setState({
+                        showOnboarding: false,
+                    });
+                }
             }
         });
     };
@@ -304,6 +323,7 @@ class MessageCenter extends Component<
             this.setState({
                 loading: false,
             });
+            console.log(response.data);
             if (response.success)
                 this.setState({
                     messages: response.data,
@@ -517,6 +537,30 @@ class MessageCenter extends Component<
             create: true,
         });
     };
+
+    onMessages = (contact: any) => {
+        
+        MessageCenterService.ReadUnreadMsg(contact.id, 2)
+            .subscribe((response: any) => {
+                MessageCenterService.getUnreadCount().subscribe((response) => {
+                    if(response.success) {
+                        store.dispatch({
+                            type: SET_UNREAD_COUNT,
+                            payload: {
+                                unreadCount: response.count,
+                            },
+                        });
+                    }
+                })
+            });
+
+        this.props.navigation.push(
+            'MessageHistoryScreen',
+            {
+                contact
+            },
+        )
+    }
 
     render() {
         return (
@@ -848,15 +892,9 @@ class MessageCenter extends Component<
                                                 return (
                                                     <>
                                                         <TouchableOpacity
-                                                            onPress={() =>
-                                                                this.props.navigation.push(
-                                                                    'MessageHistoryScreen',
-                                                                    {
-                                                                        contact:
-                                                                            item.item,
-                                                                    },
-                                                                )
-                                                            }>
+                                                            onPress={() => {
+                                                                this.onMessages(item.item)
+                                                            }}>
                                                             <View
                                                                 style={[
                                                                     styles.messageContainer,
@@ -869,6 +907,18 @@ class MessageCenter extends Component<
                                                                                 : 'white',
                                                                     },
                                                                 ]}>
+                                                                {
+                                                                    item.item.haveUnreadMessage && 
+                                                                    <View style={{
+                                                                        width: 0,
+                                                                        height: 0,
+                                                                        borderRightWidth: 15,
+                                                                        borderRightColor: 'transparent',
+                                                                        borderTopWidth: 15,
+                                                                        borderTopColor: '#7ecee4',
+                                                                        position: 'absolute'                                                                  
+                                                                    }} />
+                                                                }
                                                                 <AntDesign
                                                                     name={
                                                                         item
