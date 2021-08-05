@@ -20,7 +20,7 @@
         "@types/react-native-popup-dialog": "^0.16.2",
         "@types/react-redux": "^7.1.9",
         "@types/redux-logger": "^3.0.7",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "jwt-decode": "^2.2.0",
         "moment": "^2.26.0",
         "moment-timezone": "^0.5.31",
@@ -63,7 +63,8 @@
         "redux-thunk": "^2.3.0",
         "rn-fetch-blob": "^0.12.0",
         "rxjs": "^6.5.5",
-        "tipsi-stripe": "^7.5.3"
+        "tipsi-stripe": "^7.5.3",
+        "@sentry/react-native": "^2.6.1"
     },
     "devDependencies": {
         "@babel/core": "^7.6.2",

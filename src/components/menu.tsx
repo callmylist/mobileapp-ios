@@ -5,7 +5,8 @@ import {
     View,
     TouchableOpacity,
     SafeAreaView,
-    AppState
+    AppState,
+    Linking
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
 });
 
 class Menu extends Component<
-    {navigation: any; screenIndex: number, unreadCount: number},
+    {navigation: any; screenIndex: number, unreadCount: number, user: any},
     {
         currentMenu: number;
         addFunds: boolean;
@@ -118,6 +119,7 @@ class Menu extends Component<
         expanded: boolean;
         funds: string;
         appState: string;
+        showTitan: boolean;
     }
 > {
     routes = [
@@ -139,7 +141,8 @@ class Menu extends Component<
             billingInfo: null,
             expanded: false,
             funds: '',
-            appState: AppState.currentState
+            appState: AppState.currentState,
+            showTitan: false
         };
     }
 
@@ -188,6 +191,24 @@ class Menu extends Component<
     };
 
     onMenuItem = (index: number) => {
+        let subscribed = false
+        try {
+            subscribed = 
+            this.props.user &&
+            this.props.user.messageSubscription &&
+            this.props.user.messageSubscription !== null &&
+            this.props.user.messageSubscription.subId &&
+            this.props.user.messageSubscription.subId !== ""  ? true : false;
+        }
+        catch(ex) {
+
+        }
+        
+        if(index == 1 && !subscribed) {            
+            Linking.openURL("https://portal.trustedcampaigns.com/")
+            return
+        }
+
         store.dispatch({
             type: SCREEN_INDEX_SET,
             payload: {
@@ -227,17 +248,32 @@ class Menu extends Component<
     };
 
     addFund = async () => {
-        UserService.chargeCardByStripe({
-            amount: +this.state.funds,
-        }).subscribe((response: any) => {
-            this.props.navigation.push('StripeScreen', {
-                stripeKey: this.state.billingInfo.payments.StripePublishableKey,
-                sessionId: response.data.checkoutSessionId,
-            });
-        });
+        // UserService.chargeCardByStripe({
+        //     amount: +this.state.funds,
+        // }).subscribe((response: any) => {
+        //     this.props.navigation.push('StripeScreen', {
+        //         stripeKey: this.state.billingInfo.payments.StripePublishableKey,
+        //         sessionId: response.data.checkoutSessionId,
+        //     });
+        // });
     };
 
     render() {
+        let subscribed = false
+
+        try {
+            subscribed = 
+            this.props.user &&
+            this.props.user.messageSubscription &&
+            this.props.user.messageSubscription !== null &&
+            this.props.user.messageSubscription.subId &&
+            this.props.user.messageSubscription.subId !== ""  ? true : false;
+        }
+        catch(ex) {
+
+        }
+
+
         return (
             <View style={{flex: 1}}>
                 <ScrollView style={styles.container}>
@@ -269,9 +305,9 @@ class Menu extends Component<
                                     borderRadius: 100,
                                 }}
                                 onPress={() =>
-                                    this.setState({
-                                        addFunds: true,
-                                    })
+                                    {
+                                        Linking.openURL("https://portal.trustedcampaigns.com/")
+                                    }
                                 }>
                                 <View style={styles.fundButtonContainer}>
                                     <CmlText style={styles.buttonTitle}>
@@ -364,23 +400,25 @@ class Menu extends Component<
                                         {this.props.unreadCount}
                                     </CmlText>
                                 }
+                                {
+                                    subscribed && <TouchableOpacity
+                                        onPress={() => {
+                                            this.setState({
+                                                expanded: !this.state.expanded,
+                                            });
+                                        }}>
+                                        <Feather
+                                            name={
+                                                this.state.expanded
+                                                    ? 'chevron-up'
+                                                    : 'chevron-down'
+                                            }
+                                            size={24}
+                                            color="white"
+                                        />
+                                    </TouchableOpacity>
+                                }
 
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.setState({
-                                            expanded: !this.state.expanded,
-                                        });
-                                    }}>
-                                    <Feather
-                                        name={
-                                            this.state.expanded
-                                                ? 'chevron-up'
-                                                : 'chevron-down'
-                                        }
-                                        size={24}
-                                        color="white"
-                                    />
-                                </TouchableOpacity>
                             </View>
                         </TouchableOpacity>
                         {this.state.expanded && (
@@ -664,6 +702,7 @@ const mapStateToProps = (state: any) => {
     return {
         screenIndex: state.dashboardReducer.screenIndex,
         unreadCount: state.dashboardReducer.unreadCount,
+        user: state.authReducer.loggedInContact
     };
 };
 

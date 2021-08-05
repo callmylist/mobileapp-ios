@@ -197,6 +197,7 @@ class RestClient {
                             loginResult.data.data.telephonicCode,
                             loginResult.data.data.parentid,
                             loginResult.data.data.customize,
+                            loginResult.data.data.messageSubscription
                         );            
 
                         store.dispatch({
@@ -315,6 +316,7 @@ class RestClient {
                             loginResult.data.data.telephonicCode,
                             loginResult.data.data.parentid,
                             loginResult.data.data.customize,
+                            loginResult.data.data.messageSubscription
                         );            
 
                         store.dispatch({
@@ -432,6 +434,7 @@ class RestClient {
                             loginResult.data.data.telephonicCode,
                             loginResult.data.data.parentid,
                             loginResult.data.data.customize,
+                            loginResult.data.data.messageSubscription
                         );            
 
                         store.dispatch({
@@ -549,6 +552,7 @@ class RestClient {
                             loginResult.data.data.telephonicCode,
                             loginResult.data.data.parentid,
                             loginResult.data.data.customize,
+                            loginResult.data.data.messageSubscription
                         );            
 
                         store.dispatch({

@@ -247,7 +247,7 @@ export default class MainApp extends Component {
                 <PersistGate loading={null} persistor={persistor}></PersistGate>
                 <MenuProvider>
                     <SafeAreaView
-                        style={{ flex: 0, backgroundColor: '#242536' }}
+                        style={{flex: 0, }}
                     />
                     <AppNav style={{ flex: 1 }} />
                 </MenuProvider>

@@ -39,6 +39,8 @@ const reducer = (state = initialState, action: any) => {
                 ...state,
                 loading: false,
                 loggedInContact: action.payload.loggedInContact,
+                username: action.payload.username,
+                password: action.payload.password,
                 error: null,
             };
         }
@@ -82,6 +84,8 @@ const reducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 loggedInContact: null,
+                username: '',
+                password: ''
             };
         }
         case SAVE_CREDENTIAL: {

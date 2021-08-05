@@ -17,7 +17,8 @@ export class LoginUser {
     private telephonicId: string,
     private telephonicCode: string,
     public parentId: string,
-    public customize: Customize
+    public customize: Customize,
+    public messageSubscription: any
   ) {
   }
 }

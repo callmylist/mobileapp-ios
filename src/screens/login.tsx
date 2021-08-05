@@ -19,6 +19,13 @@ import {connect} from 'react-redux';
 import {CmlSpinner} from '../components/loading';
 import {signIn} from '../redux/actions/authActions';
 import {LoginUser} from '../shared/models/loginuser.model';
+import {store} from '../redux/store';
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAILED,
+} from '../redux/actionTypes/auth';
+import JwtDecode from 'jwt-decode';
 
 const styles = StyleSheet.create({
     container: {
@@ -88,7 +95,6 @@ class LoginScreen extends React.Component<
         signIn: any;
         loading: boolean;
         error: string;
-        loggedInContact: LoginUser;
         username: string;
         password: string;
     },
@@ -106,6 +112,8 @@ class LoginScreen extends React.Component<
             // username: 'bilal0018@yopmail.com',
             // password: 'Lmkt@ptcl1234',
             // username: 'mfake@aol.com',
+            // password: '12345678',
+            // username: 'matt.erich@trustedcampaigns.com',
             // password: '12345678',
         };
     }
@@ -134,11 +142,58 @@ class LoginScreen extends React.Component<
             this.state.username.length != 0 &&
             this.state.password.length != 0
         ) {
-            this.props.signIn({
-                userId: this.props.assets.domainUser.id,
-                username: this.state.username,
-                password: this.state.password,
+            store.dispatch({
+                type: USER_LOGIN_REQUEST,
+                payload: null,
             });
+    
+            UserService.signIn(
+                this.props.assets.domainUser.id,
+                this.state.username,
+                this.state.password,
+            ).subscribe((response: any) => {
+                if (response.success) {
+                    const decodedToken: any = JwtDecode(response.token);
+    
+                    const loginUser = new LoginUser(
+                        decodedToken.id,
+                        decodedToken.version,
+                        decodedToken.firstName,
+                        decodedToken.lastName,
+                        response.data.companyName,
+                        decodedToken.email,
+                        response.data.phone,
+                        decodedToken.exp,
+                        response.token,
+                        response.data.gmailId ? true : false,
+                        response.data.role,
+                        {},
+                        response.data.telephonicId,
+                        response.data.telephonicCode,
+                        response.data.parentid,
+                        response.data.customize,
+                        response.data.messageSubscription
+                    );
+    
+                    store.dispatch({
+                        type: USER_LOGIN_SUCCESS,
+                        payload: {
+                            loggedInContact: loginUser,
+                            username: this.state.username,
+                            password: this.state.password
+                        },
+                    });
+
+                    this.gotoMain();
+                } else {
+                    store.dispatch({
+                        type: USER_LOGIN_FAILED,
+                        payload: {
+                            error: response.submessage,
+                        },
+                    });
+                }
+            })
         }
     };
 
@@ -157,10 +212,6 @@ class LoginScreen extends React.Component<
     componentDidUpdate(prevProps: any, prevState: any, snapshot: any) {
         if (this.props.error) {
             Utils.presentToast(this.props.error);
-        }
-
-        if (this.props.loggedInContact) {
-            this.gotoMain();
         }
     }
 
@@ -272,7 +323,6 @@ const mapStateToProps = (state: any) => {
         assets: state.authReducer.assets,
         loading: state.authReducer.loading,
         error: state.authReducer.error,
-        loggedInContact: state.authReducer.loggedInContact,
         username: state.authReducer.username,
         password: state.authReducer.password,
     };
