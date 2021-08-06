@@ -101,29 +101,29 @@ class LoginScreen extends React.Component<
     {
         username: string;
         password: string;
+        loading: boolean;
     }
 > {
     constructor(props: any) {
         super(props);
 
         this.state = {
-            username: '',
-            password: '',
+            // username: '',
+            // password: '',
             // username: 'bilal0018@yopmail.com',
             // password: 'Lmkt@ptcl1234',
             // username: 'mfake@aol.com',
             // password: '12345678',
-            // username: 'matt.erich@trustedcampaigns.com',
-            // password: '12345678',
+            username: 'matt.erich@trustedcampaigns.com',
+            password: '12345678',
+            loading: false
         };
     }
 
     componentDidMount() {
         if (
-            this.props.username !== null &&
-            this.props.username !== undefined &&
-            this.props.password !== null &&
-            this.props.password !== undefined
+            this.props.username  &&
+            this.props.password 
         ) {
             this.setState(
                 {
@@ -142,11 +142,9 @@ class LoginScreen extends React.Component<
             this.state.username.length != 0 &&
             this.state.password.length != 0
         ) {
-            store.dispatch({
-                type: USER_LOGIN_REQUEST,
-                payload: null,
-            });
-    
+            this.setState({
+                loading: true
+            })
             UserService.signIn(
                 this.props.assets.domainUser.id,
                 this.state.username,
@@ -183,9 +181,14 @@ class LoginScreen extends React.Component<
                             password: this.state.password
                         },
                     });
-
+                    this.setState({
+                        loading: false
+                    })
                     this.gotoMain();
                 } else {
+                    this.setState({
+                        loading: false
+                    })
                     store.dispatch({
                         type: USER_LOGIN_FAILED,
                         payload: {
@@ -219,7 +222,7 @@ class LoginScreen extends React.Component<
         return (
             <SafeAreaView style={{flex: 1}}>
                 <Header />
-                <CmlSpinner visible={this.props.loading} />
+                <CmlSpinner visible={this.state.loading} />
                 <ScrollView
                     style={{
                         zIndex: 999,
@@ -321,7 +324,6 @@ class LoginScreen extends React.Component<
 const mapStateToProps = (state: any) => {
     return {
         assets: state.authReducer.assets,
-        loading: state.authReducer.loading,
         error: state.authReducer.error,
         username: state.authReducer.username,
         password: state.authReducer.password,
