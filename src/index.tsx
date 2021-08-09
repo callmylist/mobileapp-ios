@@ -84,7 +84,7 @@ const Main = createDrawerNavigator(
         },
     },
     {
-        initialRouteName: 'MessageCenter',
+        initialRouteName: 'Dashboard',
         contentComponent: Menu,
         drawerPosition: 'left',
         drawerWidth: 300,

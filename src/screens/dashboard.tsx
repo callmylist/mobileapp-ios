@@ -24,6 +24,8 @@ import {
     loadCampaignList,
 } from '../redux/actions/dashboardActions';
 import {StatusIcon} from '../components/campaign_status';
+import { UserService } from '../service/user.service';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const styles = StyleSheet.create({
     container: {
@@ -82,6 +84,8 @@ class Dashboard extends Component<
             this.props.loadUserInfo();
             this.props.loadCampaignList();
         });
+
+        this.sendToken()
     }
 
     componentDidUpdate(prevProps: any, prevState: any, snapshot: any) {
@@ -115,6 +119,14 @@ class Dashboard extends Component<
                     });
                 }
             }
+        }
+    }
+
+    sendToken = async () => {
+        let fcmToken = await AsyncStorage.getItem('fcmToken');
+        if (fcmToken) {
+            UserService.sendToken(fcmToken).subscribe((response: any) => {
+            });
         }
     }
 

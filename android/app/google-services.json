@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:282836346606:android:c4b874dc9a2bc38748b5ff",
+        "mobilesdk_app_id": "1:282836346606:android:880875087d2f5fdd48b5ff",
         "android_client_info": {
-          "package_name": "com.trustedcampaigns.android"
+          "package_name": "com.cml_mobile"
         }
       },
       "oauth_client": [
@@ -32,10 +32,10 @@
               "client_type": 3
             },
             {
-              "client_id": "282836346606-ebds4nqi45emvns6qefehffj6sq8spsk.apps.googleusercontent.com",
+              "client_id": "282836346606-a7fh6tvrfg22o27neve8hhf6713uadoh.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.trustedcampaigns.ios"
+                "bundle_id": "cml.cml.ios"
               }
             }
           ]

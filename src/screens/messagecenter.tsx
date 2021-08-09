@@ -223,7 +223,6 @@ class MessageCenter extends Component<
             },
         );
 
-        this.sendToken()
         AppState.addEventListener("change", this._handleAppStateChange);
     }
 
@@ -253,13 +252,7 @@ class MessageCenter extends Component<
         }
     }
 
-    sendToken = async () => {
-        let fcmToken = await AsyncStorage.getItem('fcmToken');
-        if (fcmToken) {
-            UserService.sendToken(fcmToken).subscribe((response: any) => {
-            });
-        }
-    }
+
 
     getMessageInfo = () => {
         MessageCenterService.getMessageInfo().subscribe((response: any) => {

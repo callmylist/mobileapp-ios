@@ -53,6 +53,7 @@ export const signIn = (params: any) => {
             params.password,
         ).subscribe((response: any) => {
             if (response.success) {
+                console.log(response)
                 const decodedToken: any = JwtDecode(response.token);
 
                 const loginUser = new LoginUser(
