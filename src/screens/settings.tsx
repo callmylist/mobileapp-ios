@@ -274,7 +274,6 @@ class SettingsScreen extends Component<
         MessageCenterService.getMessageInfo().subscribe((response: any) => {
             let data = response.data;
 
-            console.log(data);
             const groupedData = data.schedule.reduce(
                 (r, {name, startTime, message, endTime, ...rest}) => {
                     const key = `${name}-${startTime}-${message}-${endTime}`;
@@ -356,7 +355,6 @@ class SettingsScreen extends Component<
                 });
             }
 
-            console.log(newSchArr);
             this.setState({
                 settingsInfo: data,
                 scheduleList: newSchArr,
@@ -426,7 +424,6 @@ class SettingsScreen extends Component<
             startTime: this.state.startTime,
         };
 
-        console.log(schedule);
         let scheduleList = this.state.scheduleList;
         scheduleList[this.state.editIndex] = schedule;
 
@@ -510,8 +507,6 @@ class SettingsScreen extends Component<
                 scheduleArr.push(newObj);
             });
         });
-
-        console.log(scheduleArr);
 
         MessageCenterService.saveMessageSettings(scheduleArr).subscribe(
             (response: any) => {
@@ -721,9 +716,6 @@ class SettingsScreen extends Component<
                                                                     (
                                                                         value: number,
                                                                     ) => {
-                                                                        console.log(
-                                                                            value,
-                                                                        );
                                                                         return (
                                                                             ' ' +
                                                                             items.filter(
@@ -1037,7 +1029,6 @@ class SettingsScreen extends Component<
                                     }
                                     checkedItems={this.state.weekDay}
                                     OnConfirm={(pItems: any) => {
-                                        console.log(pItems);
                                         this.setState({
                                             weekDay: pItems.map(
                                                 (item) => item.itemKey,

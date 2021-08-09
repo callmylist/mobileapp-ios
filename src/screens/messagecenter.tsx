@@ -254,12 +254,9 @@ class MessageCenter extends Component<
     }
 
     sendToken = async () => {
-        console.log("send token")
         let fcmToken = await AsyncStorage.getItem('fcmToken');
-        console.log(fcmToken)
         if (fcmToken) {
             UserService.sendToken(fcmToken).subscribe((response: any) => {
-                console.log(response);
             });
         }
     }
@@ -319,11 +316,9 @@ class MessageCenter extends Component<
         MessageCenterService.GetAllContacts(
             this.state.contact_filter + '',
         ).subscribe((response: any) => {
-            console.log(response)
             this.setState({
                 loading: false,
             });
-            console.log(response.data);
             if (response.success)
                 this.setState({
                     messages: response.data,

@@ -89,15 +89,12 @@ class MessageHistory extends Component<
     };
 
     componentDidUpdate(prevProps: any) {
-        console.log(this.props.contactId)
-        console.log(this.state.contact.id)
         if(this.props.refreshValue != prevProps.refreshValue ) {
             this.loadMessages();
         }
     }
 
     loadMessages = () => {
-        console.log("loading new messages")
         MessageCenterService.getMessageList(this.state.contact.id).subscribe(
             (response: any) => {
                 if (response.success) {

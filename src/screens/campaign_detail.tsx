@@ -296,7 +296,6 @@ class CampaignDetail extends Component<
     };
 
     sendTestCall = () => {
-        console.log(this.state);
         Keyboard.dismiss();
 
         if (!Utils.validatePhoneNumber(this.state.testCallNumber)) {
@@ -353,7 +352,6 @@ class CampaignDetail extends Component<
             loading: true,
         });
 
-        console.log(payload);
         CampaignService.sendTestCall(payload).subscribe((response: any) => {
             this.setState({
                 loading: false,

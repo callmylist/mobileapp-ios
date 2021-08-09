@@ -158,7 +158,6 @@ export default class MainApp extends Component {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
         if (!fcmToken) {
             fcmToken = await firebase.messaging().getToken();
-            console.log(fcmToken);
             if (fcmToken) {
                 await AsyncStorage.setItem('fcmToken', fcmToken);
             }
@@ -179,17 +178,12 @@ export default class MainApp extends Component {
             await firebase.messaging().requestPermission();
             this.getToken();
         } catch (error) {
-            console.log('permission rejected');
         }
     };
 
     createNotificationListeners = () => {
         this.onUnsubscribeNotificaitonListener = firebase
             .notifications()
-            // .onNotificationOpened(notification => {
-            //     console.log(notification)
-            // })
-
             .onNotification(notification => {
                 MessageCenterService.getUnreadCount().subscribe((response) => {
                     if(response.success) {
@@ -210,8 +204,6 @@ export default class MainApp extends Component {
                 firebase.notifications().displayNotification(notification);
             });
         firebase.notifications().getInitialNotification().then((initialNotification) => {
-            console.log("initialNotification", initialNotification);
-
             MessageCenterService.getUnreadCount().subscribe((response) => {
                 if(response.success) {
                     store.dispatch({

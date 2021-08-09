@@ -8,6 +8,7 @@ import RestClient from './restclient';
 import {store} from '../redux/store';
 import RNFS from 'react-native-fs';
 import {UPDATE_TOKEN, RESET_TOKEN} from '../redux/actionTypes/auth';
+import { Platform, } from 'react-native';
 
 export class UserService {
     static getUserByDomain(domain: string) {
@@ -37,12 +38,9 @@ export class UserService {
                 fcm: token
             };
         }
-        console.log(headers)
         axios.post(Constants.API_URL + "/logout", {}, { headers }).then((response: any) => {
-            console.log(response)
         })
         .catch((ex: any) => {
-            console.log(ex)
         });
     }
 
@@ -171,9 +169,8 @@ export class UserService {
     }
 
     static sendToken(fcmToken: string) {
-        console.log(constants.apiUrl.fcm)
         return RestClient.post(constants.apiUrl.fcm, {
-            deviceType: "2",
+            deviceType: Platform.OS === 'ios' ? "2": "1",
             fcmToken
         });
     }

@@ -1200,7 +1200,6 @@ class CampaignCreate extends Component<
             loading: true,
         });
 
-        console.log(payload);
         CampaignService.sendTestCall(payload).subscribe((response: any) => {
             this.setState({
                 loading: false,

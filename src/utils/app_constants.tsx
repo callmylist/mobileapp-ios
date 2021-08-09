@@ -1,13 +1,8 @@
-// const API_URL = 'https://core1stg.callmylist.com:8443/v1';
-// const HOST_NAME = 'portalstg.callmylist.com';
-// const RESOURCE_URL = 'https://resourcesstg.callmylist.com';
-// const API_URL = 'https://core1.callmylist.com/v1';
-// const HOST_NAME = 'portal.trustedcampaigns.com';
-// const RESOURCE_URL = 'https://resourcesstg.callmylist.com';
+const API_URL = 'https://core1stg.trustedcampaigns.com:8443/v1';
+const HOST_NAME = 'portalstg.callmylist.com';
 
-const API_URL = 'https://core1.trustedcampaigns.com/v1';
-const HOST_NAME = 'portal.trustedcampaigns.com';
-const RESOURCE_URL = 'https://resources.trustedcampaigns.com';
+// const API_URL = 'https://core1.trustedcampaigns.com/v1';
+// const HOST_NAME = 'portal.trustedcampaigns.com';
 
 const timeZones = [
     {
@@ -28,6 +23,5 @@ const timeZones = [
 export default {
     API_URL,
     HOST_NAME,
-    RESOURCE_URL,
     timeZones,
 };

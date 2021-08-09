@@ -64,8 +64,6 @@ export default class PickerCheckbox extends React.Component {
     }
 
     ItemExistList(pKey) {
-        console.log(this.state.checkedItems);
-        console.log(pKey);
         return this.state.checkedItems.includes(pKey) ? true : false;
     }
 
@@ -94,7 +92,6 @@ export default class PickerCheckbox extends React.Component {
     }
 
     renderPlaceHolder() {
-        console.log(this.props.data);
         vPlaceHolder = this.props.placeholder || '';
         vColorTextPlaceHolder =
             this.props.placeholderTextColor || PLACEHOLDER_COLOR;

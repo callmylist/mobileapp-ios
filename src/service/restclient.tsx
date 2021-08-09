@@ -62,8 +62,6 @@ class RestClient {
                         password: store.getState().authReducer.password,
                     }, {});
 
-                    console.log("login Result", loginResult);
-
                     if(loginResult.status === 201) {
                         const decodedToken: any = JwtDecode(loginResult.headers.x_auth_token);
             
@@ -176,8 +174,6 @@ class RestClient {
                         password: store.getState().authReducer.password,
                     }, {});
 
-                    console.log("login Result", loginResult);
-
                     if(loginResult.status === 201) {
                         const decodedToken: any = JwtDecode(loginResult.headers.x_auth_token);
             
@@ -283,7 +279,6 @@ class RestClient {
                 };
             }),
             catchError( async (error: any) => {
-                console.log(error)
                 if (error.response.status == 401) {
                     store.dispatch({
                         type: RESET_TOKEN,
@@ -295,7 +290,6 @@ class RestClient {
                         password: store.getState().authReducer.password,
                     }, {});
 
-                    console.log("login Result", loginResult);
 
                     if(loginResult.status === 201) {
                         const decodedToken: any = JwtDecode(loginResult.headers.x_auth_token);
@@ -413,8 +407,6 @@ class RestClient {
                         password: store.getState().authReducer.password,
                     }, {});
 
-                    console.log("login Result", loginResult);
-
                     if(loginResult.status === 201) {
                         const decodedToken: any = JwtDecode(loginResult.headers.x_auth_token);
             
@@ -530,8 +522,6 @@ class RestClient {
                         username: store.getState().authReducer.username,
                         password: store.getState().authReducer.password,
                     }, {});
-
-                    console.log("login Result", loginResult);
 
                     if(loginResult.status === 201) {
                         const decodedToken: any = JwtDecode(loginResult.headers.x_auth_token);
