@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     SafeAreaView,
     AppState,
-    Linking
+    Linking,
+    Platform
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -29,6 +30,7 @@ import {CLEAR_PROFILE, SAVE_CREDENTIAL} from '../redux/actionTypes/auth';
 import AsyncStorage from '@react-native-community/async-storage';
 import {MessageCenterService} from '../service/message-center.service';
 import PushNotificationIOS from '@react-native-community/push-notification-ios'
+import BadgeAndroid from 'react-native-android-badge'
 
 const styles = StyleSheet.create({
     container: {
@@ -147,7 +149,12 @@ class Menu extends Component<
     }
 
     componentDidUpdate(prevProps: any) {
-        PushNotificationIOS.setApplicationIconBadgeNumber(this.props.unreadCount);
+        if(Platform.OS === 'ios') {
+            PushNotificationIOS.setApplicationIconBadgeNumber(this.props.unreadCount);
+        }
+        else {
+            BadgeAndroid.setBadge(this.props.unreadCount)
+        }
     }
 
     componentDidMount() {
@@ -167,7 +174,12 @@ class Menu extends Component<
             }
         })
         AppState.addEventListener("change", this._handleAppStateChange);
-        PushNotificationIOS.setApplicationIconBadgeNumber(this.props.unreadCount);
+        if(Platform.OS === 'ios') {
+            PushNotificationIOS.setApplicationIconBadgeNumber(this.props.unreadCount);
+        }
+        else {
+            BadgeAndroid.setBadge(this.props.unreadCount)
+        }
     }
 
     _handleAppStateChange = (nextAppState: any) => {
@@ -186,7 +198,12 @@ class Menu extends Component<
                 }
             })
         }
-        PushNotificationIOS.setApplicationIconBadgeNumber(this.props.unreadCount);
+        if(Platform.OS === 'ios') {
+            PushNotificationIOS.setApplicationIconBadgeNumber(this.props.unreadCount);
+        }
+        else {
+            BadgeAndroid.setBadge(this.props.unreadCount)
+        }
         this.setState({ appState: nextAppState });
     };
 

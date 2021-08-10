@@ -51,6 +51,8 @@ class RestClient {
                 return {...response.data, success: true};
             }),
             catchError( async (error: any) => {
+                console.log(JSON.stringify(error))
+                console.log(Constants.API_URL + url)
                 if (error.response.status == 401) {
                     store.dispatch({
                         type: RESET_TOKEN,

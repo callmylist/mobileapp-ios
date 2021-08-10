@@ -124,6 +124,8 @@ class Dashboard extends Component<
 
     sendToken = async () => {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
+        console.log("fcm token")
+        console.log(fcmToken)
         if (fcmToken) {
             UserService.sendToken(fcmToken).subscribe((response: any) => {
             });
