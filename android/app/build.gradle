@@ -133,8 +133,8 @@ android {
         applicationId "com.cml_mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
-        versionName "1.5"
+        versionCode 7
+        versionName "1.5.1"
         multiDexEnabled true
 
     }

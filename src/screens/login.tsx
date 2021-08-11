@@ -186,6 +186,7 @@ class LoginScreen extends React.Component<
                     })
                     this.gotoMain();
                 } else {
+                    Utils.presentToast("User name or password is incorrect");
                     this.setState({
                         loading: false
                     })

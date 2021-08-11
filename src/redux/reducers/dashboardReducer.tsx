@@ -11,7 +11,7 @@ import {LoginUser} from '../../shared/models/loginuser.model';
 const initialState = {
     account: null,
     campaignList: [],
-    screenIndex: 1,
+    screenIndex: 0,
     refreshValue: 0,
     contactId: '',
     unreadCount: 0,

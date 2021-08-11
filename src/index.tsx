@@ -182,7 +182,8 @@ export default class MainApp extends Component {
     };
 
     createNotificationListeners = () => {
-        this.onUnsubscribeNotificaitonListener = firebase
+        try {
+            this.onUnsubscribeNotificaitonListener = firebase
             .notifications()
             .onNotification(notification => {
                 MessageCenterService.getUnreadCount().subscribe((response) => {
@@ -203,18 +204,23 @@ export default class MainApp extends Component {
                 });
                 firebase.notifications().displayNotification(notification);
             });
-        firebase.notifications().getInitialNotification().then((initialNotification) => {
-            MessageCenterService.getUnreadCount().subscribe((response) => {
-                if(response.success) {
-                    store.dispatch({
-                        type: SET_UNREAD_COUNT,
-                        payload: {
-                            unreadCount: response.count,
-                        },
-                    });
-                }
+            firebase.notifications().getInitialNotification().then((initialNotification) => {
+                MessageCenterService.getUnreadCount().subscribe((response) => {
+                    if(response.success) {
+                        store.dispatch({
+                            type: SET_UNREAD_COUNT,
+                            payload: {
+                                unreadCount: response.count,
+                            },
+                        });
+                    }
+                })
             })
-        })
+        }
+        catch(ex){
+
+        }
+
     };
 
     removeNotificationListeners = () => {

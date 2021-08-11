@@ -29,10 +29,11 @@ import {
 import AppNav from './src';
 import * as Sentry from "@sentry/react-native";
 
-Sentry.init({
-  dsn: "https://d080afac856a46c1b638dc70d377a0cf@o938677.ingest.sentry.io/5888483",
-});
-  
+if(!__DEV__) {
+  Sentry.init({
+    dsn: "https://d080afac856a46c1b638dc70d377a0cf@o938677.ingest.sentry.io/5888483",
+  });
+}  
 
 declare const global: {HermesInternal: null | {}};
 
