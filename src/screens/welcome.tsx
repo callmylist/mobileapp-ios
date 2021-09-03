@@ -46,7 +46,19 @@ class WelcomeScreen extends Component<
     componentDidUpdate(prevProps: any, prevState: any, snapshot: any) {
         if (this.props.assets) {
             if (store.getState().authReducer.loggedInContact != null) {
-                this.props.navigation.navigate('App');
+                let subscribed = false
+                try {
+                    subscribed = 
+                    store.getState().authReducer.loggedInContact.messageSubscription &&
+                    store.getState().authReducer.loggedInContact.messageSubscription !== null &&
+                    store.getState().authReducer.loggedInContact.messageSubscription.subId &&
+                    store.getState().authReducer.loggedInContact.messageSubscription.subId !== ""  ? true : false;
+                }
+                catch(ex) {
+        
+                }
+
+                this.props.navigation.navigate(subscribed ? 'MessageCenter': 'Dashboard');
             } 
             else {
                 this.props.navigation.navigate('AuthNavigator');

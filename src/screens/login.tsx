@@ -184,7 +184,20 @@ class LoginScreen extends React.Component<
                     this.setState({
                         loading: false
                     })
-                    this.gotoMain();
+
+                    let subscribed = false
+                    try {
+                        subscribed = 
+                        response.data.messageSubscription &&
+                        response.data.messageSubscription !== null &&
+                        response.data.messageSubscription.subId &&
+                        response.data.messageSubscription.subId !== ""  ? true : false;
+                    }
+                    catch(ex) {
+            
+                    }
+                    
+                    this.gotoMain(subscribed);
                 } else {
                     Utils.presentToast("User name or password is incorrect");
                     this.setState({
@@ -201,8 +214,8 @@ class LoginScreen extends React.Component<
         }
     };
 
-    gotoMain = () => {
-        this.props.navigation.navigate('Main');
+    gotoMain = (subscribed: boolean) => {
+        this.props.navigation.navigate(subscribed ? 'MessageCenter': 'Dashboard');
     };
 
     onRegister = () => {
